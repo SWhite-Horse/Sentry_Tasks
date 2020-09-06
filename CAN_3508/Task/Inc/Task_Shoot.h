@@ -17,6 +17,13 @@
 #define CROSSZEROUPTHRESHOLD                6000
 #define CROSSZERODOWNTHRESHOLD              2000
 
+
+typedef struct                                   //PID结构体
+{
+	float Kp, Ki, Kd;
+  float Cur_Error, Last_Error, Sum_Error;
+}PID_type;
+
 typedef struct
 {
   uint16_t Mechanical_Angle;       //机械角
@@ -24,13 +31,16 @@ typedef struct
   int16_t RealSpeed;
   int16_t RealCurrent;
   uint16_t FrameCounter; 	//帧率计数器
+	PID_type PID;
 	int32_t Output;
 }Motor3508_type;
 
 extern Motor3508_type Motor_3508[2];
-void Fric_3508_CAN_Send(int16_t Output0,int16_t Output1);
+
 void Task_Shoot(void *parameters);
 void Motor_3508_Send(int16_t Output);
+void Motor_3508_PID_Init(void);
+void Motor_3508_PID_Calculate(Motor3508_type *motor);
 
 
 #endif

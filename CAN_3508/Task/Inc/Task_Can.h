@@ -21,5 +21,4 @@ typedef struct
 TASK_CAN_EXT CanSend_Type CAN_Tx_Msg;
 void CANTransmit(CAN_HandleTypeDef *hcan, uint32_t std_id, uint8_t aData[]);
 
-
 #endif

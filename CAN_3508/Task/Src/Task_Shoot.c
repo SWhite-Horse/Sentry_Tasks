@@ -1,14 +1,49 @@
+#define __TASK_FRICMOTOR_GLOBALS
 #include "Task_Shoot.h"
 #include "Task_CAN.h"
 
 Motor3508_type Motor_3508[2];
 
 void Task_Shoot(void *parameters)
-{
+{	
+		Motor_3508_PID_Init();
+		TickType_t xLastWakeUpTime;
+		xLastWakeUpTime = xTaskGetTickCount();
+
+	
 		while(1){
-			Motor_3508_Send(600);
+				Motor_3508[0].TargetSpeed=500;
+			Motor_3508_PID_Calculate(&Motor_3508[0]);
+			Motor_3508_Send(Motor_3508[0].Output);
 		}
+		vTaskDelayUntil(&xLastWakeUpTime, 5);
+		
 }
+
+void Motor_3508_PID_Init(void){
+	
+		Motor_3508[0].PID.Kp=0.5;
+		Motor_3508[0].PID.Ki=0;
+		Motor_3508[0].PID.Kd=0;
+
+};
+
+void Motor_3508_PID_Calculate(Motor3508_type *motor){
+	
+		motor->PID.Last_Error = motor->PID.Cur_Error;
+		motor->PID.Cur_Error = motor->TargetSpeed - motor->RealSpeed;
+		motor->PID.Sum_Error += motor->PID.Cur_Error;
+	
+		motor->PID.Sum_Error = motor->PID.Sum_Error > 15000 ? 15000 : motor->PID.Sum_Error;
+		motor->PID.Sum_Error = motor->PID.Sum_Error < -15000 ? -15000 : motor->PID.Sum_Error;
+	
+		motor->Output = (motor->PID.Kp * motor->PID.Cur_Error + motor->PID.Ki * motor->PID.Sum_Error + motor->PID.Kd * (motor->PID.Cur_Error - motor->PID.Last_Error));
+
+		 //限制输出电流
+		motor->Output = (motor->Output >= C620CURRENTMAX) ? C620CURRENTMAX : motor->Output;
+		motor->Output = (motor->Output <= -C620CURRENTMAX) ? -C620CURRENTMAX : motor->Output;
+};
+
 void Motor_3508_Send(int16_t Output)
 {
   static CanSend_Type CANSend;

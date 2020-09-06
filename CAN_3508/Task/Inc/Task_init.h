@@ -19,8 +19,6 @@ TASK_INIT_EXT TaskHandle_t TaskHandle_LEDBlink;
 //CAN∑¢ÀÕ∂”¡–
 TASK_INIT_EXT QueueHandle_t Queue_CANSend; 
 
-TASK_INIT_EXT TaskHandle_t TaskHandle_Monitor;
-
 void Task_CAN(void *parameters);
 void Task_LEDBlink(void *parameters);
 

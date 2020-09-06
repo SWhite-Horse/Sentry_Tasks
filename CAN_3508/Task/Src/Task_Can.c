@@ -2,7 +2,6 @@
 #include "Task_CAN.h"
 #include "Task_Shoot.h"
 
-
 void Task_CAN(void *parameters){
 	while(1)
     {
