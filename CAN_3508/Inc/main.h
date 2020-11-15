@@ -33,6 +33,9 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+ 
+ void CAN_Init(CAN_HandleTypeDef *hcan);
+ void CAN_Transmit(CAN_HandleTypeDef *hcan, uint32_t std_id, uint8_t aData[]);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

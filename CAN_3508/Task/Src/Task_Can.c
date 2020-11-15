@@ -27,7 +27,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, aData);
 		 switch(RxHeader.StdId)
     {
-				case 0x201:	
+				case 0x20:	
 				Motor_3508[0].FrameCounter++;
 			  Motor_3508[0].Mechanical_Angle = aData[0] << 8 | aData[1];
 		    Motor_3508[0].RealSpeed = aData[2] << 8 | aData[3];

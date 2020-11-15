@@ -6,7 +6,7 @@
 
 
 
-void CAN_Init(CAN_HandleTypeDef *hcan);
+//void CAN_Init(CAN_HandleTypeDef *hcan);
 void CAN_Recieve(CAN_HandleTypeDef *hcan);
 
 
@@ -29,23 +29,23 @@ void Task_Init(void *parameters)
 
 }
 
-void CAN_Init(CAN_HandleTypeDef *can){
-	
-    CAN_FilterTypeDef sFilterConfig;
-	
-		sFilterConfig.FilterBank = 0;
-    sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
-    sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-    sFilterConfig.FilterIdHigh = 0x0000;
-    sFilterConfig.FilterIdLow = 0x0000;
-    sFilterConfig.FilterMaskIdHigh = 0x0000;
-    sFilterConfig.FilterMaskIdLow = 0x0000;
-    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-    sFilterConfig.FilterActivation = ENABLE;
-    sFilterConfig.SlaveStartFilterBank = 14;
-    HAL_CAN_ConfigFilter(can, &sFilterConfig);
-    HAL_CAN_Start(can);
-};
+//void CAN_Init(CAN_HandleTypeDef *can){
+//	
+//    CAN_FilterTypeDef sFilterConfig;
+//	
+//		sFilterConfig.FilterBank = 0;
+//    sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+//    sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+//    sFilterConfig.FilterIdHigh = 0x0000;
+//    sFilterConfig.FilterIdLow = 0x0000;
+//    sFilterConfig.FilterMaskIdHigh = 0x0000;
+//    sFilterConfig.FilterMaskIdLow = 0x0000;
+//    sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+//    sFilterConfig.FilterActivation = ENABLE;
+//    sFilterConfig.SlaveStartFilterBank = 14;
+//    HAL_CAN_ConfigFilter(can, &sFilterConfig);
+//    HAL_CAN_Start(can);
+//};
 void CAN_Recieve(CAN_HandleTypeDef *can){
   HAL_CAN_ActivateNotification(can, CAN_IT_RX_FIFO0_MSG_PENDING);
 };

@@ -15,9 +15,9 @@ void Task_Shoot(void *parameters)
 				Motor_3508[0].TargetSpeed=500;
 			Motor_3508_PID_Calculate(&Motor_3508[0]);
 			Motor_3508_Send(Motor_3508[0].Output);
-		}
-		vTaskDelayUntil(&xLastWakeUpTime, 5);
 		
+		vTaskDelayUntil(&xLastWakeUpTime, 5);
+		}
 }
 
 void Motor_3508_PID_Init(void){
