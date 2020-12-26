@@ -9,11 +9,9 @@
 #include "Task_Measure.h"
 #include "Task_JetsonComm.h"
 
-
 void Task_Init(void *parameters)
 {
 		  taskENTER_CRITICAL();          //进入临界区
-	
 		//** Init **//
 			CAN_Init(&hcan1);
 			CAN_Init(&hcan2);
@@ -24,9 +22,9 @@ void Task_Init(void *parameters)
 			Queue_CANSend = xQueueCreate(30,sizeof(CanSend_Type));   //创建发送队列
 	
 			LASER_ON();
-			L1_Measure_Init(&huart6);
+			//L1_Measure_Init(&huart6);
 			RC_Receive_Enable(&huart1); //遥控初始化
-			JetsonCommUart_Config(&huart8); //与jeston通讯串口初始化
+			JetsonCommUart_Config(&huart6); //与jeston通讯串口初始化
 
 	    //** 板载陀螺仪初始化
 	    mpu_device_init();
@@ -35,7 +33,7 @@ void Task_Init(void *parameters)
 		  __HAL_TIM_SET_COMPARE(&htim3,IMU_HEATING_Pin,HEAT_MID);
 	
 		//** 创建任务 **//
-			xTaskCreate(Task_LEDBlink, "Task_LEDBlink", 100, NULL, 1, &TaskHandle_LEDBlink);
+			xTaskCreate(Task_LEDBlink, "Task_LEDBlink", 100, NULL, 3, &TaskHandle_LEDBlink);
 			xTaskCreate(Task_CAN, "Task_CAN", 128, NULL, 6, &TaskHandle_CAN);
 		  xTaskCreate(Task_RC, "Task_RC", 256, NULL, 5, &TaskHandle_RC);
 			xTaskCreate(Task_StatusMachine, "Task_StatusMachine", 128, NULL, 5, &TaskHandle_StatusMachine);
@@ -46,12 +44,10 @@ void Task_Init(void *parameters)
 			xTaskCreate(Task_Gimbal,"Task_Gimbal",512,NULL,4,&TaskHandle_Gimbal);
 		  xTaskCreate(Task_Communication,"Task_Communication",128,NULL,4,&TaskHandle_Communication);//
 			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",300,NULL,5,&TaskHandle_JetsonComm);
-
 	
 		vTaskDelay(1000);             //延时五秒让任务完成
     vTaskDelete(NULL);            //删除初始化的任务
     taskEXIT_CRITICAL();          //退出临界区
-
 }
 
 

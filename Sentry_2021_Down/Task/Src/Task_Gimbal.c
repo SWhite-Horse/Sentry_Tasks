@@ -54,8 +54,9 @@ void Task_Gimbal(void *parameters)
 	while(1)
 	{
 		GimbalMotor_AngleSet(&Yaw,&Pitch);
-		GimbalMotor_PID(&Pitch,&Yaw);
-		Gimbal_CAN_Send(Yaw.NeedCurrent,Pitch.NeedCurrent);
+		GimbalMotor_PID(&Yaw,&Pitch);
+		Gimbal_CAN_Send(Yaw.NeedCurrent,StirMotor.Output);
+		Gimbal_CAN_Pitch_Send(Pitch.NeedCurrent);
     vTaskDelayUntil(&xPreviousWakeTime, 5);		
 	}
 }
@@ -66,24 +67,25 @@ void Task_Gimbal(void *parameters)
   * @retval None
   * @note   此函数调用在控制任务while（1）进入之前  
   */
+
 void Gimbal_Init(void)
 {
 	
-	Yaw.SpeedPID.Kp =25;// 6;
-	Yaw.SpeedPID.Ki = 0.3;
+	Yaw.SpeedPID.Kp =30 ;//25;// 6;
+	Yaw.SpeedPID.Ki = 0.3;//0.3;
 	Yaw.SpeedPID.Kd = 0;
 	
-	Yaw.PositionPID.Kp = 18;
+	Yaw.PositionPID.Kp = 20;//18;
 	Yaw.PositionPID.Ki = 0;
-	Yaw.PositionPID.Kd = 4;
+	Yaw.PositionPID.Kd = 2;//4;
 	
-	Pitch.SpeedPID.Kp = 170;//100;
-	Pitch.SpeedPID.Ki = 0.5;//0.8;
-	Pitch.SpeedPID.Kd = 0;
+	Pitch.SpeedPID.Kp = 170;//100;//170;//170;
+	Pitch.SpeedPID.Ki = 0.5;//2;//0.5;//0.5
+	Pitch.SpeedPID.Kd = 2;//3;
 
-	Pitch.PositionPID.Kp = 18;//18
-	Pitch.PositionPID.Ki = 0.2;//0.2
-	Pitch.PositionPID.Kd = 0;//-0.2
+	Pitch.PositionPID.Kp = 16;//30.8;//14;//18;
+	Pitch.PositionPID.Ki = 0.36;//2.9;//0.2;//2.8
+	Pitch.PositionPID.Kd = 0.6;//1;//1;//1
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 30;
@@ -98,7 +100,7 @@ void Gimbal_Init(void)
   */
 
 float temp_p[2] = {0, 0}, temp_y[2] = {0, 0};
-uint16_t RotatinPatrol_Counter=0;
+//uint16_t RotatinPatrol_Counter=0;
 void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 {
     static uint8_t i = 1;
@@ -135,7 +137,7 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 	/************** PITCH **************/
         temp_p[0] = temp_p[1];
 				if(abs(Get_Channel_Val(&RC_ReceiveData, RC_CH3))>50)
-					temp_p[1] = 0.5 * Get_Channel_Val(&RC_ReceiveData, RC_CH3) / RC_CH_MAX_RELATIVE;
+					temp_p[1] =  PhysicalAngleAddStep * Get_Channel_Val(&RC_ReceiveData, RC_CH3) / RC_CH_MAX_RELATIVE;
         else
 					temp_p[1] = 0;
 				temp_p[1] = SmoothFilter(temp_p[0], temp_p[1]);
@@ -153,20 +155,20 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				{				
 					 StirMotorStatus = StirStatus_Stop;
 						//pitch轴巡逻范围
-				   if(PITCH_ANGLE>=20)   Aimbot_RotatinPatrol_pitchmode = upward;
-				   if(PITCH_ANGLE<=14)	 Aimbot_RotatinPatrol_pitchmode = downward;
+				   if(PITCH_ANGLE>=37)   Aimbot_RotatinPatrol_pitchmode = upward;
+				   if(PITCH_ANGLE<=8)	 Aimbot_RotatinPatrol_pitchmode = downward;
 						//yaw轴巡逻范围	 
            if(Aimbot_RotatinPatrol_pitchmode==upward)
 		       {	
-						 	yaw->TargetAngle+=0.64f;
-						  pitch->TargetAngle-=0.08f;					
+						 	yaw->TargetAngle+=0.80f;
+						  pitch->TargetAngle-=0.25f;					
 							++j;
 						}
 		
            if(Aimbot_RotatinPatrol_pitchmode==downward)
 					 {		
-						 yaw->TargetAngle+=0.64f;
-						 pitch->TargetAngle+=0.08f;
+						 yaw->TargetAngle+=0.80f;
+						 pitch->TargetAngle+=0.25f;
 							
 						++j;
 					 }
@@ -193,12 +195,12 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					
 					
 			//瞄准之后角度确立
-					yaw->TargetAngle = Yaw_Desire;
+					yaw->TargetAngle = -Yaw_Desire; //要特别注意这里的正负和电机正方向以及算法回调数据（Jeston里面Yaw_Desire的赋值语句）的关系，切记
 					while(yaw->TargetAngle > 360)
 						yaw->TargetAngle -= 360;
 					while(yaw->TargetAngle < 0)
 						yaw->TargetAngle += 360;
-					pitch->TargetAngle = Pitch_Desire;
+					pitch->TargetAngle = Pitch_Desire;//这个也要注意
 				  
 					pitch->TargetAngle = pitch->TargetAngle > Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) ? Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) : pitch->TargetAngle;
 					pitch->TargetAngle = pitch->TargetAngle < Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_UP) ? Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_UP) : pitch->TargetAngle;	
@@ -234,9 +236,9 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					*/
 				break;
 				}
-	
 			}
 		}
+
 }
 
 /**
@@ -276,7 +278,7 @@ float SmoothFilter(float data_last, float data)
   * @param  pitch轴结构体，yaw轴结构体
   * @retval 
   */
-void GimbalMotor_PID(MotorType_6020 *pitch, MotorType_6020 *yaw)
+void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
 {
     /************** PITCH **************/
   // ME_Diff.Last_Pitch_Me_Angle=ME_Diff.Now_Pitch_Me_Angle;
@@ -309,9 +311,10 @@ void GimbalMotor_PID(MotorType_6020 *pitch, MotorType_6020 *yaw)
         pitch->TargetSpeed =pitch->PositionPID.Output;
 			
 //				if(pitch->Real_Angle<9)
-//					pitch->TargetSpeed=-100;
+//					pitch->TargetSpeed=100;
 //				else if(pitch->Real_Angle>42)
-//				pitch->TargetSpeed=100;
+//				pitch->TargetSpeed=-100;
+
 				//pitch轴速度环
         pitch->SpeedPID.Last_Error = pitch->SpeedPID.Cur_Error;
 
@@ -352,29 +355,6 @@ void GimbalMotor_PID(MotorType_6020 *pitch, MotorType_6020 *yaw)
 //				yaw->PositionPID.Output = yaw->PositionPID.Output < -300 ? -300 : yaw->PositionPID.Output;
         yaw->TargetSpeed = yaw->PositionPID.Output;
         
-//        yaw->TargetSpeed = speeddebug;
-//				if(ControlMode == ControlMode_Protect)
-//				{
-//					switch (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left))
-//					{
-//					case RC_SW_MID:
-//					{
-//							yaw->TargetSpeed = pitch->PositionPID.Output = 0;
-//							break;
-//					}
-//					case RC_SW_DOWN:
-//					{
-//							yaw->TargetSpeed = pitch->PositionPID.Output = -test_tar_speed;
-//							break;
-//					}
-//					case RC_SW_UP:
-//					{
-//							yaw->TargetSpeed = pitch->PositionPID.Output = test_tar_speed;
-//							break;
-//					}
-//					}
-
-//				}
 		//yaw轴速度环
         yaw->SpeedPID.Last_Error = yaw->SpeedPID.Cur_Error;
         yaw->SpeedPID.Cur_Error = yaw->TargetSpeed - AYAW;
@@ -388,6 +368,10 @@ void GimbalMotor_PID(MotorType_6020 *pitch, MotorType_6020 *yaw)
         yaw->NeedCurrent = (yaw->SpeedPID.Output > YAWCURRENTMAX ? YAWCURRENTMAX : yaw->SpeedPID.Output);
         yaw->NeedCurrent = (yaw->SpeedPID.Output < -YAWCURRENTMAX ? -YAWCURRENTMAX : yaw->NeedCurrent);
     }
+		if(ControlMode == ControlMode_Telecontrol_UP){
+			yaw->NeedCurrent=0;
+			pitch->NeedCurrent=0;
+		}
 }
 
 /**
@@ -401,13 +385,30 @@ void GimbalMotor_PID(MotorType_6020 *pitch, MotorType_6020 *yaw)
   * @param  pitch,yaw,拨盘电机输出
   * @retval 
   */
-void Gimbal_CAN_Send(int16_t Yaw_Output, int16_t Pitch_Output)
+void Gimbal_CAN_Send(int16_t Yaw_Output,int16_t Stir_Output)
 {
 	CanSend_Type Gimbalsend;
 	Gimbalsend.CANx = CANSEND_1;
 	Gimbalsend.stdid = 0x1ff;
 	Gimbalsend.Data[0] = (uint8_t)(Yaw_Output >> 8);
 	Gimbalsend.Data[1] = (uint8_t)Yaw_Output;
+	Gimbalsend.Data[2] = (uint8_t)0;
+	Gimbalsend.Data[3] = (uint8_t)0;
+	Gimbalsend.Data[4] = (uint8_t)(Stir_Output >> 8);
+	Gimbalsend.Data[5] = (uint8_t)Stir_Output;
+	Gimbalsend.Data[6] = (uint8_t)0;
+	Gimbalsend.Data[7] = (uint8_t)0;
+
+	xQueueSend(Queue_CANSend, &Gimbalsend, 3 / portTICK_RATE_MS);
+}
+
+void Gimbal_CAN_Pitch_Send(int16_t Pitch_Output)
+{
+	CanSend_Type Gimbalsend;
+	Gimbalsend.CANx = CANSEND_2;
+	Gimbalsend.stdid = 0x1ff;
+	Gimbalsend.Data[0] = (uint8_t)0;
+	Gimbalsend.Data[1] = (uint8_t)0;
 	Gimbalsend.Data[2] = (uint8_t)(Pitch_Output >> 8);
 	Gimbalsend.Data[3] = (uint8_t)Pitch_Output;
 	Gimbalsend.Data[4] = (uint8_t)0;

@@ -10,34 +10,6 @@
 //电机电调最大电流
 #define RM6020CURRENTMAX 28000
 
-
-//6020电机结构体
-typedef struct
-{
-    //    uint16_t ID;
-    uint16_t FrameCounter;
-    float    TargetAngle;
-    float    TargetSpeed;
-	  float    Real_Angle;
-		int16_t Torque_Current_Real;
-    int16_t Mechanical_Speed;
-    int16_t NeedCurrent;
-    int16_t Mechanical_Angle;
-    uint8_t MotorTemp;
-    struct
-    {
-        float Kp, Ki, Kd;
-        float Cur_Error, Last_Error, Sum_Error;
-        float Output;
-    } SpeedPID;
-    struct
-    {
-        float Kp, Ki, Kd;
-        float Cur_Error, Last_Error, Sum_Error;
-        float Output;
-    } PositionPID;
-}MotorType_6020;
-
 typedef enum
 {
 	downward,
@@ -72,7 +44,7 @@ typedef struct
 //#define APITCH  PersonalGYRO.Gyro_X
 //#define AYAW  PersonalGYRO.Gyro_Z
 
-#define YAW_ANGLE imu.yaw    //imu 范围-pi到pi且电机正向转动时角度减小
+#define YAW_ANGLE imu.yaw  //imu 范围-pi到pi且电机正向转动时角度减小
 #define AYAW 			imu.wz * 57.3f
 #define APITCH 		imu.wx * 57.3f
 
@@ -95,7 +67,10 @@ extern int16_t Y_KFoutput;
 	
 void Gimbal_Init(void);
 void Gimbal_Ctrl(void);
-void Gimbal_CAN_Send(int16_t Yaw_Output,int16_t Pitch_Output);
+
+void Gimbal_CAN_Pitch_Send(int16_t Pitch_Output);
+
+void Gimbal_CAN_Send(int16_t Yaw_Output,int16_t Stir_Motor);
 float SmoothFilter(float data_last,float data);
 void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch);
 int16_t PitchGravityCompensation(float Angle);

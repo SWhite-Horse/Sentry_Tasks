@@ -55,7 +55,7 @@ void L1_Measure_Update()
   * @brief L1回调，DMA处理
   * @param  
   * @retval UART_HandleTypeDef
-  * @note   Usart2
+  * @note   Usart6
   */
 int L1_Measure_counter;
 

@@ -41,10 +41,10 @@ sentry_2021_scp\task_imu.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_ti
 sentry_2021_scp\task_imu.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 sentry_2021_scp\task_imu.o: ../Inc/can.h
 sentry_2021_scp\task_imu.o: ../Inc/dma.h
-sentry_2021_scp\task_imu.o: ../Inc/usart.h
-sentry_2021_scp\task_imu.o: ../Inc/gpio.h
 sentry_2021_scp\task_imu.o: ../Inc/tim.h
 sentry_2021_scp\task_imu.o: ../Inc/spi.h
+sentry_2021_scp\task_imu.o: ../Inc/usart.h
+sentry_2021_scp\task_imu.o: ../Inc/gpio.h
 sentry_2021_scp\task_imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 sentry_2021_scp\task_imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 sentry_2021_scp\task_imu.o: ../Inc/FreeRTOSConfig.h

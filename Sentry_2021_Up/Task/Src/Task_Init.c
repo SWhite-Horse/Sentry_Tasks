@@ -1,14 +1,15 @@
 #define __TASK_INIT_GLOBALS
 
 #include "Task_Init.h"
+#include "Task_IMU.h"
 #include "Task_CAN.h"
 #include "Task_StatusMachine.h"
-
+#include "Task_JetsonComm.h"
 #include "Task_Shoot.h"
 #include "Task_RC.h"
 #include "Task_Chassis.h"
 #include "Task_Measure.h"
-
+#include "Task_JudgeReceive.h"
 
 void CAN_Init(CAN_HandleTypeDef *hcan);
 void CAN_Recieve(CAN_HandleTypeDef *hcan);
@@ -16,7 +17,7 @@ void CAN_Recieve(CAN_HandleTypeDef *hcan);
 
 void Task_Init(void *parameters)
 {
-		    taskENTER_CRITICAL();          //½øÈëÁÙ½çÇø
+		   taskENTER_CRITICAL();          //½øÈëÁÙ½çÇø
 
 		//** Init **//
 			CAN_Init(&hcan1);
@@ -24,26 +25,37 @@ void Task_Init(void *parameters)
 			CAN_Recieve(&hcan1);
 			CAN_Recieve(&hcan2);
 	
-			Queue_CANSend = xQueueCreate(30,sizeof(CanSend_Type));   //´´½¨·¢ËÍ¶ÓÁĞ
+			Queue_CANSend = xQueueCreate(30,sizeof(CanSend_Type));   //´x´½¨·¢ËÍ¶ÓÁĞ
+				
+			LASER_ON();
+			JudgeConnection_Init(&huart7);//²ÃÅĞÏµÍ³Á¬½Ó³õÊ¼»¯
+			L1_Measure_Init(&huart8);
+			//RC_Receive_Enable(&huart1); //Ò£¿Ø³õÊ¼»¯
+			JetsonCommUart_Config(&huart6); //ÓëjestonÍ¨Ñ¶´®¿Ú³õÊ¼»¯
 	
-			L1_Measure_Init(&huart6);
-			RC_Receive_Enable(&huart1); //Ò£¿Ø³õÊ¼»¯
+		   //** °åÔØÍÓÂİÒÇ³õÊ¼»¯
+	    mpu_device_init();
+		  init_quaternion();	
+		  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_2); //ÍÓÂİÒÇ¼ÓÈÈµç×è
+		  __HAL_TIM_SET_COMPARE(&htim3,IMU_HEATING_Pin,HEAT_MID);
 	
 		//** ´´½¨ÈÎÎñ **//
 			xTaskCreate(Task_Chassis, "Task_Chassis", 256, NULL, 5, &TaskHandle_Chassis);
 		  xTaskCreate(Task_Shoot, "Task_Shoot", 300, NULL, 5, &TaskHandle_Shoot);
-	    xTaskCreate(Task_RC, "Task_RC", 256, NULL, 5, &TaskHandle_RC);
-	    xTaskCreate(Task_CAN, "Task_CAN", 128, NULL, 6, &TaskHandle_CAN);
+	    //xTaskCreate(Task_RC, "Task_RC", 20, NULL, 5, &TaskHandle_RC);
+	    xTaskCreate(Task_CAN, "Task_CAN", 200, NULL, 6, &TaskHandle_CAN);
 	    xTaskCreate(Task_LEDBlink, "Task_LEDBlink", 64, NULL, 3, &TaskHandle_LEDBlink);
 	    xTaskCreate(Task_Measure, "Task_Measure", 200, NULL, 4, &TaskHandle_Measure);
+			xTaskCreate(Task_Detect, "Task_Detect", 200, NULL, 4, &TaskHandle_Detect);
 			xTaskCreate(Task_StatusMachine, "Task_StatusMachine", 128, NULL, 5, &TaskHandle_StatusMachine);
-			xTaskCreate(Task_JetsonCome,"Task_JetsonComm",300,NULL,5,&TaskHandle_JetsonComm);
+			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",300,NULL,5,&TaskHandle_JetsonComm);
 		  xTaskCreate(Task_IMU,"Task_IMU",256,NULL,5,&TaskHandle_IMU);
 			xTaskCreate(Task_Gimbal,"Task_Gimbal",512,NULL,4,&TaskHandle_Gimbal);
 			xTaskCreate(Task_JudgeReceive, "Task_JudgeReceive", 128, NULL, 5, &TaskHandle_JudgeReceive);
+      xTaskCreate(Task_Communication, "Task_Communication", 200, NULL, 4, &TaskHandle_Communication);
 
 	
-		HAL_Delay(1000);             //ÑÓÊ±ÎåÃëÈÃÈÎÎñÍê³É
+		vTaskDelay(1000);             //ÑÓÊ±ÎåÃëÈÃÈÎÎñÍê³É
     vTaskDelete(NULL);            //É¾³ı³õÊ¼»¯µÄÈÎÎñ
     taskEXIT_CRITICAL();          //ÍË³öÁÙ½çÇø
 

@@ -13,6 +13,7 @@
 
 //** 任务句柄定义
 
+TASK_INIT_EXT TaskHandle_t TaskHandle_Communication;
 TASK_INIT_EXT TaskHandle_t TaskHandle_Shoot;
 TASK_INIT_EXT TaskHandle_t TaskHandle_CAN;
 TASK_INIT_EXT TaskHandle_t TaskHandle_LEDBlink;
@@ -24,7 +25,7 @@ TASK_INIT_EXT TaskHandle_t TaskHandle_JudgeReceive;
 TASK_INIT_EXT TaskHandle_t TaskHandle_JetsonComm;
 TASK_INIT_EXT TaskHandle_t TaskHandle_Gimbal;
 TASK_INIT_EXT TaskHandle_t TaskHandle_IMU;
-
+TASK_INIT_EXT TaskHandle_t TaskHandle_Detect;
 
 //** CAN发送队列
 
@@ -41,7 +42,9 @@ void Task_Measure(void *parameters);
 void Task_StatusMachine(void *parameters);
 void Task_Gimbal(void *parameters);
 void Task_IMU(void *parameters);
+void Task_JetsonComm(void *parameters);
 void Task_JudgeReceive(void *parameters);
-void Task_JetsonCome(void *parameters);
-
+void Task_JetsonComm(void *parameters);
+void Task_Detect(void *parameters);
+void Task_Communication(void *parameters);
 #endif

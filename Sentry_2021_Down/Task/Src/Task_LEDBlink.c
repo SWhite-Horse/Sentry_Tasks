@@ -12,7 +12,7 @@ void Task_LEDBlink(void *parameters)
   xLastWakeUpTime = xTaskGetTickCount();
 	while(1)
 	{
-	HAL_GPIO_TogglePin(GPIOF,GPIO_PIN_14);
+		HAL_GPIO_TogglePin(GPIOF,GPIO_PIN_14);
     vTaskDelayUntil(&xLastWakeUpTime, 100);
 	}
 }

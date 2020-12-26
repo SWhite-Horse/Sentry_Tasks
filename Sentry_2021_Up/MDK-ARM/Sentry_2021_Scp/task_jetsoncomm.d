@@ -41,10 +41,10 @@ sentry_2021_scp\task_jetsoncomm.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx
 sentry_2021_scp\task_jetsoncomm.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 sentry_2021_scp\task_jetsoncomm.o: ../Inc/can.h
 sentry_2021_scp\task_jetsoncomm.o: ../Inc/dma.h
-sentry_2021_scp\task_jetsoncomm.o: ../Inc/usart.h
-sentry_2021_scp\task_jetsoncomm.o: ../Inc/gpio.h
 sentry_2021_scp\task_jetsoncomm.o: ../Inc/tim.h
 sentry_2021_scp\task_jetsoncomm.o: ../Inc/spi.h
+sentry_2021_scp\task_jetsoncomm.o: ../Inc/usart.h
+sentry_2021_scp\task_jetsoncomm.o: ../Inc/gpio.h
 sentry_2021_scp\task_jetsoncomm.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 sentry_2021_scp\task_jetsoncomm.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 sentry_2021_scp\task_jetsoncomm.o: ../Inc/FreeRTOSConfig.h

@@ -18,17 +18,6 @@
 
 typedef struct
 {
-  uint16_t Mechanical_Angle;       //机械角
-  int16_t TargetSpeed;
-  int16_t RealSpeed;
-  int16_t RealCurrent;
-  uint16_t FrameCounter; 	//帧率计数器
-	PID_type PID;
-	int32_t Output;
-}Motor3508_type;
-
-typedef struct
-{
     uint8_t            CANx;               //CAN1 or CAN2 发送
     uint32_t           stdid;              // ID: CAN1 0X200  CAN2 0X1FF
 		uint8_t            Data[8];

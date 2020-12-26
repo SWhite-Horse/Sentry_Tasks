@@ -41,10 +41,10 @@ sentry_2021_scp\task_shoot.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_
 sentry_2021_scp\task_shoot.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 sentry_2021_scp\task_shoot.o: ../Inc/can.h
 sentry_2021_scp\task_shoot.o: ../Inc/dma.h
-sentry_2021_scp\task_shoot.o: ../Inc/usart.h
-sentry_2021_scp\task_shoot.o: ../Inc/gpio.h
 sentry_2021_scp\task_shoot.o: ../Inc/tim.h
 sentry_2021_scp\task_shoot.o: ../Inc/spi.h
+sentry_2021_scp\task_shoot.o: ../Inc/usart.h
+sentry_2021_scp\task_shoot.o: ../Inc/gpio.h
 sentry_2021_scp\task_shoot.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 sentry_2021_scp\task_shoot.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 sentry_2021_scp\task_shoot.o: ../Inc/FreeRTOSConfig.h
@@ -60,6 +60,9 @@ sentry_2021_scp\task_shoot.o: ../Middlewares/Third_Party/FreeRTOS/Source/include
 sentry_2021_scp\task_shoot.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 sentry_2021_scp\task_shoot.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_Chassis.h
-sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_CAN.h
 sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_Communication.h
 sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_StatusMachine.h
+sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_JetsonComm.h
+sentry_2021_scp\task_shoot.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h
+sentry_2021_scp\task_shoot.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
+sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_CAN.h

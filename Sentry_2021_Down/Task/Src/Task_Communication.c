@@ -30,6 +30,7 @@ void Task_Communication(void *parameters)
 		
 		if(ControlMode==ControlMode_Aimbot)
 		{		
+			TxMessage.Chassis_speed=4000;	
 //			if(DataRecFromJetson.SentryGimbalMode==ServoMode)
 //			{
 //				TxMessage.Chassis_speed=2000;	
@@ -73,25 +74,24 @@ void CAN_Com_Send(void)
   CANSend.Data[0] = (uint8_t)(TxMessage.Chassis_speed >> 8);
   CANSend.Data[1] = (uint8_t)TxMessage.Chassis_speed;
   CANSend.Data[2] = (uint8_t)ControlMode;
-  CANSend.Data[3] = (uint8_t)FricStatus;
-  CANSend.Data[4] = (uint8_t)StirMotorStatus;
-  CANSend.Data[5] = (uint8_t)(TxMessage.Yaw_speed >> 8);
-  CANSend.Data[6] = (uint8_t)TxMessage.Yaw_speed;
-  CANSend.Data[7] = 0;
+  CANSend.Data[3] = (uint8_t)(TxMessage.fricstatus<<4|TxMessage.stirstatus);
+  CANSend.Data[4] = (uint8_t)(TxMessage.Yaw_speed >> 8);
+  CANSend.Data[5] = (uint8_t)TxMessage.Yaw_speed;
+  CANSend.Data[6] = (uint8_t)(TxMessage.Pitch_speed >> 8);
+  CANSend.Data[7] = (uint8_t)TxMessage.Pitch_speed;
 	
   xQueueSend(Queue_CANSend, &CANSend, 3 / portTICK_RATE_MS);
 	
-	
-  CANSend.stdid = 0x68;
+//  CANSend.stdid = 0x68;
 
-  CANSend.Data[0] = (uint8_t)(TxMessage.Pitch_speed >> 8);
-  CANSend.Data[1] = (uint8_t)TxMessage.Pitch_speed;
-  CANSend.Data[2] = 0;
-  CANSend.Data[3] = 0;
-  CANSend.Data[4] = 0;
-  CANSend.Data[5] = 0;
-  CANSend.Data[6] = 0;
-  CANSend.Data[7] = 0;
+//  CANSend.Data[0] = (uint8_t)(TxMessage.Pitch_speed >> 8);
+//  CANSend.Data[1] = (uint8_t)TxMessage.Pitch_speed;
+//  CANSend.Data[2] = 0;
+//  CANSend.Data[3] = 0;
+//  CANSend.Data[4] = 0;
+//  CANSend.Data[5] = 0;
+//  CANSend.Data[6] = 0;
+//  CANSend.Data[7] = 0;
 
-  xQueueSend(Queue_CANSend, &CANSend, 3 / portTICK_RATE_MS);
+//  xQueueSend(Queue_CANSend, &CANSend, 3 / portTICK_RATE_MS);
 }

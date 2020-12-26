@@ -21,7 +21,7 @@
 
 #define JetsonCommReservedFrameLEN 5
 
-#define JETSONFLAG_LEN 16//20
+#define JETSONFLAG_LEN 20
 
 //帧头帧尾
 #define JetsonCommSOF 0x66
@@ -84,12 +84,13 @@ typedef struct
     uint8_t ShootSpeed; //射速
     /*  哨兵专用   */
     uint8_t RailNum;      //所处轨道标号
-    uint8_t ArmorType;    //被打击装甲板标识
+    uint8_t ArmorType;    //被打击装甲板标识 //去掉
     uint16_t RemainHP;    //剩余血量
-		uint16_t location;
-  //  uint8_t Reserved[9]; //保留字节
-	  uint8_t Reserved[11]; //保留字节
-
+		uint16_t location;    //当前位置 //改：float
+		uint16_t BulletRemain;//剩余子弹数量
+		uint8_t IsHuarted;   //是否受到伤害
+		uint8_t TeamFlag;
+    uint8_t Reserved[5]; //保留字节
     uint8_t EoF;
 } STMToJetson_Struct;
 

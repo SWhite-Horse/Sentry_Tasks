@@ -6,6 +6,9 @@
 #include "Task_Imu.h"
 #include "arm_math.h"
 
+int cirule_num=0;
+int set_num=0;
+
 kalman_filter_t KF_Gimbal_Pitch, KF_Gimbal_Yaw;
 kalman_filter_init_t KF_Gimbal_Pitch_init, KF_Gimbal_Yaw_init;
 float Pitch_Desire, Yaw_Desire;                 /*Pitch轴与Yaw轴目标角定义*/
@@ -42,7 +45,8 @@ void Task_JetsonComm(void *Parameter)
   while (1)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //pdTRUE让通知值为0，使其进入阻塞;pdFALSE让通知值减一，第二个参数为等待通知的最大时间，单位ms
-    JetsonComm_Control(&huart8);
+    JetsonComm_Control(&huart6);
+		cirule_num++;
   }
 }
 
@@ -53,7 +57,7 @@ void Task_JetsonComm(void *Parameter)
  * @brief  通信串口DMA配置
  * @param  huart：外设结构体地址
  * @retval none
- * @note	 在初始化中调用，给uart6开一个dma内存
+ * @note	 在初始化中调用，给uart8开一个dma内存
  */
 void JetsonCommUart_Config(UART_HandleTypeDef *huart) //这个函数在init的初始化中定义，给uart6开一个dma内存
 {
@@ -80,6 +84,8 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   //通信建立操作
   if (DataRecFromJetson.ShootMode == CommSetUp)
   {
+		set_num=cirule_num;
+		cirule_num=0;
     //发送当前红蓝方
     if (1)//WeAreRedTeam)
     {

@@ -1,5 +1,5 @@
 sentry_2021_scp\task_ledblink.o: ..\Task\Src\Task_LEDBlink.c
-sentry_2021_scp\task_ledblink.o: ..\Task\Inc\Task_init.h
+sentry_2021_scp\task_ledblink.o: ..\Task\Inc\Task_Init.h
 sentry_2021_scp\task_ledblink.o: ..\Task\Inc\sysconfig.h
 sentry_2021_scp\task_ledblink.o: D:\keil\ARM\ARMCC\Bin\..\include\stdlib.h
 sentry_2021_scp\task_ledblink.o: D:\keil\ARM\ARMCC\Bin\..\include\math.h
@@ -40,10 +40,10 @@ sentry_2021_scp\task_ledblink.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_h
 sentry_2021_scp\task_ledblink.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 sentry_2021_scp\task_ledblink.o: ../Inc/can.h
 sentry_2021_scp\task_ledblink.o: ../Inc/dma.h
-sentry_2021_scp\task_ledblink.o: ../Inc/usart.h
-sentry_2021_scp\task_ledblink.o: ../Inc/gpio.h
 sentry_2021_scp\task_ledblink.o: ../Inc/tim.h
 sentry_2021_scp\task_ledblink.o: ../Inc/spi.h
+sentry_2021_scp\task_ledblink.o: ../Inc/usart.h
+sentry_2021_scp\task_ledblink.o: ../Inc/gpio.h
 sentry_2021_scp\task_ledblink.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 sentry_2021_scp\task_ledblink.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 sentry_2021_scp\task_ledblink.o: ../Inc/FreeRTOSConfig.h

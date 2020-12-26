@@ -21,6 +21,8 @@ typedef struct
 }L1_MEASURE_STRUCT;
 
 extern float Distance;
+extern int LeftSwitch;
+extern int RightSwitch;
 extern L1_MEASURE_STRUCT L1_Measure_Struct;
 
 void L1_Measure_Init(UART_HandleTypeDef *huart);

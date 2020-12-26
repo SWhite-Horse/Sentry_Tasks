@@ -59,18 +59,22 @@ void StatusMachine_Update(void)
     switch (Get_Switch_Val(&RC_ReceiveData, RC_SW_Right))
     {
     case RC_SW_MID:
-    {
+    {		
         ControlMode =ControlMode_Telecontrol_UP;
+				TxMessage.controlmode=ControlMode_Telecontrol_UP;
         break;
     }
     case RC_SW_DOWN:
     {
         ControlMode = ControlMode_Telecontrol_DOWN ;
+				TxMessage.controlmode=ControlMode_Telecontrol_DOWN;
+
         break;
     }
     case RC_SW_UP:
-    {
+    {		
         ControlMode =ControlMode_Aimbot;
+				TxMessage.controlmode=ControlMode_Aimbot;
         break;
     }
     }
@@ -125,31 +129,35 @@ void StatusMachine_Update(void)
 			
 			case ControlMode_Telecontrol_UP:
 			{
+				//ÏÂÔÆÌ¨¾²Ö¹
+				FricStatus = FricStatus_Stop;
+				StirMotorStatus = StirStatus_Stop;
+				
 				if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_UP)
 				{
 					if(FricChange)
 					{
-            if(FricStatus == FricStatus_Stop)
-              FricStatus = FricStatus_Working_Low;
-            else if(FricStatus == FricStatus_Working_Low)
-              FricStatus = FricStatus_Working_High;
-            else if(FricStatus == FricStatus_Working_High)
-              FricStatus = FricStatus_Stop;
+            if(TxMessage.fricstatus == FricStatus_Stop)
+              TxMessage.fricstatus = FricStatus_Working_Low;
+            else if(TxMessage.fricstatus == FricStatus_Working_Low)
+              TxMessage.fricstatus = FricStatus_Working_High;
+            else if(TxMessage.fricstatus == FricStatus_Working_High)
+              TxMessage.fricstatus = FricStatus_Stop;
               FricChange = 0;
           }
 				}
 				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_DOWN)
 				{  
           FricChange = 1;
-          if(FricStatus != FricStatus_Stop) //&& RxMessage.Heat<420 )
+          if(TxMessage.fricstatus != FricStatus_Stop) //&& RxMessage.Heat<420 )
           {
-            StirMotorStatus = StirStatus_SpeedControl;
+            TxMessage.stirstatus = StirStatus_SpeedControl;
           }
 				}
 				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_MID)
 				{
           FricChange = 1;
-          StirMotorStatus = StirStatus_Stop;
+          TxMessage.stirstatus = StirStatus_Stop;
 				}
 				break;
 			}				

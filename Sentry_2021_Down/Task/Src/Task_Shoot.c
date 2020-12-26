@@ -26,15 +26,15 @@ void Task_Shoot(void *parameters){
 			
 			if(DataRecFromJetson.SentryGimbalMode == ServoMode && ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 ){
 			if(RxMessage.mains_power_shooter==0){
-					FricStatus = FricStatus_Stop;
-					StirMotorStatus = StirStatus_Stop;
+					//FricStatus = FricStatus_Stop;
+					//StirMotorStatus = StirStatus_Stop;
 				}
 				else{
 					FricStatus = FricStatus_Working_High;
 				}
 			}
 			StirMotor_Control();
-			Stir_CAN_Send(StirMotor.Output);
+			//Stir_CAN_Send(StirMotor.Output);///发送在Gimbal里面
 			vTaskDelayUntil(&xLastWakeUpTime, 5);
 		}
 			
@@ -70,8 +70,7 @@ void Motor_3508_PID_Init(void){
 void Fric_3508_Motor_Speed_Set(void)
 {
 	int speed=0;
-		if (FricStatus == FricStatus_Stop)
-		{
+		if (FricStatus == FricStatus_Stop){
 			speed = 0;
 		}
 		else
@@ -116,11 +115,12 @@ void Motor_3508_PID_Calculate(Motor3508_type *motor){
  */ 
 void StirMotor_Init(void)
 {
-  StirMotor.PID.Kp = 8;
+  StirMotor.PID.Kp = 6;
   StirMotor.PID.Ki = 0.022;
   StirMotor.PID.Kd = 0;
   StirMotor.TargetSpeed = 0;
 }
+
 
 /**
  * @description: 拨盘电机控制
@@ -133,22 +133,40 @@ int16_t targetspeed = -4200; //拨盘转速
 uint8_t ShootCounter=0; 
 void StirMotor_Control(void)
 {
-//	if(TxMessage.Heat>=200)
-//	{
-//		HeatFlag=0;
-//	}
-//	else if(TxMessage.Heat<=120)
-//	{
-//		HeatFlag=1;
-//	}
-	//遥控模式
-	if(ControlMode != ControlMode_Telecontrol_UP)
+	if(RxMessage.Heat>=200)
 	{
-		if(StirMotorStatus == StirStatus_SpeedControl)// && HeatFlag==1 )
-			StirMotor.TargetSpeed = -4200;
+		HeatFlag=0;
+	}
+	else if(RxMessage.Heat<=120)
+	{
+		HeatFlag=1;
+	}
+	//遥控模式
+	if(ControlMode == ControlMode_Telecontrol_DOWN)
+	{
+		if(StirMotorStatus == StirStatus_SpeedControl && HeatFlag==1 )
+			StirMotor.TargetSpeed = targetspeed;
 		else
 			StirMotor.TargetSpeed = 0;
 	}
+	//自瞄并且已经瞄到
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode)// && RxMessage.mains_power_shooter==1 && HeatFlag==1)
+	{
+		if((DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
+		{
+			StirMotor.TargetSpeed = targetspeed;
+			ShootCounter=0;
+		}
+		else if((DataRecFromJetson.ShootMode >> 8) != (RunningFire >> 8) && ShootCounter <= 10 )
+		{
+			StirMotor.TargetSpeed = targetspeed;
+			ShootCounter++;
+		} 
+		else 
+		  StirMotor.TargetSpeed = 0;
+	}
+	else
+		  StirMotor.TargetSpeed = 0;
 	//堵转检测
 	StirMotor_Blocked_Detect(&StirMotor);
 	
@@ -157,8 +175,8 @@ void StirMotor_Control(void)
 		--StirMotor.BlockedWarningTimes;
 		StirMotor.TargetSpeed = -targetspeed;	
 	}
-//	if(HeatFlag ==0)
-//		StirMotor.TargetSpeed=0;
+	if(HeatFlag ==0)
+		StirMotor.TargetSpeed=0;
 
 	Stir_Motor_Speed_Control(&StirMotor);
 	
@@ -204,33 +222,20 @@ void StirMotor_Blocked_Detect(RM2006_Type* motor)
     //连续100ms检测到堵转
     if(BlockedTimes >= 20)
     {
-      motor->BlockedWarningTimes = 40;
+      motor->BlockedWarningTimes = 60;
       BlockedTimes = 0;
     }
   }
 }
 
 
-void Stir_CAN_Send(int16_t Output)
-{
-  static CanSend_Type CANSend;
 
-  CANSend.CANx = CANSEND_1;
-
-  CANSend.stdid = 0x200;
-	
-  CANSend.Data[0] = (uint8_t)0;
-  CANSend.Data[1] = (uint8_t)0;
-	CANSend.Data[2] = (uint8_t)0;
-  CANSend.Data[3] = (uint8_t)0;
-  CANSend.Data[4] = (uint8_t)0;
-  CANSend.Data[5] = (uint8_t)0;
-  CANSend.Data[6] = (uint8_t)(Output >> 8);;
-  CANSend.Data[7] = (uint8_t)Output;
-
-  xQueueSend(Queue_CANSend, &CANSend, 3 / portTICK_RATE_MS);
-}
-
+/**
+  * @brief  发送摩擦轮电机数据
+  * @param  output
+  * @retval void
+  * @note   CAN2
+  */
 
 void Motor_3508_Send(int16_t Output0,int16_t Output1)
 {
@@ -238,7 +243,7 @@ void Motor_3508_Send(int16_t Output0,int16_t Output1)
 
   CANSend.CANx = CANSEND_2;
 
-  CANSend.stdid = 0x1ff;
+  CANSend.stdid = 0x200;
 
   CANSend.Data[0] = (uint8_t)(Output0 >> 8);
   CANSend.Data[1] = (uint8_t)Output0;

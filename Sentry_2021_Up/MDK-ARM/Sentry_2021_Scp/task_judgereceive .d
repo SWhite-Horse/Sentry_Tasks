@@ -41,10 +41,10 @@ sentry_2021_scp\task_judgereceive .o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f
 sentry_2021_scp\task_judgereceive .o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 sentry_2021_scp\task_judgereceive .o: ../Inc/can.h
 sentry_2021_scp\task_judgereceive .o: ../Inc/dma.h
-sentry_2021_scp\task_judgereceive .o: ../Inc/usart.h
-sentry_2021_scp\task_judgereceive .o: ../Inc/gpio.h
 sentry_2021_scp\task_judgereceive .o: ../Inc/tim.h
 sentry_2021_scp\task_judgereceive .o: ../Inc/spi.h
+sentry_2021_scp\task_judgereceive .o: ../Inc/usart.h
+sentry_2021_scp\task_judgereceive .o: ../Inc/gpio.h
 sentry_2021_scp\task_judgereceive .o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 sentry_2021_scp\task_judgereceive .o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 sentry_2021_scp\task_judgereceive .o: ../Inc/FreeRTOSConfig.h

@@ -22,15 +22,25 @@ L1_MEASURE_STRUCT L1_Measure_Struct_Temp;//** DMA读入缓存区
 
 void Task_Measure(void *parameters)
 {
-	LeftSwitch = HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_11);
-	RightSwitch = HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_12);
+
 	while(1)
 	{
 		ulTaskNotifyTake(pdTRUE, portMAX_DELAY);		
     L1_Measure_Update();		
 	}
 }
+void Task_Detect(void *parameters)
+{
+	TickType_t xLastWakeUpTime;
+	xLastWakeUpTime = xTaskGetTickCount();
+	while (1)
+	{
+		LeftSwitch = HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_12);
+		RightSwitch = HAL_GPIO_ReadPin(GPIOH, GPIO_PIN_11); ;
 
+		vTaskDelayUntil(&xLastWakeUpTime, 200);
+	}
+}
 /*********************************
   * @brief  L1初始化，打开？？？？
   * @param  
@@ -56,7 +66,7 @@ void L1_Measure_Update()
   * @brief L1回调，DMA处理
   * @param  
   * @retval UART_HandleTypeDef
-  * @note   Usart2
+  * @note   Uart8
   */
 int L1_Measure_counter;
 
@@ -76,7 +86,7 @@ void L1_Measure_Callback(UART_HandleTypeDef *huart)
 		if(counter >= 0)
 		{
 			if(L1_Measure_Struct.SOF == DISTANCE){
-			if(huart == &huart6)
+			if(huart == &huart8)
 			{
 				L1_Measure_counter = counter;
         vTaskNotifyGiveFromISR(TaskHandle_Measure,&xHigherPriorityTaskToWaken);

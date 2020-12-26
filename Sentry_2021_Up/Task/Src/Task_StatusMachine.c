@@ -54,26 +54,6 @@ void StatusMachine_Init(void)
 uint8_t chassis_servo = 0;
 void StatusMachine_Update(void)
 {
-    static uint8_t FricChange = 1;
-    switch (Get_Switch_Val(&RC_ReceiveData, RC_SW_Right))
-    {
-    case RC_SW_MID:
-    {
-        ControlMode =ControlMode_Telecontrol_UP;
-        break;
-    }
-    case RC_SW_DOWN:
-    {
-        ControlMode = ControlMode_Telecontrol_DOWN ;
-        break;
-    }
-    case RC_SW_UP:
-    {
-        ControlMode =ControlMode_Aimbot;
-        break;
-    }
-    }
-
 		switch (ControlMode)
 		{
 			
@@ -91,67 +71,17 @@ void StatusMachine_Update(void)
 				 break;	
 			}
 			
-			case ControlMode_Telecontrol_DOWN:  //遥控模式
+			case ControlMode_Telecontrol_DOWN:  
 			{
-				if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_UP)
-				{
-					if(FricChange)
-					{
-              if(FricStatus == FricStatus_Stop)
-              FricStatus = FricStatus_Working_Low;
-              else if(FricStatus == FricStatus_Working_Low)
-              FricStatus = FricStatus_Working_High;
-              else if(FricStatus == FricStatus_Working_High)
-              FricStatus = FricStatus_Stop;
-              FricChange = 0;
-          }
-        }
-				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_DOWN)
-				{  
-           FricChange = 1;
-					FricStatus=FricStatus_Working_Low;
-           if(FricStatus != FricStatus_Stop)// &&Rxmessage.Heat<420)
-           {
-             StirMotorStatus = StirStatus_SpeedControl;
-           }
-				}
-				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_MID)
-				{
-           FricChange = 1;
-           StirMotorStatus = StirStatus_Stop;
-				}
+				FricStatus = FricStatus_Stop;
+				StirMotorStatus = StirStatus_Stop;	
 				break;
 			}		
 			
-			case ControlMode_Telecontrol_UP:
+			case ControlMode_Telecontrol_UP:  //遥控模式
 			{
-				if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_UP)
-				{
-					if(FricChange)
-					{
-              if(FricStatus == FricStatus_Stop)
-              FricStatus = FricStatus_Working_Low;
-              else if(FricStatus == FricStatus_Working_Low)
-              FricStatus = FricStatus_Working_High;
-              else if(FricStatus == FricStatus_Working_High)
-              FricStatus = FricStatus_Stop;
-              FricChange = 0;
-          }
-				}
-				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_DOWN)
-				{  
-           FricChange = 1;
-					TxMessage.Heat=200;
-           if(FricStatus != FricStatus_Stop && TxMessage.Heat<420 )
-           {
-             StirMotorStatus = StirStatus_SpeedControl;
-           }
-				}
-				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_MID)
-				{
-           FricChange = 1;
-           StirMotorStatus = StirStatus_Stop;
-				}
+         FricStatus = RxMessage.fricstatus;
+         StirMotorStatus = RxMessage.stirstatus;      
 				break;
 			}				
 			}

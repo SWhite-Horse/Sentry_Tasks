@@ -30,9 +30,9 @@ typedef struct
 	uint8_t Armour; //装甲板
 	uint16_t Heat; //热量
 	uint8_t Shoot_Speed; //射速
-	uint8_t Toppoint_Judge; //判断是否到达轨道末端
+	//uint8_t Toppoint_Judge; //判断是否到达轨道末端
 	uint8_t get_hurt; //是否受到伤害
-	uint16_t Bullet_remaining; //子弹剩余
+	//uint16_t Bullet_remaining; //子弹剩余
 	uint8_t mains_power_shooter; //电源管理模块射击引脚是否有电
 }Up_to_Down_Message;
 
@@ -40,4 +40,6 @@ extern Up_to_Down_Message TxMessage;
 extern Down_to_Up_Message RxMessage;
 extern int LeftSwitch;
 extern int RightSwitch;
+
+void send(void);
 #endif

@@ -29,17 +29,6 @@
 #define LASER_ON() HAL_GPIO_WritePin(LASER_GPIO_Port,LASER_Pin,GPIO_PIN_SET)
 #define LASER_OFF() HAL_GPIO_WritePin(LASER_GPIO_Port,LASER_Pin,GPIO_PIN_RESET)
 
-typedef struct{
-    uint16_t FrameCounter;
-    int16_t  RealSpeed;
-		int16_t  RealCurrent;
-    int16_t  Mechanical_Angle;
-    int16_t  TargetSpeed;
-    int8_t  BlockedWarningTimes;
-		PID_type PID;
-	  int32_t Output;
-} RM2006_Type;
-
 extern RM2006_Type StirMotor;
 extern Motor3508_type Fric_3508_Motor[2];
 

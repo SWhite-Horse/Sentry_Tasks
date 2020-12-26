@@ -34,11 +34,61 @@
 #define MEMORY1 1
 #define MEMORYRESET 2
 
-typedef struct                                   //PID结构体
+//********** PID结构体 *********//
+typedef struct                               
 {
 	float Kp, Ki, Kd;
   float Cur_Error, Last_Error, Sum_Error;
 }PID_type;
+
+//********** 电机结构体 *********//
+typedef struct
+{
+    //    uint16_t ID;
+    uint16_t FrameCounter;
+    float    TargetAngle;
+    float    TargetSpeed;
+		float    Real_Angle;
+		int16_t Torque_Current_Real;
+    int16_t Mechanical_Speed;
+    int16_t NeedCurrent;
+    int16_t Mechanical_Angle;
+    uint8_t MotorTemp;
+    struct
+    {
+        float Kp, Ki, Kd;
+        float Cur_Error, Last_Error, Sum_Error;
+        float Output;
+    } SpeedPID;
+    struct
+    {
+        float Kp, Ki, Kd;
+        float Cur_Error, Last_Error, Sum_Error;
+        float Output;
+    } PositionPID;
+}MotorType_6020;
+
+typedef struct{
+    uint16_t FrameCounter;
+    int16_t  RealSpeed;
+		int16_t  RealCurrent;
+    int16_t  Mechanical_Angle;
+    int16_t  TargetSpeed;
+    int8_t  BlockedWarningTimes;
+		PID_type PID;
+	  int32_t Output;
+} RM2006_Type;
+
+typedef struct
+{
+  uint16_t Mechanical_Angle;       //机械角
+  int16_t TargetSpeed;
+  int16_t RealSpeed;
+  int16_t RealCurrent;
+  uint16_t FrameCounter; 	//帧率计数器
+	PID_type PID;
+	int32_t Output;
+}Motor3508_type;
 
 #define xabs(x)  x>0 ? (x) : (-x)  //绝对值定义
 

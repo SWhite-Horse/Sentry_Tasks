@@ -32,7 +32,8 @@ JetsonToSTM_Struct DataRecFromJetson_Temp, DataRecFromJetson; //两个变量克�
 STMToJetson_Struct DataSendToJetson = {  //seq是记录的第几个变量 eof是尾帧 soq是头帧
     .Seq = 0,
     .SoF = JetsonCommSOF,
-    .EoF = JetsonCommEOF};
+    .EoF = JetsonCommEOF
+};
 //发送给Jetson的陀螺仪数据
 STMToJetson_Struct_Gyro DataSendToJetson_gyro; //seq是记录的第几个变量 eof尾帧 soq头帧
 
@@ -41,12 +42,12 @@ CommStatus_Struct CommStatus = {
     .CommSuccess = 0,
     .team = 0};
 
-void Task_JetsonCome(void *Parameter)
+void Task_JetsonComm(void *Parameter)
 {
   while (1)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //pdTRUE让通知值为0，使其进入阻塞;pdFALSE让通知值减一，第二个参数为等待通知的最大时间，单位ms
-    JetsonComm_Control(&huart8);
+    JetsonComm_Control(&huart6);
   }
 }
 
@@ -57,9 +58,9 @@ void Task_JetsonCome(void *Parameter)
  * @brief  通信串口DMA配置
  * @param  huart：外设结构体地址
  * @retval none
- * @note	 在初始化中调用，给uart8开一个dma内存
+ * @note	 在初始化中调用，给uart6开一个dma内存
  */
-void JetsonCommUart_Config(UART_HandleTypeDef *huart) //这个函数在init的初始化中定义，给uart8开一个dma内存
+void JetsonCommUart_Config(UART_HandleTypeDef *huart) //这个函数在init的初始化中定义，给uart6开一个dma内存
 {
   SET_BIT(huart->Instance->CR3, USART_CR3_DMAR);																																																												/*串口控制寄存器置位DMA接收标志位*/
   HAL_DMA_Start_IT(huart->hdmarx, (uint32_t)&huart->Instance->DR, (uint32_t)&DataRecFromJetson_Temp, sizeof(JetsonToSTM_Struct) + JetsonCommReservedFrameLEN);					/*开启串口DMA接收中断*/
@@ -85,14 +86,14 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   if (DataRecFromJetson.ShootMode == CommSetUp)
   {
     //发送当前红蓝方
-    if (0)//WeAreRedTeam)
+    if (1)//ext_game_robot_state.robot_id==7)//WeAreRedTeam)
     {
       CommStatus.team = RedTeam;
       DataSendToJetson.Seq++;
       DataSendToJetson.NeedMode = (uint8_t)(RedTeam >> 8);
       DataSendToJetson.ShootSpeed = (uint8_t)(RedTeam);
     }
-    else if (1)//WeAreBlueTeam)
+    else if (ext_game_robot_state.robot_id==107)//WeAreBlueTeam)
     {
       CommStatus.team = BlueTeam;
       DataSendToJetson.Seq++;

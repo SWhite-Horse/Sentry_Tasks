@@ -89,7 +89,8 @@ typedef struct
 		uint16_t location;    //当前位置
 		uint16_t BulletRemain;//剩余子弹数量
 		uint8_t IsHuarted;   //是否受到伤害
-    uint8_t Reserved[6]; //保留字节
+		uint8_t TeamFlag;
+    uint8_t Reserved[5]; //保留字节
     uint8_t EoF;
 } STMToJetson_Struct;
 

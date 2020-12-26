@@ -58,20 +58,20 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Jet_TX_Pin GPIO_PIN_1
-#define Jet_TX_GPIO_Port GPIOE
-#define Jet_RX_Pin GPIO_PIN_0
-#define Jet_RX_GPIO_Port GPIOE
-#define IMU_COME_Pin GPIO_PIN_5
-#define IMU_COME_GPIO_Port GPIOB
-#define L1_Tx_Pin GPIO_PIN_14
-#define L1_Tx_GPIO_Port GPIOG
-#define RC_Rx_Pin GPIO_PIN_7
-#define RC_Rx_GPIO_Port GPIOB
-#define RC_Tx_Pin GPIO_PIN_6
-#define RC_Tx_GPIO_Port GPIOB
-#define L1_Rx_Pin GPIO_PIN_9
-#define L1_Rx_GPIO_Port GPIOG
+#define L1_Tx_Pin GPIO_PIN_1
+#define L1_Tx_GPIO_Port GPIOE
+#define L1_Rx_Pin GPIO_PIN_0
+#define L1_Rx_GPIO_Port GPIOE
+#define IMU_HEATING_Pin GPIO_PIN_5
+#define IMU_HEATING_GPIO_Port GPIOB
+#define Jet_Tx_Pin GPIO_PIN_14
+#define Jet_Tx_GPIO_Port GPIOG
+#define LASER_Pin GPIO_PIN_13
+#define LASER_GPIO_Port GPIOG
+#define RC_RX_Pin GPIO_PIN_7
+#define RC_RX_GPIO_Port GPIOB
+#define Jet_Rx_Pin GPIO_PIN_9
+#define Jet_Rx_GPIO_Port GPIOG
 #define Power_1_Pin GPIO_PIN_2
 #define Power_1_GPIO_Port GPIOH
 #define Power_2_Pin GPIO_PIN_3
@@ -80,12 +80,18 @@ void Error_Handler(void);
 #define Power_3_GPIO_Port GPIOH
 #define Power_4_Pin GPIO_PIN_5
 #define Power_4_GPIO_Port GPIOH
-#define Right_Pin GPIO_PIN_12
-#define Right_GPIO_Port GPIOH
-#define Left_Pin GPIO_PIN_11
-#define Left_GPIO_Port GPIOH
+#define SPI5_NSS_Pin GPIO_PIN_6
+#define SPI5_NSS_GPIO_Port GPIOF
+#define RIGHT_SW_Pin GPIO_PIN_12
+#define RIGHT_SW_GPIO_Port GPIOH
+#define LEFT_SW_Pin GPIO_PIN_11
+#define LEFT_SW_GPIO_Port GPIOH
+#define JUDGE_TX_Pin GPIO_PIN_8
+#define JUDGE_TX_GPIO_Port GPIOE
 #define Green_LED_Pin GPIO_PIN_14
 #define Green_LED_GPIO_Port GPIOF
+#define JUDGE_RX_Pin GPIO_PIN_7
+#define JUDGE_RX_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

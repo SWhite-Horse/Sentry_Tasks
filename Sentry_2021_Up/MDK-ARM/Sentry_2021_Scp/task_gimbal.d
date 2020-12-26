@@ -1,6 +1,6 @@
 sentry_2021_scp\task_gimbal.o: ..\Task\Src\Task_Gimbal.c
 sentry_2021_scp\task_gimbal.o: ..\Task\Inc\Task_Gimbal.h
-sentry_2021_scp\task_gimbal.o: ..\Task\Inc\Task_init.h
+sentry_2021_scp\task_gimbal.o: ..\Task\Inc\Task_Init.h
 sentry_2021_scp\task_gimbal.o: ..\Task\Inc\sysconfig.h
 sentry_2021_scp\task_gimbal.o: D:\keil\ARM\ARMCC\Bin\..\include\stdlib.h
 sentry_2021_scp\task_gimbal.o: D:\keil\ARM\ARMCC\Bin\..\include\math.h
@@ -41,10 +41,10 @@ sentry_2021_scp\task_gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal
 sentry_2021_scp\task_gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 sentry_2021_scp\task_gimbal.o: ../Inc/can.h
 sentry_2021_scp\task_gimbal.o: ../Inc/dma.h
-sentry_2021_scp\task_gimbal.o: ../Inc/usart.h
-sentry_2021_scp\task_gimbal.o: ../Inc/gpio.h
 sentry_2021_scp\task_gimbal.o: ../Inc/tim.h
 sentry_2021_scp\task_gimbal.o: ../Inc/spi.h
+sentry_2021_scp\task_gimbal.o: ../Inc/usart.h
+sentry_2021_scp\task_gimbal.o: ../Inc/gpio.h
 sentry_2021_scp\task_gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 sentry_2021_scp\task_gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 sentry_2021_scp\task_gimbal.o: ../Inc/FreeRTOSConfig.h

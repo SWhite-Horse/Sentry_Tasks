@@ -42,10 +42,10 @@ sentry_2021_scp\stm32f4xx_it.o: D:\keil\ARM\ARMCC\Bin\..\include\math.h
 sentry_2021_scp\stm32f4xx_it.o: D:\keil\ARM\ARMCC\Bin\..\include\string.h
 sentry_2021_scp\stm32f4xx_it.o: ../Inc/can.h
 sentry_2021_scp\stm32f4xx_it.o: ../Inc/dma.h
-sentry_2021_scp\stm32f4xx_it.o: ../Inc/usart.h
-sentry_2021_scp\stm32f4xx_it.o: ../Inc/gpio.h
 sentry_2021_scp\stm32f4xx_it.o: ../Inc/tim.h
 sentry_2021_scp\stm32f4xx_it.o: ../Inc/spi.h
+sentry_2021_scp\stm32f4xx_it.o: ../Inc/usart.h
+sentry_2021_scp\stm32f4xx_it.o: ../Inc/gpio.h
 sentry_2021_scp\stm32f4xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 sentry_2021_scp\stm32f4xx_it.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 sentry_2021_scp\stm32f4xx_it.o: ../Inc/FreeRTOSConfig.h
