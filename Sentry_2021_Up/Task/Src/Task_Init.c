@@ -18,7 +18,6 @@ void CAN_Recieve(CAN_HandleTypeDef *hcan);
 void Task_Init(void *parameters)
 {
 		   taskENTER_CRITICAL();          //进入临界区
-
 		//** Init **//
 			CAN_Init(&hcan1);
 			CAN_Init(&hcan2);
@@ -48,7 +47,7 @@ void Task_Init(void *parameters)
 	    xTaskCreate(Task_Measure, "Task_Measure", 200, NULL, 4, &TaskHandle_Measure);
 			xTaskCreate(Task_Detect, "Task_Detect", 200, NULL, 4, &TaskHandle_Detect);
 			xTaskCreate(Task_StatusMachine, "Task_StatusMachine", 128, NULL, 5, &TaskHandle_StatusMachine);
-			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",300,NULL,5,&TaskHandle_JetsonComm);
+			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",512,NULL,5,&TaskHandle_JetsonComm);
 		  xTaskCreate(Task_IMU,"Task_IMU",256,NULL,5,&TaskHandle_IMU);
 			xTaskCreate(Task_Gimbal,"Task_Gimbal",512,NULL,4,&TaskHandle_Gimbal);
 			xTaskCreate(Task_JudgeReceive, "Task_JudgeReceive", 128, NULL, 5, &TaskHandle_JudgeReceive);

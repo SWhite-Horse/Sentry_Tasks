@@ -42,8 +42,8 @@ void Task_Init(void *parameters)
 //	    xTaskCreate(Task_Measure, "Task_Measure", 200, NULL, 4, &TaskHandle_Measure);
 		  xTaskCreate(Task_IMU,"Task_IMU",256,NULL,5,&TaskHandle_IMU);
 			xTaskCreate(Task_Gimbal,"Task_Gimbal",512,NULL,4,&TaskHandle_Gimbal);
-		  xTaskCreate(Task_Communication,"Task_Communication",128,NULL,4,&TaskHandle_Communication);//
-			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",300,NULL,5,&TaskHandle_JetsonComm);
+		  xTaskCreate(Task_Communication,"Task_Communication",200,NULL,4,&TaskHandle_Communication);//
+			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",512,NULL,5,&TaskHandle_JetsonComm);
 	
 		vTaskDelay(1000);             //延时五秒让任务完成
     vTaskDelete(NULL);            //删除初始化的任务

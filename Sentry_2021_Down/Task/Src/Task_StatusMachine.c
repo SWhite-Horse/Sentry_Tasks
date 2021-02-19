@@ -108,7 +108,7 @@ void StatusMachine_Update(void)
              FricStatus = FricStatus_Working_High;
             else if(FricStatus == FricStatus_Working_High)
 							FricStatus = FricStatus_Stop;
-							FricChange = 0;
+						FricChange = 0;
           }
         }
 				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_DOWN)

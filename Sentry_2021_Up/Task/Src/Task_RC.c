@@ -78,7 +78,7 @@ void RC_UART_IRQHandler(UART_HandleTypeDef *huart)
     __HAL_DMA_DISABLE(&hdma_usart1_rx);
     //计算本次帧长度
     this_time_rx_len = (RC_FRAME_LEN+RC_FRAME_LEN_BACK) - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);
-    //记录本次DMA内存
+    //记录本次DMA内存	 SxCR_CT 是仲裁
     if ((hdma_usart1_rx.Instance->CR & DMA_SxCR_CT) != RESET)
     {
       /* Current memory buffer used is Memory 1 */

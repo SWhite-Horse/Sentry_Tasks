@@ -105,7 +105,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   //通信成功确认帧
   else if (DataRecFromJetson.ShootMode == CommStatus.team)
   {
-//    RED_LED_Blink();
+			
 			CommStatus.CommSuccess = 1;
   }
   //请求数据传送

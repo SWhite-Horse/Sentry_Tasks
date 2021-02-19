@@ -79,13 +79,13 @@ void Gimbal_Init(void)
 	Yaw.PositionPID.Ki = 0;
 	Yaw.PositionPID.Kd = 2;//4;
 	
-	Pitch.SpeedPID.Kp = 170;//100;//170;//170;
-	Pitch.SpeedPID.Ki = 0.5;//2;//0.5;//0.5
-	Pitch.SpeedPID.Kd = 2;//3;
+	Pitch.SpeedPID.Kp = 140;//
+	Pitch.SpeedPID.Ki = 0.5;//
+	Pitch.SpeedPID.Kd = 2;//
 
-	Pitch.PositionPID.Kp = 16;//30.8;//14;//18;
-	Pitch.PositionPID.Ki = 0.36;//2.9;//0.2;//2.8
-	Pitch.PositionPID.Kd = 0.6;//1;//1;//1
+	Pitch.PositionPID.Kp = 18;//16;//
+	Pitch.PositionPID.Ki = 0;//0.36;/
+	Pitch.PositionPID.Kd = 3.5;//0.6;//
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 30;

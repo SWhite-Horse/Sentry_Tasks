@@ -70,21 +70,21 @@ void Task_Gimbal(void *parameters)
 void Gimbal_Init(void)
 {
 	
-	Yaw.SpeedPID.Kp =0;//45;
-	Yaw.SpeedPID.Ki =0; 
-	Yaw.SpeedPID.Kd = 0;//7;
+	Yaw.SpeedPID.Kp =100;
+	Yaw.SpeedPID.Ki =0.4; 
+	Yaw.SpeedPID.Kd = 7;
 	
-	Yaw.PositionPID.Kp = 0;//13;
+	Yaw.PositionPID.Kp = 12;
 	Yaw.PositionPID.Ki = 0;
-	Yaw.PositionPID.Kd = 0;//4;
+	Yaw.PositionPID.Kd = 3;
 	
-	Pitch.SpeedPID.Kp =0;//120;//140;//170;//100;
-	Pitch.SpeedPID.Ki = 0;//0.4;//0.5;//0.8;
-	Pitch.SpeedPID.Kd = 0;//0.2;
+	Pitch.SpeedPID.Kp =120;//140;//170;//100;
+	Pitch.SpeedPID.Ki = 0.4;//0.5;//0.8;
+	Pitch.SpeedPID.Kd = 0.2;
 
-	Pitch.PositionPID.Kp = 0;//20;//18;//18
-	Pitch.PositionPID.Ki = 0;//0.15;//0.2;//0.2
-	Pitch.PositionPID.Kd = 0;//-0.2
+	Pitch.PositionPID.Kp = 20;//18;//18
+	Pitch.PositionPID.Ki = 0.15;//0.2;//0.2
+	Pitch.PositionPID.Kd = 0;//0;//-0.2
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 20;
@@ -126,9 +126,9 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				
      		yaw->TargetAngle += temp_y[1];
 				
-        while (yaw->TargetAngle >= 360)
+        while (yaw->TargetAngle >= 180)
             yaw->TargetAngle -= 360;
-        while (yaw->TargetAngle < 0)
+        while (yaw->TargetAngle < -180)
             yaw->TargetAngle += 360;
         
 	/************** PITCH **************/
@@ -154,25 +154,34 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 						//pitch轴巡逻范围
 				   if(PITCH_ANGLE>=20)   Aimbot_RotatinPatrol_pitchmode = upward;
 				   if(PITCH_ANGLE<=14)	 Aimbot_RotatinPatrol_pitchmode = downward;
-						//yaw轴巡逻范围	 
+					 if(YAW_ANGLE<-65) Aimbot_RotatinPatrol_yawmode=rightward;
+					 if(YAW_ANGLE>65) Aimbot_RotatinPatrol_yawmode=leftward;
+	
+					//yaw轴巡逻范围	 
            if(Aimbot_RotatinPatrol_pitchmode==upward)
 		       {	
-						 	yaw->TargetAngle+=0.64f;
 						  pitch->TargetAngle-=0.08f;					
 							++j;
 						}
 		
            if(Aimbot_RotatinPatrol_pitchmode==downward)
 					 {		
-						 yaw->TargetAngle+=0.64f;
-						 pitch->TargetAngle+=0.08f;
-							
+						 pitch->TargetAngle+=0.08f;							
 						++j;
 					 }
-					while(yaw->TargetAngle > 360)
-						yaw->TargetAngle -= 360;
-					while(yaw->TargetAngle < 0)
-						yaw->TargetAngle += 360;
+					 
+					 if(Aimbot_RotatinPatrol_yawmode==rightward)
+		       {	
+						  yaw->TargetAngle+=0.64f;					
+						}
+					 if(Aimbot_RotatinPatrol_yawmode==leftward)
+		       {	
+						  yaw->TargetAngle-=0.64f;					
+						}
+					while (yaw->TargetAngle >= 180)
+            yaw->TargetAngle -= 360;
+        while (yaw->TargetAngle < -180)
+            yaw->TargetAngle += 360;
 					
 				break;
 				}
@@ -193,10 +202,15 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					
 			//瞄准之后角度确立
 					yaw->TargetAngle = Yaw_Desire;
-					while(yaw->TargetAngle > 360)
-						yaw->TargetAngle -= 360;
-					while(yaw->TargetAngle < 0)
-						yaw->TargetAngle += 360;
+					
+					while (yaw->TargetAngle >= 180)
+            yaw->TargetAngle -= 360;
+        while (yaw->TargetAngle < -180)
+            yaw->TargetAngle += 360;
+					yaw->TargetAngle = yaw->TargetAngle > 65 ? 65 : yaw->TargetAngle;
+					yaw->TargetAngle = yaw->TargetAngle < -65 ? -65 : yaw->TargetAngle;
+
+
 					pitch->TargetAngle = Pitch_Desire;
 				  
 					pitch->TargetAngle = pitch->TargetAngle > Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) ? Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) : pitch->TargetAngle;
@@ -331,11 +345,15 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
     /************** YAW **************/
     if (yaw != NULL)
     {
+//						if(yaw->Real_Angle >= -275)
+//					yaw->TargetAngle=5;
+//				else if(yaw->Real_Angle <= -355 )
+//				yaw->TargetAngle=85;
 		//yaw轴位置环
         yaw->PositionPID.Last_Error = yaw->PositionPID.Cur_Error;
 				yaw->Real_Angle=YAW_ANGLE;
 
-        yaw->PositionPID.Cur_Error = yaw->TargetAngle + YAW_ANGLE;
+        yaw->PositionPID.Cur_Error = yaw->TargetAngle - yaw->Real_Angle;
 
         yaw->PositionPID.Cur_Error = yaw->PositionPID.Cur_Error > 180 ? yaw->PositionPID.Cur_Error - 360 : yaw->PositionPID.Cur_Error;
         yaw->PositionPID.Cur_Error = yaw->PositionPID.Cur_Error < -180 ? yaw->PositionPID.Cur_Error + 360 : yaw->PositionPID.Cur_Error;
@@ -350,7 +368,10 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
 			  yaw->PositionPID.Output = yaw->PositionPID.Output > 300 ? 300 : yaw->PositionPID.Output;
 			  yaw->PositionPID.Output = yaw->PositionPID.Output < -300 ? -300 : yaw->PositionPID.Output;
         yaw->TargetSpeed = yaw->PositionPID.Output;
-        
+//        if(yaw->Real_Angle >= -275)
+//					yaw->TargetSpeed=-150;
+//				else if(yaw->Real_Angle <= -355 )
+//				yaw->TargetSpeed=150;
 
 		//yaw轴速度环
         yaw->SpeedPID.Last_Error = yaw->SpeedPID.Cur_Error;

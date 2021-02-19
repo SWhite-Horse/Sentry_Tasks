@@ -66,3 +66,4 @@ sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_JetsonComm.h
 sentry_2021_scp\task_shoot.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h
 sentry_2021_scp\task_shoot.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
 sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_CAN.h
+sentry_2021_scp\task_shoot.o: ..\Task\Inc\Task_JudgeReceive.h

@@ -4,6 +4,8 @@
 #include "Task_JetsonComm.h"
 #include "Task_StatusMachine.h"
 #include "Task_CAN.h"
+#include "Task_JudgeReceive.h"
+
 
 Motor3508_type Fric_3508_Motor[2];
 RM2006_Type  StirMotor;
@@ -33,6 +35,8 @@ void Task_Shoot(void *parameters){
 				}
 			}
 			StirMotor_Control();
+			
+			
 			Shoot_CAN_Send(Fric_3508_Motor[0].Output,Fric_3508_Motor[1].Output,StirMotor.Output);
 			vTaskDelayUntil(&xLastWakeUpTime, 5);
 		}
@@ -99,7 +103,7 @@ void Motor_3508_PID_Calculate(Motor3508_type *motor){
 	
 		motor->PID.Sum_Error = motor->PID.Sum_Error > 15000 ? 15000 : motor->PID.Sum_Error;
 		motor->PID.Sum_Error = motor->PID.Sum_Error < -15000 ? -15000 : motor->PID.Sum_Error;
-	
+	// **考虑添加清零
 		motor->Output = (motor->PID.Kp * motor->PID.Cur_Error + motor->PID.Ki * motor->PID.Sum_Error + motor->PID.Kd * (motor->PID.Cur_Error - motor->PID.Last_Error));
 
 		 //限制输出电流
@@ -132,11 +136,11 @@ int16_t targetspeed = 4200; //拨盘转速
 uint8_t ShootCounter=0; 
 void StirMotor_Control(void)
 {
-if(TxMessage.Heat>=200)
+if(ext_power_heat_data.shooter_heat0>=200)
 	{
 		HeatFlag=0;
 	}
-	else if(TxMessage.Heat<=120)
+	else if(ext_power_heat_data.shooter_heat0<120)
 	{
 		HeatFlag=1;
 	}
@@ -149,7 +153,7 @@ if(TxMessage.Heat>=200)
 			StirMotor.TargetSpeed = 0;
 	}
 	//自瞄并且已经瞄到
-	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode)// && RxMessage.mains_power_shooter==1 && HeatFlag==1)
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1)// && RxMessage.mains_power_shooter==1 && HeatFlag==1)
 	{
 		if((DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
 		{

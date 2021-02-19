@@ -66,3 +66,6 @@ sentry_2021_scp\task_chassis.o: ..\Task\Inc\Task_StatusMachine.h
 sentry_2021_scp\task_chassis.o: ..\Task\Inc\Task_Measure.h
 sentry_2021_scp\task_chassis.o: ..\Task\Inc\Task_Shoot.h
 sentry_2021_scp\task_chassis.o: ..\Task\Inc\Task_JudgeReceive.h
+sentry_2021_scp\task_chassis.o: ..\Task\Inc\Task_JetsonComm.h
+sentry_2021_scp\task_chassis.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h
+sentry_2021_scp\task_chassis.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h

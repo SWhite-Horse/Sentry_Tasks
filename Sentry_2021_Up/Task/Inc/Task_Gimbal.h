@@ -30,20 +30,20 @@ typedef struct
 
 //云台电机机械角上下限位  //改动
 #define Mechanical_Angle_UP 5500
-#define Mechanical_Angle_DOWN 6730
+#define Mechanical_Angle_DOWN 6460  //6560
+#define Mechanical_Angle_LEFT 6400
+#define Mechanical_Angle_RIGHT 1250
 //6369 38.95°
 #define PITCHOFFSET 5840
-#define YAWOFFSET   2100
+#define YAWOFFSET   7880
 
 #define Mechanical_YAWAngle_To_RealAngle(x) (360 * (x - YAWOFFSET)/ 8191.0f)
 #define Mechanical_PITCHAngle_To_RealAngle(x) (360 * (x - PITCHOFFSET) / 8191.0f)
 
-#define PITCH_ANGLE Mechanical_PITCHAngle_To_RealAngle(Pitch.Mechanical_Angle)//Mechanical_YAWAngle_To_RealAngle PersonalGYRO.RollAngle
-//#define YAW_ANGLE PersonalGYRO.YawAngle
-//#define APITCH  PersonalGYRO.Gyro_X
-//#define AYAW  PersonalGYRO.Gyro_Z
+#define PITCH_ANGLE Mechanical_PITCHAngle_To_RealAngle(Pitch.Mechanical_Angle)
+#define YAW_ANGLE Yaw.Mechanical_Angle<=3784?Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle+8191):Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle)
 
-#define YAW_ANGLE imu.yaw    //imu 范围-pi到pi且电机正向转动时角度减小 ///改为机械角，PID也要修改
+//#define YAW_ANGLE imu.yaw    //imu 范围-pi到pi且电机正向转动时角度减小 ///改为机械角，PID也要修改
 #define AYAW 			imu.wz * 57.3f
 #define APITCH 		imu.wy * 57.3f
 

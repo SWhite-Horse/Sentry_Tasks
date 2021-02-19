@@ -30,18 +30,14 @@ void Task_Communication(void *parameters)
 		
 		if(ControlMode==ControlMode_Aimbot)
 		{		
-			TxMessage.Chassis_speed=4000;	
-//			if(DataRecFromJetson.SentryGimbalMode==ServoMode)
-//			{
-//				TxMessage.Chassis_speed=2000;	
-//			}
-//			else
-//				TxMessage.Chassis_speed = speedrand *1000;	
-//			
-//			if(RxMessage.get_hurt)
-//			{
-//				TxMessage.Chassis_speed = speedrand *1000>4000?speedrand*1000:speedrand*1000+4000;
-//			}			
+			if(DataRecFromJetson.SentryGimbalMode==ServoMode){
+				TxMessage.Chassis_speed=1500;	
+			}
+			else
+				TxMessage.Chassis_speed = 3000;		
+			if(RxMessage.get_hurt){
+				TxMessage.Chassis_speed = 3000;	
+			}			
 		}	
 		else if(ControlMode==ControlMode_Telecontrol_UP)
 		{
