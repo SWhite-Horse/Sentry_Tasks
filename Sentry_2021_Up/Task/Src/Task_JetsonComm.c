@@ -47,7 +47,7 @@ void Task_JetsonComm(void *Parameter)
   while (1)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //pdTRUE让通知值为0，使其进入阻塞;pdFALSE让通知值减一，第二个参数为等待通知的最大时间，单位ms
-    JetsonComm_Control(&huart6);
+    JetsonComm_Control(&huart8);
   }
 }
 
@@ -86,7 +86,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   if (DataRecFromJetson.ShootMode == CommSetUp)
   {
     //发送当前红蓝方
-    if (1)//ext_game_robot_state.robot_id==7)//WeAreRedTeam)
+    if (ext_game_robot_state.robot_id==7)//WeAreRedTeam)
     {
       CommStatus.team = RedTeam;
       DataSendToJetson.Seq++;
@@ -106,7 +106,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   else if (DataRecFromJetson.ShootMode == CommStatus.team)
   {
 			
-			CommStatus.CommSuccess = 1;
+		CommStatus.CommSuccess = 1;
   }
   //请求数据传送
   else if (DataRecFromJetson.ShootMode == RequestTrans)
@@ -114,7 +114,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
     DataSendToJetson.Seq++;
     DataSendToJetson.NeedMode = ShootStatus;
 		DataSendToJetson.location = Distance;
-		DataSendToJetson.BulletRemain=ext_bullet_remaining.bullet_remaining_num;  
+		DataSendToJetson.BulletRemain=200;   //////// gai dong
 		DataSendToJetson.IsHuarted=get_hurted;  
     HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson, sizeof(STMToJetson_Struct));
   }

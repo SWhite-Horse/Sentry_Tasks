@@ -17,7 +17,6 @@ void Task_Shoot(void *parameters){
 		TickType_t xLastWakeUpTime;
 		xLastWakeUpTime = xTaskGetTickCount();
 		while(1){
-		
 			Fric_3508_Motor_Speed_Set();
 			Motor_3508_PID_Calculate(&Fric_3508_Motor[0]);
 			Motor_3508_PID_Calculate(&Fric_3508_Motor[1]);
@@ -26,14 +25,14 @@ void Task_Shoot(void *parameters){
 			
 			if(DataRecFromJetson.SentryGimbalMode == ServoMode && ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 ){
 			if(RxMessage.mains_power_shooter==0){
-					//FricStatus = FricStatus_Stop;
-					//StirMotorStatus = StirStatus_Stop;
-				}
-				else{
-					FricStatus = FricStatus_Working_High;
-				}
+				//FricStatus = FricStatus_Stop;
+				//StirMotorStatus = StirStatus_Stop;
 			}
-			StirMotor_Control();
+			else{
+				FricStatus = FricStatus_Working_High;
+			}
+		}
+		StirMotor_Control();
 			//Stir_CAN_Send(StirMotor.Output);///发送在Gimbal里面
 			vTaskDelayUntil(&xLastWakeUpTime, 5);
 		}
@@ -121,6 +120,8 @@ void StirMotor_Init(void)
   StirMotor.TargetSpeed = 0;
 }
 
+int HeatControl=0;
+int HeatStatus=1;
 
 /**
  * @description: 拨盘电机控制
@@ -132,7 +133,7 @@ uint8_t HeatFlag = 0; //是否超热量
 int16_t targetspeed = -4200; //拨盘转速
 uint8_t ShootCounter=0; 
 void StirMotor_Control(void)
-{
+{ 
 	if(RxMessage.Heat>=200)
 	{
 		HeatFlag=0;
@@ -178,6 +179,27 @@ void StirMotor_Control(void)
 	if(HeatFlag ==0)
 		StirMotor.TargetSpeed=0;
 
+	
+	
+	if(StirMotor.TargetSpeed!=0){
+		if(HeatStatus)
+		{
+			HeatControl+=3;	
+		}
+		else HeatControl-=2;
+	}
+	if(HeatControl>600)
+	{	
+		HeatStatus=0;
+	}
+	
+	if(HeatControl<10)
+	{
+		HeatStatus=1;
+	}
+	if(HeatStatus == 0) StirMotor.TargetSpeed=0;
+	
+	if(RxMessage.get_hurt) StirMotor.TargetSpeed=0;
 	Stir_Motor_Speed_Control(&StirMotor);
 	
 }

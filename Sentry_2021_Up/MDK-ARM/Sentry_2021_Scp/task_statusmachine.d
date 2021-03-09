@@ -61,3 +61,6 @@ sentry_2021_scp\task_statusmachine.o: ../Middlewares/Third_Party/FreeRTOS/Source
 sentry_2021_scp\task_statusmachine.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 sentry_2021_scp\task_statusmachine.o: ..\Task\Inc\Task_RC.h
 sentry_2021_scp\task_statusmachine.o: ..\Task\Inc\Task_Communication.h
+sentry_2021_scp\task_statusmachine.o: ..\Task\Inc\Task_JetsonComm.h
+sentry_2021_scp\task_statusmachine.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h
+sentry_2021_scp\task_statusmachine.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h

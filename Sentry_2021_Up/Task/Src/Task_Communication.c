@@ -28,15 +28,12 @@ void Task_Communication(void *parameters)
 	TickType_t xLastWakeUpTime;
   xLastWakeUpTime = xTaskGetTickCount();
 	while(1)
-	{
-//		 LeftSwitch=HAL_GPIO_ReadPin(GPIOH,GPIO_PIN_11);
-// 	 	 RightSwitch=HAL_GPIO_ReadPin(GPIOH,GPIO_PIN_12); //光电开关引脚接在GH11和GH12
-//		
+	{	
 		//将裁判系统的值赋给发送结构体
 		TxMessage.Blood = ext_game_robot_state.remain_HP;
 		TxMessage.get_hurt = get_hurted;
-    TxMessage.Armour = ext_robot_hurt.armor_id;
-		TxMessage.Heat = ext_power_heat_data.shooter_heat0;
+    TxMessage.Armour = ext_game_robot_state.robot_id;
+		TxMessage.Heat = ext_power_heat_data.shooter_id2_17mm_cooling_heat;
 		TxMessage.Shoot_Speed = ext_shoot_data.bullet_speed;
 //		TxMessage.Bullet_remaining = ext_bullet_remaining.bullet_remaining_num;
 		TxMessage.mains_power_shooter = ext_game_robot_state.mains_power_shooter_output;

@@ -26,18 +26,18 @@ void Task_Communication(void *parameters)
 	int8_t speedrand = 0;
 	while(1)
 	{ 
-		speedrand = rand()%8+1;
-		
 		if(ControlMode==ControlMode_Aimbot)
 		{		
 			if(DataRecFromJetson.SentryGimbalMode==ServoMode){
-				TxMessage.Chassis_speed=1500;	
+				if(RxMessage.get_hurt){
+					TxMessage.Chassis_speed = 2400;	
+				}
+				else 
+					TxMessage.Chassis_speed=1500;	
 			}
 			else
-				TxMessage.Chassis_speed = 3000;		
-			if(RxMessage.get_hurt){
-				TxMessage.Chassis_speed = 3000;	
-			}			
+				TxMessage.Chassis_speed = 2400;		
+						
 		}	
 		else if(ControlMode==ControlMode_Telecontrol_UP)
 		{

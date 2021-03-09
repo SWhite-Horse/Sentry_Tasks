@@ -1,22 +1,6 @@
 //裁判系统任务
 #include "Task_JudgeReceive.h"
 
-//ext_game_state_t                ext_game_state;
-//ext_game_result_t               ext_game_result;
-//ext_game_robot_survivors_t      ext_game_robot_survivors;
-//ext_event_data_t                ext_event_data;
-//ext_supply_projectile_action_t  ext_supply_projectile_action;
-//ext_supply_projectile_booking_t ext_supply_projectile_booking;
-//ext_game_robot_state_t          ext_game_robot_state;
-//ext_power_heat_data_t           ext_power_heat_data;
-//ext_game_robot_pos_t            ext_game_robot_pos;
-//ext_buff_musk_t                 ext_buff_musk;
-//aerial_robot_energy_t           aerial_robot_energy;
-//ext_robot_hurt_t                ext_robot_hurt;
-//ext_shoot_data_t                ext_shoot_data;
-//ext_bullet_remaining_t          ext_bullet_remaining;
-//ext_student_interactive_header_data_t			      ext_student_interactive_header_data;
-
 uint8_t Judge_Receive_Buffer[130];
 
 ext_game_state_t ext_game_state;
@@ -30,17 +14,20 @@ ext_dart_remaining_time_t ext_dart_remaining_time;
 ext_game_robot_state_t ext_game_robot_state;
 ext_power_heat_data_t ext_power_heat_data;
 ext_game_robot_pos_t ext_game_robot_pos;
-ext_buff_musk_t ext_buff_musk;
+ext_buff_t ext_buff;
 aerial_robot_energy_t aerial_robot_energy;
 ext_robot_hurt_t ext_robot_hurt;
 ext_shoot_data_t ext_shoot_data;
 ext_bullet_remaining_t ext_bullet_remaining;
 ext_rfid_status_t ext_rfid_status;
+ext_dart_client_cmd_t ext_dart_client_cmd;
+ext_video_transmitter_t ext_video_transmitter;
 
 
 int currentSpeed=0,lastSpeed=0;
 extern uint16_t time_cnt;
 int JudgeReceive_Counter;
+uint8_t chassis_power = 0;
 uint8_t get_hurted = 0;
 uint16_t bullet_test=0;
 
@@ -164,9 +151,9 @@ void JudgeReceive()
   */
 void Judge_Receive_Data_Processing(uint8_t SOF, uint16_t CmdID)
 {
-    switch (CmdID)
+switch (CmdID)
     {
-    //1.	比赛机器人状态(0x0001)	10Hz
+    //1.	比赛状态(0x0001)	1Hz
     case GAME_STATE:
     {
         memcpy(&ext_game_state, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), GAME_STATE_DATA_SIZE);
@@ -205,13 +192,13 @@ void Judge_Receive_Data_Processing(uint8_t SOF, uint16_t CmdID)
     //8.    裁判警告数据(0x0104)
     case REFEREE_WARNING:
     {
-        memcpy(&ext_referee_warning, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), REFEREE_WARNING_DATE_SIZE);
+        memcpy(&ext_referee_warning, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), REFEREE_WARNING_DATA_SIZE);
         break;
     }
     //9.    飞镖发射口倒计时(0x0105)
     case DART_REMAINING_TIME:
     {
-        memcpy(&ext_dart_remaining_time, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), DART_REMAINING_TIME_DATE_SIZE);
+        memcpy(&ext_dart_remaining_time, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), DART_REMAINING_TIME_DATA_SIZE);
         break;
     }
     //10.	机器人状态数据（0x0201）
@@ -226,22 +213,25 @@ void Judge_Receive_Data_Processing(uint8_t SOF, uint16_t CmdID)
         memcpy(&ext_power_heat_data, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), POWER_HEAT_DATA_SIZE);
         break;
     }
-    //10.机器人位置数据，10Hz
+    //12.机器人位置数据(0X0203)
     case GAME_ROBOT_POS:
     {
         memcpy(&ext_game_robot_pos, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), GAME_ROBOT_POS_DATA_SIZE);
         break;
     }
+    //13.机器人增益数据(0X0204)
     case BUFF_MUSK:
     {
-        memcpy(&ext_buff_musk, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), BUFF_MUSK_DATA_SIZE);
+        memcpy(&ext_buff, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), BUFF_DATA_SIZE);
         break;
     }
+    //14.空中机器人能量状态数据(0X0205)
     case AERIAL_ROBOT_ENERGY:
     {
         memcpy(&aerial_robot_energy, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), AERIAL_ROBOT_ENERGY_DATA_SIZE);
         break;
     }
+    //15.伤害状态数据(0X0206)
     case ROBOT_HURT:
     {
         memcpy(&ext_robot_hurt, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), ROBOT_HURT_DATA_SIZE);
@@ -250,21 +240,39 @@ void Judge_Receive_Data_Processing(uint8_t SOF, uint16_t CmdID)
 					get_hurted = 1;
 					time_cnt=0;
 				}
+				if(ext_robot_hurt.hurt_type == 0x04)
+					chassis_power = 1;
+				
         break;
     }
+    //16.实时射击数据(0X0207)
     case SHOOT_DATA:
     {
         memcpy(&ext_shoot_data, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), SHOOTDATA_DATA_SIZE);
         break;
     }
+    //17.子弹剩余发送数(0X0208)
     case REMAIN_BULLET:
     {
         memcpy(&ext_bullet_remaining, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), REMAIN_BULLET_DATA_SIZE);
         break;
     }
+    //18.机器人 RFID 状态(0X0209)
     case RFID_STATE:
     {
         memcpy(&ext_rfid_status, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), RFID_STATE_DATA_SIZE);
+        break;
+    }
+    //19.飞镖机器人客户端指令数据(0X020A)
+    case DART_CLIENT_CMD:
+    {
+        memcpy(&ext_dart_client_cmd, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), DART_CLIENT_CMD_DATA_SIZE);
+        break;
+    }
+    //20.图传遥控信息数据(0x0304)
+    case VIDEO_TRANSMITTER:
+    {
+        memcpy(&ext_video_transmitter, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), VIDEO_TRANSMITTER_DATA_SIZE);
         break;
     }
     }

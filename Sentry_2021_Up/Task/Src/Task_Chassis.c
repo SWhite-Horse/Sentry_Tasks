@@ -43,12 +43,12 @@ void Task_Chassis(void *parameters)
   */
 void Chassis_Ctrl_Init(void)
 {
-    for(int i = 0;i < 2; i++)
-    {
-      Chassis_Motor[i].PID.Kp = 6; 
-      Chassis_Motor[i].PID.Ki = 0.03; 
-      Chassis_Motor[i].PID.Kd = 2;   
-    }
+  for(int i = 0;i < 2; i++)
+  {
+    Chassis_Motor[i].PID.Kp = 6; 
+    Chassis_Motor[i].PID.Ki = 0.03; 
+    Chassis_Motor[i].PID.Kd = 2;   
+  }
 }
 
 
@@ -96,13 +96,13 @@ extern uint8_t get_hurted; //判断是否受到伤害
 
 void Chassis_Speed_Set(void){
 	
-	uint8_t left_detected = 0; //判断自己是否到达最左边  0 表示未到达
-	uint8_t right_detected = 0; //判断自己是否到达最右边
+	static uint8_t left_detected = 0; //判断自己是否到达最左边  0 表示未到达
+	static uint8_t right_detected = 0; //判断自己是否到达最右边
 
 	int Target_speed;
 	
 	// 以下部分是判断哨兵在轨道上的位置
-	if(LeftSwitch==0 && RightSwitch==1){
+	if(LeftSwitch == 0 && RightSwitch==1){
 		left_detected = 1;
 		right_detected = 0;
 	}
@@ -118,9 +118,13 @@ void Chassis_Speed_Set(void){
   //速度赋值(数据为正值，但是要确定方向要根据电机安装方式和PID正负综合确定，如果相反，此处取反一般即可）：
 	if(RxMessage.controlmode == ControlMode_Aimbot){
 		if(RxMessage.speed == 1500 || DataRecFromJetson.SentryGimbalMode == ServoMode)  // 下云台或者上云台是伺服模式时
-			Target_speed  = 1500;
+		{
+			if(get_hurted) Target_speed  = 2400;
+			else Target_speed  = 300;
+		}
 		else
-			Target_speed =3000;
+			Target_speed = 2400;
+		
 	}
 	else // 非自瞄模式就是下云台传输数据
 		Target_speed  = RxMessage.speed;
@@ -134,6 +138,7 @@ void Chassis_Speed_Set(void){
 		}
 		else
 			Target_speed = Target_speed; 
+		
 		if(abs(Target_speed==3000))
 			tim_cnt+=2;
 		else 
@@ -141,15 +146,13 @@ void Chassis_Speed_Set(void){
 	}
 		
 		//判断是否受到伤害
-		if(get_hurted) 
-		{		
-			time_cnt++;
-		} 
-		if(time_cnt>2000)  //10s
-		{
-			get_hurted = 0;
-			time_cnt = 0;
-		}
+	if(get_hurted){		
+		time_cnt++;
+	} 
+	if(time_cnt>2000){  //10s
+		get_hurted = 0;
+		time_cnt = 0;
+	}
 		
   // 以下部分对不同位置，根据控制模式不同做速度方向确定
 	if(RxMessage.controlmode == ControlMode_Telecontrol_UP||RxMessage.controlmode == ControlMode_Telecontrol_DOWN){ //遥控模式
@@ -171,7 +174,7 @@ void Chassis_Speed_Set(void){
 	}
 	
 	//最后做对电机输出目标的赋值
-	Chassis_Motor[0].TargetSpeed = - Target_speed; 
+	Chassis_Motor[0].TargetSpeed = -Target_speed; 
 	Chassis_Motor[1].TargetSpeed = Target_speed; 
 }
 

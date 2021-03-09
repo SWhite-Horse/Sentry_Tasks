@@ -231,7 +231,7 @@
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ext_power_heat_data</ItemText>
+          <ItemText>ext_power_heat_data,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
@@ -282,6 +282,41 @@
           <count>26</count>
           <WinNumber>1</WinNumber>
           <ItemText>Yaw_Desire</ItemText>
+        </Ww>
+        <Ww>
+          <count>27</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\Sentry_2021_Scp\../Task/Src/Task_JudgeReceive .c\ext_power_heat_data.chassis_volt</ItemText>
+        </Ww>
+        <Ww>
+          <count>28</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>DataRecFromJetson</ItemText>
+        </Ww>
+        <Ww>
+          <count>29</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>ext_shoot_data,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>30</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>ext_game_robot_state,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>31</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>ext_robot_hurt,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>32</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>get_hurted,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>33</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>ext_game_robot_state</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

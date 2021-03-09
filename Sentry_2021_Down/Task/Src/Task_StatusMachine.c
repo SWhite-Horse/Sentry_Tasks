@@ -58,42 +58,34 @@ void StatusMachine_Update(void)
     static uint8_t FricChange = 1;
     switch (Get_Switch_Val(&RC_ReceiveData, RC_SW_Right))
     {
-    case RC_SW_MID:
-    {		
-        ControlMode =ControlMode_Telecontrol_UP;
-				TxMessage.controlmode=ControlMode_Telecontrol_UP;
-        break;
-    }
-    case RC_SW_DOWN:
-    {
-        ControlMode = ControlMode_Telecontrol_DOWN ;
-				TxMessage.controlmode=ControlMode_Telecontrol_DOWN;
+			case RC_SW_MID:
+			{		
+					ControlMode =ControlMode_Telecontrol_UP;
+					TxMessage.controlmode=ControlMode_Telecontrol_UP;
+					break;
+			}
+			case RC_SW_DOWN:
+			{
+					ControlMode = ControlMode_Telecontrol_DOWN ;
+					TxMessage.controlmode=ControlMode_Telecontrol_DOWN;
 
-        break;
-    }
-    case RC_SW_UP:
-    {		
-        ControlMode =ControlMode_Aimbot;
-				TxMessage.controlmode=ControlMode_Aimbot;
-        break;
-    }
+					break;
+			}
+			case RC_SW_UP:
+			{		
+					ControlMode =ControlMode_Aimbot;
+					TxMessage.controlmode=ControlMode_Aimbot;
+					break;
+			}
     }
 
 		switch (ControlMode)
 		{
 			
-			case ControlMode_Aimbot:  //自瞄模式
-			{
-//				 if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_UP)
-//						chassis_servo = 1;
-//				 else if(Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_MID)
-//						chassis_servo = 2;
-//				 else
-//					  chassis_servo = 3;
-				 
-				 FricStatus = FricStatus_Working_High;
-				 
-				 break;	
+			case ControlMode_Aimbot:
+			{ //自瞄模式
+				FricStatus = FricStatus_Working_High; 
+				break;	
 			}
 			
 			case ControlMode_Telecontrol_DOWN:  //遥控模式
@@ -114,9 +106,8 @@ void StatusMachine_Update(void)
 				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_DOWN)
 				{  
           FricChange = 1;
-          if(FricStatus != FricStatus_Stop)// &&Rxmessage.Heat<420)
-          {
-            StirMotorStatus = StirStatus_SpeedControl;
+          if(FricStatus != FricStatus_Stop){// &&Rxmessage.Heat<420)
+						StirMotorStatus = StirStatus_SpeedControl;
           }
 				}
 				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_MID)
@@ -149,7 +140,7 @@ void StatusMachine_Update(void)
 				else if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_DOWN)
 				{  
           FricChange = 1;
-          if(TxMessage.fricstatus != FricStatus_Stop) //&& RxMessage.Heat<420 )
+          if(TxMessage.fricstatus != FricStatus_Stop && RxMessage.Heat<420 )
           {
             TxMessage.stirstatus = StirStatus_SpeedControl;
           }

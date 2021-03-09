@@ -66,3 +66,4 @@ sentry_2021_down\task_jetsoncomm.o: ..\Task\Inc\Task_Gimbal.h
 sentry_2021_down\task_jetsoncomm.o: ..\Task\Inc\Task_Measure.h
 sentry_2021_down\task_jetsoncomm.o: ..\Task\Inc\Task_Imu.h
 sentry_2021_down\task_jetsoncomm.o: ..\Func\Inc\Func_Imu_OB.h
+sentry_2021_down\task_jetsoncomm.o: ..\Task\Inc\Task_Communication.h

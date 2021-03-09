@@ -3,7 +3,8 @@
 #include "Task_StatusMachine.h"
 #include "Task_RC.h"
 #include "Task_Communication.h"
-      
+#include "Task_JetsonComm.h"
+
 			
 ControlMode_Enum         ControlMode;
 FricStatus_Enum          FricStatus;
@@ -55,19 +56,19 @@ uint8_t chassis_servo = 0;
 void StatusMachine_Update(void)
 {
 		switch (ControlMode)
-		{
-			
+		{			
 			case ControlMode_Aimbot:  //×ÔÃéÄ£Ê½
-			{
-//				 if (Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_UP)
-//						chassis_servo = 1;
-//				 else if(Get_Switch_Val(&RC_ReceiveData, RC_SW_Left) == RC_SW_MID)
-//						chassis_servo = 2;
-//				 else
-//					  chassis_servo = 3;
-				 
+			{ 
+				if(DataRecFromJetson.SentryGimbalMode == ServoMode && CommStatus.CommSuccess == 1 ){
+					if(TxMessage.mains_power_shooter==0){
+					//FricStatus = FricStatus_Stop;
+					StirMotorStatus = StirStatus_Stop;
+					}
+				else
+					FricStatus = FricStatus_Working_High;					
+				}
+				
 				 FricStatus = FricStatus_Working_High;
-				 
 				 break;	
 			}
 			
@@ -84,7 +85,7 @@ void StatusMachine_Update(void)
          StirMotorStatus = RxMessage.stirstatus;      
 				break;
 			}				
-			}
+		}
 }
 	
 

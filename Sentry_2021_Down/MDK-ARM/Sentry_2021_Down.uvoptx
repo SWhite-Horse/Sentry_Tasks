@@ -268,6 +268,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>Fric_3508_Motor[1],0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>24</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>HeatControl,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>

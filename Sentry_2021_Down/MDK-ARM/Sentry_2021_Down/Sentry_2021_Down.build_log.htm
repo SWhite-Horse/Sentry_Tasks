@@ -27,7 +27,19 @@ Project File Date:  11/18/2020
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\keil\ARM\ARMCC\Bin'
 Build target 'Sentry_2021_Down'
-"Sentry_2021_Down\Sentry_2021_Down.axf" - 0 Error(s), 0 Warning(s).
+compiling Task_Shoot.c...
+compiling Task_JetsonComm.c...
+..\Task\Src\Task_JetsonComm.c(360): warning:  #177-D: variable "TEMP211"  was declared but never referenced
+    mat TEMP, TEMP21, TEMP211;
+..\Task\Src\Task_JetsonComm.c: 1 warning, 0 errors
+compiling Task_Communication.c...
+..\Task\Src\Task_Communication.c(26): warning:  #550-D: variable "speedrand"  was set but never used
+  	int8_t speedrand = 0;
+..\Task\Src\Task_Communication.c: 1 warning, 0 errors
+linking...
+Program Size: Code=34328 RO-data=1084 RW-data=492 ZI-data=19740  
+FromELF: creating hex file...
+"Sentry_2021_Down\Sentry_2021_Down.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +62,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:07
 </pre>
 </body>
 </html>

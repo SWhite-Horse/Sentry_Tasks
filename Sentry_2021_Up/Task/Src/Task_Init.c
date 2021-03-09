@@ -28,9 +28,9 @@ void Task_Init(void *parameters)
 				
 			LASER_ON();
 			JudgeConnection_Init(&huart7);//裁判系统连接初始化
-			L1_Measure_Init(&huart8);
+//			L1_Measure_Init(&huart8);
 			//RC_Receive_Enable(&huart1); //遥控初始化
-			JetsonCommUart_Config(&huart6); //与jeston通讯串口初始化
+			JetsonCommUart_Config(&huart8); //与jeston通讯串口初始化
 	
 		   //** 板载陀螺仪初始化
 	    mpu_device_init();

@@ -7,8 +7,8 @@
 /*--------------CmdID(2-Byte)----------------*/
 #define GAME_STATE              0X0001          //比赛状态数据，1Hz 周期发送
 #define GAME_RESULT             0X0002          //比赛结果数据，比赛结束后发送
-#define ROBOT_HP                0X0003          //比赛机器人存活数据，1Hz 周期发送
-#define DART_STATUS             0X0004          //飞镖发射状态，飞镖发射时发送 
+#define ROBOT_HP                0X0003          //比赛机器人血量数据，1Hz周期发送
+#define DART_STATUS             0X0004          //飞镖发射状态，飞镖发射后发送
 #define EVENT_DATA              0X0101          //场地事件数据，事件改变后发送
 #define SUPPLY_ACTION           0X0102          //场地补给站动作标识数据，动作改变后发送
 #define REFEREE_WARNING         0X0104          //裁判警告数据，警告发生后发送 
@@ -20,30 +20,36 @@
 #define AERIAL_ROBOT_ENERGY     0X0205          //空中机器人能量状态数据，10Hz 周期发送，只有空中机器人主控发送
 #define ROBOT_HURT              0X0206          //伤害状态数据，伤害发生后发送
 #define SHOOT_DATA              0X0207          //实时射击数据，子弹发射后发送
-#define REMAIN_BULLET           0X0208          //弹丸剩余发射数，仅空中机器人，哨兵机器人以及 ICRA 机器人发送，1Hz 周期发送
-#define RFID_STATE              0X0209          //机器人 RFID 状态，1Hz 周期发送 
-#define INTERACTIVE_HEADER      0X0301          //交互数据接收信息，发送频率：上限 10Hz
-#define CLIENTID                0xD180          //向客户端发送ID
+#define REMAIN_BULLET           0X0208          //子弹剩余发送数，空中机器人以及哨兵机器人发送，1Hz周期发送
+#define RFID_STATE              0X0209          //机器人 RFID 状态，1Hz 周期发送
+#define DART_CLIENT_CMD         0X020A          //飞镖机器人客户端指令数据，10Hz周期发送
+#define INTERACTIVE_HEADER      0X0301          //机器人间交互数据，发送方触发发送，上限10Hz
+#define VIDEO_TRANSMITTER       0X0304          //键盘、鼠标信息，通过图传串口发送
 /*--------------CmdID(2-Byte)----------------*/
 
 /*--------------DataSize----------------*/
-#define GAME_STATE_DATA_SIZE            (3)
+#define GAME_STATE_DATA_SIZE            (11)
 #define GAME_RESULT_DATA_SIZE           (1)
 #define ROBOT_HP_DATA_SIZE              (32)
 #define DART_STATUS_DATE_SIZE           (3)
 #define EVENTDATA_DATA_SIZE             (4)
 #define SUPPLY_ACTION_DATA_SIZE         (4)
-#define REFEREE_WARNING_DATE_SIZE       (2)
-#define DART_REMAINING_TIME_DATE_SIZE   (1)
-#define GAMEROBOT_STATE_DATA_SIZE       (18)
+#define REFEREE_WARNING_DATA_SIZE       (2)
+#define DART_REMAINING_TIME_DATA_SIZE   (1)
+#define GAMEROBOT_STATE_DATA_SIZE       (27)
 #define POWER_HEAT_DATA_SIZE            (16)
 #define GAME_ROBOT_POS_DATA_SIZE        (16)
-#define BUFF_MUSK_DATA_SIZE             (1)
-#define AERIAL_ROBOT_ENERGY_DATA_SIZE   (3)
+#define BUFF_DATA_SIZE                  (1)
+#define AERIAL_ROBOT_ENERGY_DATA_SIZE   (1)
 #define ROBOT_HURT_DATA_SIZE            (1)
-#define SHOOTDATA_DATA_SIZE             (6)
-#define REMAIN_BULLET_DATA_SIZE         (2)
+#define SHOOTDATA_DATA_SIZE             (7)
+#define REMAIN_BULLET_DATA_SIZE         (6)
 #define RFID_STATE_DATA_SIZE            (4)
+#define DART_CLIENT_CMD_DATA_SIZE       (12)
+//#define DIY_CONTROL_DATA_SIZE           (?)//长度30以内自定
+//#define MINI_MAP_DATA_SIZE              (15)
+#define VIDEO_TRANSMITTER_DATA_SIZE     (12)
+
 #define INTERACTIVEHEADER_DATA_SIZE(n) (n + 9)
 #define JUDGE_DATA_LENGTH(n) (n + 9)
 /*--------------DataSize----------------*/
@@ -98,20 +104,22 @@ typedef __packed struct
 {
     /*
     0-3 bit：比赛类型
-    ? 1：RoboMaster 机甲大师赛；
-    ? 2：RoboMaster 机甲大师单项赛；
-    ? 3：ICRA RoboMaster 人工智能挑战赛
+    • 1：RoboMaster 机甲大师赛；
+    • 2：RoboMaster 机甲大师单项赛；
+    • 3：ICRA RoboMaster 人工智能挑战赛
+    • 4：RoboMaster 联盟赛3V3
+    • 5：RoboMaster 联盟赛1V1
     */
     uint8_t game_type : 4;
 
     /*
     4-7 bit：当前比赛阶段
-    ? 0：未开始比赛；
-    ? 1：准备阶段；
-    ? 2：自检阶段；
-    ? 3：5s 倒计时；
-    ? 4：对战中；
-    ? 5：比赛结算中
+    • 0：未开始比赛；
+    • 1：准备阶段；
+    • 2：自检阶段；
+    • 3：5s倒计时；
+    • 4：对战中；
+    • 5：比赛结算中
     */
     uint8_t game_progress : 4;
 
@@ -119,6 +127,12 @@ typedef __packed struct
     当前阶段剩余时间，单位 s
     */
     uint16_t stage_remain_time;
+
+    /*
+    机器人接收到该指令的精确Unix时间，当机载端收到有效的NTP服务器授时后生效
+    */
+   uint64_t SyncTimeStamp;
+
 } ext_game_state_t;
 
 //2.比赛结果数据：0x0002。发送频率：比赛结束后发送
@@ -152,35 +166,53 @@ typedef __packed struct
 
 //4. 飞镖发射状态：0x0004。发送频率：飞镖发射后发送，发送范围：所有机器人。 
 typedef __packed struct 
-{   
+{   /*
+    发射飞镖的队伍：
+    1：红方飞镖
+    2：蓝方飞镖
+    */
     uint8_t dart_belong;    
+    /*
+    发射时的剩余比赛时间，单位s
+    */
     uint16_t stage_remaining_time;  
 } ext_dart_status_t; 
+
+//5.人工智能挑战赛加成与惩罚区状态：0x0005。发送频率：1Hz周期发送，发送范围：所有机器人
+//暂时用不到，就没写
 
 //6.场地事件数据：0x0101。发送频率：事件改变后发送
 typedef __packed struct
 {
     /*
-    bit 0-1：己方停机坪占领状态
-    ? 0 为无机器人占领；
-    ? 1 为空中机器人已占领但未停桨；
-    ? 2 为空中机器人已占领并停桨
+    bit 0-2：
+    bit 0：己方补给站 1号补血点占领状态 1为已占领；
+    bit 1：己方补给站 2号补血点占领状态 1为已占领；
+    bit 2：己方补给站 3号补血点占领状态 1为已占领；
 
-    bit 2-3：己方能量机关状态： 
-    bit 2 为小能量机关激活状态，1 为已激活； 
-    bit 3 为大能量机关激活状态，1 为已激活； 
+    bit 3-5：己方能量机关状态：
+    • bit 3为打击点占领状态，1为占领；
+    • bit 4为小能量机关激活状态，1为已激活；
+    • bit 5为大能量机关激活状态，1为已激活；
 
-    bit 4：己方基地虚拟护盾状态 
-    1 为基地有虚拟护盾血量； 
-    0 为基地无虚拟护盾血量；
+    bit 6：己方R2环形高地占领状态 1为已占领；
+    bit 7：己方R3梯形高地占领状态 1为已占领；
+    bit 8：己方R4梯形高地占领状态 1为已占领；
 
-    bit 5 -31: 保留 
+    bit 9：己方基地护盾状态：
+    • 1 为基地有虚拟护盾血量；
+    • 0为基地无虚拟护盾血量；
+
+    bit 10：己方前哨战状态：
+    • 1为前哨战存活；
+    • 0为前哨战被击毁；
+
+    bit 10 -31: 保留
     */
-
     uint32_t event_type;
 } ext_event_data_t;
 
-//7. 补给站动作标识：0x0102。发送频率：动作改变后发送
+//7. 补给站动作标识：0x0102。发送频率：动作改变后发送。发送范围：己方机器人
 typedef __packed struct
 {
     /*
@@ -215,10 +247,17 @@ typedef __packed struct
 //8. 裁判警告信息：cmd_id (0x0104)。发送频率：警告发生后发送，发送范围：己方机器人。 
 typedef __packed struct 
 {   
-    uint8_t level;          // 警告等级： 
-    /*犯规机器人 ID： 
-    1 级以及 5 级警告时，机器人 ID 为 0 
-    二三四级警告时，机器人 ID 为犯规机器人 ID  
+    /*
+    警告等级：
+    1：黄牌
+    2：红牌
+    3：判负
+    */
+    uint8_t level;
+    /*
+    犯规机器人ID：
+    判负时，机器人ID为0
+    黄牌、红牌时，机器人ID为犯规机器人ID
     */
     uint8_t foul_robot_id;  
 } ext_referee_warning_t; 
@@ -268,48 +307,63 @@ typedef __packed struct
     uint16_t max_HP;
 
     /*
-    机器人 17mm 枪口每秒冷却值
+    机器人1号17mm枪口每秒冷却值
     */
-    uint16_t shooter_heat0_cooling_rate;
+    uint16_t shooter_id1_17mm_cooling_rate;
 
     /*
-    机器人 17mm 枪口热量上限
+    机器人1号17mm枪口热量上限
     */
-    uint16_t shooter_heat0_cooling_limit;
+    uint16_t shooter_id1_17mm_cooling_limit;
 
     /*
-    机器人 42mm 枪口每秒冷却值
+    机器人1号17mm 枪口上限速度 单位 m/s
     */
-    uint16_t shooter_heat1_cooling_rate;
+    uint16_t shooter_id1_17mm_speed_limit;
 
     /*
-    机器人 42mm 枪口热量上限
+    机器人2号17mm枪口每秒冷却值
      */
-    uint16_t shooter_heat1_cooling_limit;
+    uint16_t shooter_id2_17mm_cooling_rate;
 
     /*
-    机器人 17mm 枪口上限速度 单位 m/s
+    机器人2号17mm枪口热量上限
     */
-    uint8_t shooter_heat0_speed_limit; 
+    uint16_t shooter_id2_17mm_cooling_limit; 
 
     /*
-    机器人 42mm 枪口上限速度 单位 m/s
+    机器人2号17mm 枪口上限速度 单位 m/s
     */
-    uint8_t shooter_heat1_speed_limit;   
+    uint16_t shooter_id2_17mm_speed_limit;   
 
     /*
-    机器人最大底盘功率， 单位 w 
+    机器人42mm枪口每秒冷却值
     */
-    uint8_t max_chassis_power;
+    uint16_t shooter_id1_42mm_cooling_rate; 
+
+    /*
+    机器人42mm枪口热量上限
+    */
+    uint16_t shooter_id1_42mm_cooling_limit;
+
+    /*
+    机器人42mm枪口上限速度 单位 m/s
+    */
+    uint16_t shooter_id1_42mm_speed_limit;
+
+    /*
+    机器人底盘功率限制上限
+    */
+    uint16_t chassis_power_limit; 
 
     /*
     主控电源输出情况：
-    0 bit：gimbal 口输出： 1 为有 24V 输出，0 为无 24v 输出；
-    1 bit：chassis 口输出：1 为有 24V 输出，0 为无 24v 输出；
-    2 bit：shooter 口输出：1 为有 24V 输出，0 为无 24v 输出；
+    0 bit：gimbal口输出： 1为有24V输出，0为无24v输出；
+    1 bit：chassis口输出：1为有24V输出，0为无24v输出；
+    2 bit：shooter口输出：1为有24V输出，0为无24v输出；
     */
-    uint8_t mains_power_gimbal_output : 1;
-    uint8_t mains_power_chassis_output : 1;
+    uint8_t mains_power_gimbal_output : 1; 
+    uint8_t mains_power_chassis_output : 1; 
     uint8_t mains_power_shooter_output : 1;
 } ext_game_robot_state_t;
 
@@ -324,12 +378,12 @@ typedef __packed struct
     float chassis_power;
     //底盘功率缓冲 单位 J 焦耳
     uint16_t chassis_power_buffer;
-    //17mm 枪口热量
-    uint16_t shooter_heat0;
+    //1号17mm 枪口热量
+    uint16_t shooter_id1_17mm_cooling_heat;
+    //2号17mm枪口热量
+    uint16_t shooter_id2_17mm_cooling_heat;
     //42mm 枪口热量
-    uint16_t shooter_heat1;
-    //机动 17 mm 枪口热量 
-    uint16_t mobile_shooter_heat2; 
+    uint16_t shooter_id1_42mm_cooling_heat;
 } ext_power_heat_data_t;
 
 //12.机器人位置：0x0203。发送频率：10Hz
@@ -341,7 +395,7 @@ typedef __packed struct
     float yaw; //位置枪口，单位度
 } ext_game_robot_pos_t;
 
-//13. 机器人增益：0x0204。发送频率：状态改变后发送
+//13. 机器人增益：0x0204。发送频率：1Hz
 typedef __packed struct
 {
     /*
@@ -352,13 +406,12 @@ typedef __packed struct
     其他 bit 保留
     */
     uint8_t power_rune_buff;
-} ext_buff_musk_t;
+} ext_buff_t;
 
 //14. 空中机器人能量状态：0x0205。发送频率：10Hz
 typedef __packed struct
 {
-    uint8_t energy_point; //积累的能量点
-    uint8_t attack_time;  //可攻击时间 单位 s。50s 递减至 0
+    uint8_t attack_time;  //可攻击时间 单位 s。30s 递减至 0
 } aerial_robot_energy_t;
 
 //15. 伤害状态：0x0206。发送频率：伤害发生后发送
@@ -372,8 +425,10 @@ typedef __packed struct
     /*bit 4-7：血量变化类型
     0x0 装甲伤害扣血；
     0x1 模块掉线扣血；
-    0x2 超枪口热量扣血；
-    0x3 超底盘功率扣血。
+    0x2 超射速扣血；
+    0x3 超枪口热量扣血；
+    0x4 超底盘功率扣血；
+    0x5 装甲撞击扣血。
     */
     uint8_t hurt_type : 4;
 } ext_robot_hurt_t;
@@ -381,16 +436,27 @@ typedef __packed struct
 //16. 实时射击信息：0x0207。发送频率：射击后发送
 typedef __packed struct
 {
-    uint8_t bullet_type; //子弹类型: 1：17mm 弹丸 2：42mm 弹丸
-    uint8_t bullet_freq; //子弹射频 单位 Hz
-    float bullet_speed;  //子弹射速 单位 m/s
+    /*子弹类型: 1：17mm弹丸 2：42mm弹丸*/
+    uint8_t bullet_type; 
+    /*
+    发射机构ID：
+    1：1号17mm发射机构
+    2：2号17mm发射机构
+    3：42mm 发射机构
+    */
+    uint8_t shooter_id; 
+    /*子弹射频 单位 Hz*/
+    uint8_t bullet_freq; 
+    /*子弹射速 单位 m/s*/
+    float bullet_speed; 
 } ext_shoot_data_t;
 
-//17. 子弹剩余发射数：0x0208。发送频率：1Hz 周期发送，空中机器人，哨兵机器人以及 ICRA 机器人
-//主控发送，发送范围：单一机器人。 
+//17. 子弹剩余发射数：0x0208。发送频率：10Hz周期发送，所有机器人发送 
 typedef __packed struct 
 {   
-    uint16_t bullet_remaining_num;   
+    uint16_t bullet_remaining_num_17mm;//17mm子弹剩余发射数目
+    uint16_t bullet_remaining_num_42mm;//42mm子弹剩余发射数目
+    uint16_t coin_remaining_num;//剩余金币数量
 } ext_bullet_remaining_t;
 
 //18. 机器人 RFID 状态：0x0209。发送频率：1Hz，发送范围：单一机器人。 
@@ -405,13 +471,81 @@ typedef __packed struct
     bit 5：资源岛增益点 RFID 状态； 
     bit 6：补血点增益点 RFID 状态； 
     bit 7：工程机器人补血卡 RFID 状态； 
-    bit 8-25：保留 
-    bit 26-31：人工智能挑战赛 F1-F6 RFID 状态；  
-    RFID 状态不完全代表对应的增益或处罚状态，例如敌方已占领的高地增益点，不
-    能获取对应的增益效果
+    bit 8-31：保留
+    RFID 状态不完全代表对应的增益或处罚状态，例如敌方已占领的高地增益点，不能获取对应的增益效果。
     */
     uint32_t rfid_status;
 } ext_rfid_status_t; 
+
+//19. 飞镖机器人客户端指令数据：0x020A。发送频率：10Hz，发送范围：单一机器人
+typedef __packed struct 
+{ 
+    /*
+    当前飞镖发射口的状态
+    0：关闭；
+    1：正在开启或者关闭中
+    2：已经开启
+    */
+    uint8_t dart_launch_opening_status;
+    /*
+    飞镖的打击目标，默认为前哨站；
+    1：前哨站；
+    2：基地。
+    */
+    uint8_t dart_attack_target;
+    /*切换打击目标时的比赛剩余时间，单位秒，从未切换默认为0。*/
+    uint16_t target_change_time;
+    /*检测到的第一枚飞镖速度，单位 0.1m/s/LSB, 未检测是为0。*/
+    uint8_t first_dart_speed;
+    /*检测到的第二枚飞镖速度，单位 0.1m/s/LSB，未检测是为0。*/
+    uint8_t second_dart_speed;
+    /*检测到的第三枚飞镖速度，单位 0.1m/s/LSB，未检测是为0。*/
+    uint8_t third_dart_speed;
+    /*检测到的第四枚飞镖速度，单位 0.1m/s/LSB，未检测是为0。*/
+    uint8_t fourth_dart_speed;
+    /*最近一次的发射飞镖的比赛剩余时间，单位秒，初始值为0。*/
+    uint16_t last_dart_launch_time;
+    /*最近一次操作手确定发射指令时的比赛剩余时间，单位秒, 初始值为0。*/
+    uint16_t operate_launch_cmd_time; 
+} ext_dart_client_cmd_t;
+
+//20.图传遥控信息标识：0x0304。发送频率：30Hz。
+//2021赛季新增功能，据说比遥控器链路稳定，没用过
+typedef __packed struct
+{
+    /*鼠标X轴信息*/
+    int16_t mouse_x;
+    /*鼠标Y轴信息*/
+    int16_t mouse_y;
+    /*鼠标滚轮信息*/
+    int16_t mouse_z;
+    /*鼠标左键按下*/
+    int8_t left_button_down;
+    /*鼠标右键按下*/
+    int8_t right_button_down;
+    /*
+    键盘信息
+    bit 0：键盘W是否按下
+    bit 1：键盘S是否按下
+    bit 2：键盘A是否按下
+    bit 3：键盘D是否按下
+    bit 4：键盘SHIFT是否按下
+    bit 5：键盘CTRL是否按下
+    bit 6：键盘Q是否按下
+    bit 7：键盘E是否按下
+    bit 8：键盘R是否按下
+    bit 9：键盘F是否按下
+    bit 10：键盘G是否按下
+    bit 11：键盘Z是否按下
+    bit 12：键盘X是否按下
+    bit 13：键盘C是否按下
+    bit 14：键盘V是否按下
+    bit 15：键盘B是否按下
+    */
+    uint16_t keyboard_value;
+    /*保留位*/
+    uint16_t reserved;
+} ext_video_transmitter_t; 
 
 
 extern ext_game_state_t ext_game_state;
@@ -425,29 +559,14 @@ extern ext_dart_remaining_time_t ext_dart_remaining_time;
 extern ext_game_robot_state_t ext_game_robot_state;
 extern ext_power_heat_data_t ext_power_heat_data;
 extern ext_game_robot_pos_t ext_game_robot_pos;
-extern ext_buff_musk_t ext_buff_musk;
+extern ext_buff_t ext_buff;
 extern aerial_robot_energy_t aerial_robot_energy;
 extern ext_robot_hurt_t ext_robot_hurt;
 extern ext_shoot_data_t ext_shoot_data;
 extern ext_bullet_remaining_t ext_bullet_remaining;
 extern ext_rfid_status_t ext_rfid_status;
-
-
-//extern ext_game_state_t                ext_game_state;
-//extern ext_game_result_t               ext_game_result;
-//extern ext_game_robot_survivors_t      ext_game_robot_survivors;
-//extern ext_event_data_t                ext_event_data;
-//extern ext_supply_projectile_action_t  ext_supply_projectile_action;
-//extern ext_supply_projectile_booking_t ext_supply_projectile_booking;
-//extern ext_game_robot_state_t          ext_game_robot_state;
-//extern ext_power_heat_data_t           ext_power_heat_data;
-//extern ext_game_robot_pos_t            ext_game_robot_pos;
-//extern ext_buff_musk_t                 ext_buff_musk;
-//extern aerial_robot_energy_t           aerial_robot_energy;
-//extern ext_robot_hurt_t                ext_robot_hurt;
-//extern ext_shoot_data_t                ext_shoot_data;
-//extern ext_student_interactive_header_data_t			      ext_student_interactive_header_data;
-//extern ext_bullet_remaining_t          ext_bullet_remaining;
+extern ext_dart_client_cmd_t ext_dart_client_cmd;
+extern ext_video_transmitter_t ext_video_transmitter;
 
 
 void JudgeConnection_Init(UART_HandleTypeDef *huart);

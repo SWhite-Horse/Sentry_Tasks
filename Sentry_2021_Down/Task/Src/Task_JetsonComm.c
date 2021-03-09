@@ -4,6 +4,7 @@
 #include "Task_Gimbal.h"
 #include "Task_Measure.h"
 #include "Task_Imu.h"
+#include "Task_Communication.h"
 #include "arm_math.h"
 
 int cirule_num=0;
@@ -87,14 +88,14 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
 		set_num=cirule_num;
 		cirule_num=0;
     //发送当前红蓝方
-    if (1)//WeAreRedTeam)
+    if (RxMessage.Armour==7)//WeAreRedTeam)
     {
       CommStatus.team = RedTeam;
       DataSendToJetson.Seq++;
       DataSendToJetson.NeedMode = (uint8_t)(RedTeam >> 8);
       DataSendToJetson.ShootSpeed = (uint8_t)(RedTeam);
     }
-    else if (0)//WeAreBlueTeam)
+    else if (RxMessage.Armour==107)//WeAreBlueTeam)
     {
       CommStatus.team = BlueTeam;
       DataSendToJetson.Seq++;

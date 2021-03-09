@@ -13,33 +13,23 @@ int16_t fric_motor_debug = 0;
 
 void Task_Shoot(void *parameters){
 	
-		StirMotor_Init();
-		Motor_3508_PID_Init();
+	StirMotor_Init();
+	Motor_3508_PID_Init();
 
-		TickType_t xLastWakeUpTime;
-		xLastWakeUpTime = xTaskGetTickCount();
-		while(1){
+	TickType_t xLastWakeUpTime;
+	xLastWakeUpTime = xTaskGetTickCount();
+	while(1){
+	
+		Fric_3508_Motor_Speed_Set();
+		Motor_3508_PID_Calculate(&Fric_3508_Motor[0]);
+		Motor_3508_PID_Calculate(&Fric_3508_Motor[1]);
 		
-			Fric_3508_Motor_Speed_Set();
-			Motor_3508_PID_Calculate(&Fric_3508_Motor[0]);
-			Motor_3508_PID_Calculate(&Fric_3508_Motor[1]);
-			
-			if(DataRecFromJetson.SentryGimbalMode == ServoMode && ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 )
-				{
-				if(TxMessage.mains_power_shooter==0){
-					//FricStatus = FricStatus_Stop;
-					StirMotorStatus = StirStatus_Stop;
-					}
-				else{
-					FricStatus = FricStatus_Working_High;
-				}
-			}
-			StirMotor_Control();
-			
-			
-			Shoot_CAN_Send(Fric_3508_Motor[0].Output,Fric_3508_Motor[1].Output,StirMotor.Output);
-			vTaskDelayUntil(&xLastWakeUpTime, 5);
-		}
+		StirMotor_Control();
+		
+		
+		Shoot_CAN_Send(Fric_3508_Motor[0].Output,Fric_3508_Motor[1].Output,StirMotor.Output);
+		vTaskDelayUntil(&xLastWakeUpTime, 5);
+	}
 			
 };
 
@@ -70,19 +60,17 @@ void Motor_3508_PID_Init(void){
   * @note   
   */
 
-void Fric_3508_Motor_Speed_Set(void)
-{
+void Fric_3508_Motor_Speed_Set(void){
+	
 	int speed=0;
-		if (FricStatus == FricStatus_Stop)
-		{
-			speed = 0;
-		}
-		else
-		{	
-			if (FricStatus == FricStatus_Working_Low)
-				speed = SPEEDMID;
-			else if (FricStatus == FricStatus_Working_High)
-				speed = SPEEDMAX;
+	if(FricStatus == FricStatus_Stop){
+		speed = 0;
+	}
+	else{	
+		if (FricStatus == FricStatus_Working_Low)
+			speed = SPEEDMID;
+		else if (FricStatus == FricStatus_Working_High)
+			speed = SPEEDMAX;
 		}
 	Fric_3508_Motor[0].TargetSpeed = -speed;
 	Fric_3508_Motor[1].TargetSpeed = speed;
@@ -125,22 +113,28 @@ void StirMotor_Init(void)
   StirMotor.TargetSpeed = 0;
 }
 
+
 /**
  * @description: 拨盘电机控制
  * @param {void} 
  * @return: void
  * @note: 
  */
+
+int HeatControl=0;
+
+int HeatStatus=1;
+
 uint8_t HeatFlag = 0; //是否超热量
 int16_t targetspeed = 4200; //拨盘转速
 uint8_t ShootCounter=0; 
 void StirMotor_Control(void)
-{
-if(ext_power_heat_data.shooter_heat0>=200)
+{	
+	if(ext_power_heat_data.shooter_id1_17mm_cooling_heat>=200)
 	{
 		HeatFlag=0;
 	}
-	else if(ext_power_heat_data.shooter_heat0<120)
+	else if(ext_power_heat_data.shooter_id1_17mm_cooling_heat<120)
 	{
 		HeatFlag=1;
 	}
@@ -180,6 +174,26 @@ if(ext_power_heat_data.shooter_heat0>=200)
 	}
 	if(HeatFlag ==0)
 		StirMotor.TargetSpeed=0;
+
+	if(StirMotor.TargetSpeed!=0){
+		if(HeatStatus)
+		{
+			HeatControl+=3;	
+		}
+		else HeatControl-=2;
+	}
+	if(HeatControl>600)
+	{	
+		HeatStatus=0;
+	}
+	
+	if(HeatControl<10)
+	{
+		HeatStatus=1;
+	}
+	if(HeatStatus == 0) StirMotor.TargetSpeed=0;
+	
+  if(TxMessage.get_hurt) StirMotor.TargetSpeed=0;
 
 	Stir_Motor_Speed_Control(&StirMotor);
 	
