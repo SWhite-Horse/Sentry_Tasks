@@ -8,9 +8,10 @@
 #include "Task_JetsonComm.h"
 
 
-uint16_t time_cnt = 0; //判断被打之后加速运动，计时
-uint16_t tim_cnt = 0; //在测距失效之后运动模式，计时
 
+uint16_t tim_cnt = 0; //在测距失效之后运动模式，计时
+extern uint8_t get_hurted; //判断是否受到伤害
+extern int HeatStatus;
 Motor3508_type Chassis_Motor[2];
 
 /**************************************************
@@ -84,7 +85,6 @@ void Chassis_PID_Ctrl(Motor3508_type *chassis)
   * @note   目前是正输出向主控模块安装位置的反向行驶（记得排查）
   */
 
-extern uint8_t get_hurted; //判断是否受到伤害
 //*** 以下是光电开关使用 ***//
 //int Target_speed_auto;
 ////*** 以下是红外使用 ***//
@@ -119,12 +119,11 @@ void Chassis_Speed_Set(void){
 	if(RxMessage.controlmode == ControlMode_Aimbot){
 		if(RxMessage.speed == 1500 || DataRecFromJetson.SentryGimbalMode == ServoMode)  // 下云台或者上云台是伺服模式时
 		{
-			if(get_hurted) Target_speed  = 2400;
-			else Target_speed  = 300;
+			if(HeatStatus) Target_speed  = 300;
+			else Target_speed  = 2800;
 		}
 		else
-			Target_speed = 2400;
-		
+			Target_speed = 2600;
 	}
 	else // 非自瞄模式就是下云台传输数据
 		Target_speed  = RxMessage.speed;
@@ -146,13 +145,7 @@ void Chassis_Speed_Set(void){
 	}
 		
 		//判断是否受到伤害
-	if(get_hurted){		
-		time_cnt++;
-	} 
-	if(time_cnt>2000){  //10s
-		get_hurted = 0;
-		time_cnt = 0;
-	}
+
 		
   // 以下部分对不同位置，根据控制模式不同做速度方向确定
 	if(RxMessage.controlmode == ControlMode_Telecontrol_UP||RxMessage.controlmode == ControlMode_Telecontrol_DOWN){ //遥控模式
@@ -171,6 +164,7 @@ void Chassis_Speed_Set(void){
 		if(right_detected==1 && left_detected == 0 ){  
 			Target_speed = -Target_speed;
 		}
+		if(get_hurted==2) Target_speed = -Target_speed;
 	}
 	
 	//最后做对电机输出目标的赋值
@@ -178,147 +172,6 @@ void Chassis_Speed_Set(void){
 	Chassis_Motor[1].TargetSpeed = Target_speed; 
 }
 
-//void Chassis_Speed_Set(void){
-//				
-////		if(ControlMode == ControlMode_Telecontrol_UP) //遥控模式
-////	  {
-////			Target_speed =-6000 * Get_Channel_Val(&RC_ReceiveData,RC_CH0) / RC_CH_MAX_RELATIVE;
-////		}
-////		else if(ControlMode== ControlMode_Aimbot)
-////			{
-////				if(Distance<=left) {
-////					right_singal=0;
-////					left_singal=1;
-////				}
-////				if(Distance>=right) {
-////					right_singal=1;
-////					left_singal=0;
-////				}
-////				Target_speed=8000;
-////				if(right_singal==0){
-////					Target_speed=-Target_speed;
-////				}				
-////			}
-////			Chassis_Motor[0].TargetSpeed = Target_speed; 
-////			Chassis_Motor[1].TargetSpeed = -Target_speed; 
-////	return;
-//			
-//	if(RxMessage.controlmode == ControlMode_Telecontrol_UP||RxMessage.controlmode == ControlMode_Telecontrol_DOWN) //遥控模式
-//	{	
-//		//判断是否到达左边或右边
-//		if(LeftSwitch==0)
-//		{
-//			left_detected = 1;
-//			right_detected = 0;
-//		}
-//		if(RightSwitch==0)
-//		{
-//			right_detected = 1;
-//			left_detected = 0;
-//		}
-//		
-//		Target_speed  = RxMessage.speed;
-//		
-//		//根据位置确定速度正负
-//		if(left_detected==1)
-//		{
-//			if(Target_speed < 0)
-//			{
-//				Target_speed = -Target_speed; 
-//			}			
-//		}
-//		if(right_detected==1)
-//		{
-//			if(Target_speed > 0)
-//			{
-//				Target_speed = Target_speed; 
-//			}			
-//		}
-//		if(right_detected==1 && left_detected==1)
-//		{
-//			Target_speed = -Target_speed; 
-//		}
-//	}
-//	else if(RxMessage.controlmode == ControlMode_Aimbot) //自瞄模式
-//	{
-////		if(Rxmessage.chassis_servo==2)
-////		{
-//			if(LeftSwitch==0 && RightSwitch==1)
-//			{
-//				left_detected = 1;
-//				right_detected = 0;
-//			}
-//			else if(RightSwitch==0 && LeftSwitch==1)
-//			{
-//				right_detected = 1;
-//				left_detected = 0;
-//			}
-//			else if(RightSwitch==0 && LeftSwitch==0)
-//			{
-//				right_detected = 1;
-//				left_detected = 1;
-//			}
-//			
-//			Target_speed_auto = RxMessage.speed;
-//			
-//			if(left_detected == 1 && right_detected != 1)
-//			{
-//				Target_speed_auto = Target_speed_auto; 
-//			}
-//			if(right_detected == 1 && left_detected != 1)
-//			{
-//				Target_speed_auto = -Target_speed_auto; 		
-//			}
-//			//异常检测
-//			if(right_detected == 1 && left_detected == 1)
-//			{
-//				if(tim_cnt>800)
-//				{
-//					Target_speed_auto = -Target_speed_auto; 
-//					tim_cnt=0;
-//				}
-//				else
-//				{
-//					Target_speed_auto = Target_speed_auto;
-//				}		
-//				
-//				if(RxMessage.speed==8000)
-//				{
-//					tim_cnt+=2;
-//				}
-//				else 
-//					tim_cnt++;
-//			}
-////		
-//		//判断是否受到伤害
-//		if(get_hurted) 
-//		{		
-//			time_cnt++;
-//		} 
-//		if(time_cnt>2000)  //10s
-//		{
-//			get_hurted = 0;
-//			time_cnt = 0;
-//		}
-//		
-//		Chassis_Motor[0].TargetSpeed = - Target_speed_auto; 
-//		Chassis_Motor[1].TargetSpeed = Target_speed_auto; 
-//		
-//		return ;
-//	}
-
-////	//保护模式
-////	else if(RxMessage.controlmode == ControlMode_Telecontrol_DOWN) 
-////	{
-////		Target_speed = 0; 
-////	}
-////		
-
-//	Chassis_Motor[0].TargetSpeed = - Target_speed; 
-//	Chassis_Motor[1].TargetSpeed = Target_speed; 
-
-//			
-//};
 
 /**
   * @brief  底盘功率限制

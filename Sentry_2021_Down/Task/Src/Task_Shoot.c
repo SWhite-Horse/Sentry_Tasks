@@ -188,6 +188,9 @@ void StirMotor_Control(void)
 		}
 		else HeatControl-=2;
 	}
+	//else if(HeatControl>=0)
+		//HeatControl-=2;
+	
 	if(HeatControl>600)
 	{	
 		HeatStatus=0;
@@ -199,7 +202,7 @@ void StirMotor_Control(void)
 	}
 	if(HeatStatus == 0) StirMotor.TargetSpeed=0;
 	
-	if(RxMessage.get_hurt) StirMotor.TargetSpeed=0;
+	//if(RxMessage.get_hurt) StirMotor.TargetSpeed=0;
 	Stir_Motor_Speed_Control(&StirMotor);
 	
 }

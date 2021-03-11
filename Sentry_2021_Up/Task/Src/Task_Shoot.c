@@ -85,18 +85,18 @@ void Fric_3508_Motor_Speed_Set(void){
 
 void Motor_3508_PID_Calculate(Motor3508_type *motor){
 	
-		motor->PID.Last_Error = motor->PID.Cur_Error;
-		motor->PID.Cur_Error = motor->TargetSpeed - motor->RealSpeed;
-		motor->PID.Sum_Error += motor->PID.Cur_Error;
+	motor->PID.Last_Error = motor->PID.Cur_Error;
+	motor->PID.Cur_Error = motor->TargetSpeed - motor->RealSpeed;
+	motor->PID.Sum_Error += motor->PID.Cur_Error;
 	
-		motor->PID.Sum_Error = motor->PID.Sum_Error > 15000 ? 15000 : motor->PID.Sum_Error;
-		motor->PID.Sum_Error = motor->PID.Sum_Error < -15000 ? -15000 : motor->PID.Sum_Error;
+	motor->PID.Sum_Error = motor->PID.Sum_Error > 15000 ? 15000 : motor->PID.Sum_Error;
+	motor->PID.Sum_Error = motor->PID.Sum_Error < -15000 ? -15000 : motor->PID.Sum_Error;
 	// **考虑添加清零
-		motor->Output = (motor->PID.Kp * motor->PID.Cur_Error + motor->PID.Ki * motor->PID.Sum_Error + motor->PID.Kd * (motor->PID.Cur_Error - motor->PID.Last_Error));
+	motor->Output = (motor->PID.Kp * motor->PID.Cur_Error + motor->PID.Ki * motor->PID.Sum_Error + motor->PID.Kd * (motor->PID.Cur_Error - motor->PID.Last_Error));
 
-		 //限制输出电流
-		motor->Output = (motor->Output >= C620CURRENTMAX) ? C620CURRENTMAX : motor->Output;
-		motor->Output = (motor->Output <= -C620CURRENTMAX) ? -C620CURRENTMAX : motor->Output;
+	//限制输出电流
+	motor->Output = (motor->Output >= C620CURRENTMAX) ? C620CURRENTMAX : motor->Output;
+	motor->Output = (motor->Output <= -C620CURRENTMAX) ? -C620CURRENTMAX : motor->Output;
 };
 
 /**
@@ -175,6 +175,7 @@ void StirMotor_Control(void)
 	if(HeatFlag ==0)
 		StirMotor.TargetSpeed=0;
 
+	
 	if(StirMotor.TargetSpeed!=0){
 		if(HeatStatus)
 		{
@@ -182,6 +183,9 @@ void StirMotor_Control(void)
 		}
 		else HeatControl-=2;
 	}
+	//else if(HeatControl>=0)
+		//HeatControl-=2;
+	
 	if(HeatControl>600)
 	{	
 		HeatStatus=0;
@@ -193,7 +197,7 @@ void StirMotor_Control(void)
 	}
 	if(HeatStatus == 0) StirMotor.TargetSpeed=0;
 	
-  if(TxMessage.get_hurt) StirMotor.TargetSpeed=0;
+  //if(TxMessage.get_hurt) StirMotor.TargetSpeed=0;
 
 	Stir_Motor_Speed_Control(&StirMotor);
 	

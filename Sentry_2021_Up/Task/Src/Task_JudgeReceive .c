@@ -25,7 +25,7 @@ ext_video_transmitter_t ext_video_transmitter;
 
 
 int currentSpeed=0,lastSpeed=0;
-extern uint16_t time_cnt;
+uint16_t time_cnt;
 int JudgeReceive_Counter;
 uint8_t chassis_power = 0;
 uint8_t get_hurted = 0;
@@ -240,6 +240,14 @@ switch (CmdID)
 					get_hurted = 1;
 					time_cnt=0;
 				}
+				if(get_hurted){		
+					time_cnt++;
+				}
+				if(time_cnt>1000){  //10s
+					get_hurted = 0;
+					time_cnt = 0;
+				}
+				else if(time_cnt>500) get_hurted = 2;
 				if(ext_robot_hurt.hurt_type == 0x04)
 					chassis_power = 1;
 				

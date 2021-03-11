@@ -27,7 +27,7 @@ int16_t Y_DeltaAngle;
 int16_t P_KFoutput;
 int16_t Y_KFoutput;
 
-
+uint16_t target=0;
 /*********************************
   * @brief  初始化任务
   * @param  unused
@@ -83,7 +83,7 @@ void Gimbal_Init(void)
 	Pitch.PositionPID.Kd = 3.5;//0.6;//
 	
 	//抬头初始化	
-	Pitch.TargetAngle = 30;
+	Pitch.TargetAngle = 9;
 		
 }
 		
@@ -231,7 +231,7 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
   * @param  重力补偿角
   * @retval 
   */
-float Gravity = 850;
+float Gravity = -450;
 int16_t PitchGravityCompensation(float Angle)
 {
     return (int16_t)(Gravity * sin((Angle-0) / 180 * Pi));
