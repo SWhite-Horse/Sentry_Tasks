@@ -66,24 +66,24 @@ void Task_Gimbal(void *parameters)
 void Gimbal_Init(void)
 {
 	
-	Yaw.SpeedPID.Kp =30 ;//25;// 6;
+	Yaw.SpeedPID.Kp =60;//30 ;
 	Yaw.SpeedPID.Ki = 0.3;//0.3;
-	Yaw.SpeedPID.Kd = 0;
+	Yaw.SpeedPID.Kd = 8;
 	
-	Yaw.PositionPID.Kp = 20;//18;
+	Yaw.PositionPID.Kp = 20;//20;
 	Yaw.PositionPID.Ki = 0;
-	Yaw.PositionPID.Kd = 2;//4;
+	Yaw.PositionPID.Kd = 4;//2;
 	
-	Pitch.SpeedPID.Kp = 140;//
+	Pitch.SpeedPID.Kp = 170;//
 	Pitch.SpeedPID.Ki = 0.5;//
-	Pitch.SpeedPID.Kd = 2;//
+	Pitch.SpeedPID.Kd = 5;//
 
 	Pitch.PositionPID.Kp = 18;//16;//
-	Pitch.PositionPID.Ki = 0;//0.36;/
+	Pitch.PositionPID.Ki = 0.1;//0.36;/
 	Pitch.PositionPID.Kd = 3.5;//0.6;//
 	
 	//抬头初始化	
-	Pitch.TargetAngle = 9;
+	Pitch.TargetAngle = 26;
 		
 }
 		

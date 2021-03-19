@@ -261,7 +261,7 @@
         <Ww>
           <count>22</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Pitch</ItemText>
+          <ItemText>Pitch,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>23</count>

@@ -29,14 +29,14 @@ void Task_Communication(void *parameters)
 		if(ControlMode==ControlMode_Aimbot)
 		{		
 			if(DataRecFromJetson.SentryGimbalMode==ServoMode){
-				if(RxMessage.get_hurt){
+				if(RxMessage.get_hurt==3){
 					TxMessage.Chassis_speed = 2400;	
 				}
 				else 
 					TxMessage.Chassis_speed=1500;	
 			}
 			else
-				TxMessage.Chassis_speed = 2400;		
+				TxMessage.Chassis_speed = 3000;		
 						
 		}	
 		else if(ControlMode==ControlMode_Telecontrol_UP)

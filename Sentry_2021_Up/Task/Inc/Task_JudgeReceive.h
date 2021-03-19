@@ -2,6 +2,7 @@
 #define __TASKJUDGERECEIVE_H
 
 #include "Task_init.h"
+extern uint8_t Turn_sign;
 
 
 /*--------------CmdID(2-Byte)----------------*/

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Sentry_2021_Down\Sentry_2021_Down.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Sentry_2021_Down\Sentry_2021_Down.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Wed Mar 10 21:13:30 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Tue Mar 16 21:42:45 2021
 <BR><P>
 <H3>Maximum Stack Usage =        328 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -835,7 +835,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_Gimbal
 </UL>
 
-<P><STRONG><a name="[115]"></a>Gimbal_Init</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, task_gimbal.o(i.Gimbal_Init))
+<P><STRONG><a name="[115]"></a>Gimbal_Init</STRONG> (Thumb, 110 bytes, Stack size 0 bytes, task_gimbal.o(i.Gimbal_Init))
 <BR><BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_Gimbal
 </UL>
 
@@ -1580,8 +1580,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StirMotor_Control
 </UL>
 
-<P><STRONG><a name="[10e]"></a>StirMotor_Control</STRONG> (Thumb, 192 bytes, Stack size 20 bytes, task_shoot.o(i.StirMotor_Control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = StirMotor_Control &rArr; StirMotor_Blocked_Detect
+<P><STRONG><a name="[10e]"></a>StirMotor_Control</STRONG> (Thumb, 214 bytes, Stack size 24 bytes, task_shoot.o(i.StirMotor_Control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = StirMotor_Control &rArr; StirMotor_Blocked_Detect
 </UL>
 <BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Stir_Motor_Speed_Control
 <LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StirMotor_Blocked_Detect
@@ -1651,7 +1651,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> task_init.o(i.Task_Init)
 </UL>
-<P><STRONG><a name="[71]"></a>Task_Communication</STRONG> (Thumb, 140 bytes, Stack size 8 bytes, task_communication.o(i.Task_Communication))
+<P><STRONG><a name="[71]"></a>Task_Communication</STRONG> (Thumb, 146 bytes, Stack size 8 bytes, task_communication.o(i.Task_Communication))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = Task_Communication &rArr; CAN_Com_Send &rArr; xQueueGenericSend &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_Channel_Val

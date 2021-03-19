@@ -29,7 +29,9 @@ uint16_t time_cnt;
 int JudgeReceive_Counter;
 uint8_t chassis_power = 0;
 uint8_t get_hurted = 0;
-uint16_t bullet_test=0;
+
+uint8_t Turn_sign = 0;
+uint16_t HP_Remain = 600;
 
 /**
   * @brief  裁判系统
@@ -235,19 +237,20 @@ switch (CmdID)
     case ROBOT_HURT:
     {
         memcpy(&ext_robot_hurt, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), ROBOT_HURT_DATA_SIZE);
-				if(ext_robot_hurt.hurt_type == 0x00)
-				{
-					get_hurted = 1;
-					time_cnt=0;
+				
+				if(ext_robot_hurt.hurt_type == 0x00 && (HP_Remain > ext_game_robot_state.remain_HP)&&get_hurted!=3)
+				{	
+					if(HP_Remain - ext_game_robot_state.remain_HP > 30)
+						get_hurted = 3;
+					else get_hurted+=1;
+					if(get_hurted==3 && !Turn_sign) Turn_sign = 1;
+					//time_cnt=0;
 				}
-				if(get_hurted){		
-					time_cnt++;
-				}
-				if(time_cnt>1000){  //10s
-					get_hurted = 0;
-					time_cnt = 0;
-				}
-				else if(time_cnt>500) get_hurted = 2;
+				
+
+				
+				HP_Remain = ext_game_robot_state.remain_HP;
+
 				if(ext_robot_hurt.hurt_type == 0x04)
 					chassis_power = 1;
 				

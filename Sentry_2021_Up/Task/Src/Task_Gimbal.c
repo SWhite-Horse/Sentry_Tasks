@@ -38,7 +38,6 @@ int16_t Y_KFoutput;
 void Task_Gimbal(void *parameters)
 {
 	TickType_t xPreviousWakeTime;
-	//vTaskDelay(2000); //？？？？ 
 	Gimbal_Init(); 
 //	Gimal_Calibrate();
 
@@ -76,13 +75,13 @@ void Gimbal_Init(void)
 	Yaw.PositionPID.Ki = 0;
 	Yaw.PositionPID.Kd = 3;
 	
-	Pitch.SpeedPID.Kp =120;//140;//170;//100;
-	Pitch.SpeedPID.Ki = 0.4;//0.5;//0.8;
-	Pitch.SpeedPID.Kd = 0.2;
+	Pitch.SpeedPID.Kp =125;//120;
+	Pitch.SpeedPID.Ki = 0.4;//0.4;
+	Pitch.SpeedPID.Kd = 1;//0.2;
 
-	Pitch.PositionPID.Kp = 20;//18;//18
-	Pitch.PositionPID.Ki = 0.15;//0.2;//0.2
-	Pitch.PositionPID.Kd = 0;//0;//-0.2
+	Pitch.PositionPID.Kp = 20;//20;
+	Pitch.PositionPID.Ki = 0.15;//0.15;
+	Pitch.PositionPID.Kd = 1;//0;
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 20;

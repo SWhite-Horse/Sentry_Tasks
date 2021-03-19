@@ -8,10 +8,11 @@
 #include "Task_JetsonComm.h"
 
 
-
-uint16_t tim_cnt = 0; //在测距失效之后运动模式，计时
+uint16_t tim_cnt;
+extern uint16_t time_cnt; //在测距失效之后运动模式，计时
 extern uint8_t get_hurted; //判断是否受到伤害
 extern int HeatStatus;
+uint8_t get_ =0;
 Motor3508_type Chassis_Motor[2];
 
 /**************************************************
@@ -114,16 +115,27 @@ void Chassis_Speed_Set(void){
 		right_detected = 1;
 		left_detected = 1;
 	}
+	else if(RxMessage.controlmode != ControlMode_Aimbot && RightSwitch==1 && LeftSwitch==1){
+		right_detected = 0;
+		left_detected = 0;
+	}
+	
+	if(RxMessage.controlmode == ControlMode_Aimbot && Turn_sign) {
+		Turn_sign = 0;
+		get_++;
+		right_detected = right_detected ? 0:1 ;
+		left_detected = left_detected ? 0:1;
+	}
 	
   //速度赋值(数据为正值，但是要确定方向要根据电机安装方式和PID正负综合确定，如果相反，此处取反一般即可）：
 	if(RxMessage.controlmode == ControlMode_Aimbot){
 		if(RxMessage.speed == 1500 || DataRecFromJetson.SentryGimbalMode == ServoMode)  // 下云台或者上云台是伺服模式时
 		{
-			if(HeatStatus) Target_speed  = 300;
+			if(get_hurted!=3) Target_speed  = 300;
 			else Target_speed  = 2800;
 		}
 		else
-			Target_speed = 2600;
+			Target_speed = 3000;
 	}
 	else // 非自瞄模式就是下云台传输数据
 		Target_speed  = RxMessage.speed;
@@ -164,7 +176,14 @@ void Chassis_Speed_Set(void){
 		if(right_detected==1 && left_detected == 0 ){  
 			Target_speed = -Target_speed;
 		}
-		if(get_hurted==2) Target_speed = -Target_speed;
+
+	}
+	if(get_hurted==3){		
+		time_cnt++;	
+	}
+	if(time_cnt>600){  //10s
+		get_hurted = 0;
+		time_cnt = 0;
 	}
 	
 	//最后做对电机输出目标的赋值

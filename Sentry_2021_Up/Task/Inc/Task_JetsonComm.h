@@ -58,9 +58,9 @@ typedef struct
     float TargetPitchAngle; //Pitch目标角度
     float TargetYawAngle;   //Yaw目标角度
     /*  哨兵专用   */
-    int16_t TargetSpeedOnRail; //目标轨道速度（哨兵用）
+    //int16_t TargetSpeedOnRail; //目标轨道速度（哨兵用）
     uint8_t SentryGimbalMode;  //哨兵云台攻击模式
-		uint8_t chassis_mode;
+		//uint8_t chassis_mode;
     uint8_t EoF;
 } JetsonToSTM_Struct;
 
@@ -83,14 +83,10 @@ typedef struct
     uint8_t NeedMode;   //所需控制模式
     uint8_t ShootSpeed; //射速
     /*  哨兵专用   */
-    uint8_t RailNum;      //所处轨道标号
     uint8_t ArmorType;    //被打击装甲板标识
     uint16_t RemainHP;    //剩余血量
-		uint16_t location;    //当前位置
-		uint16_t BulletRemain;//剩余子弹数量
-		uint8_t IsHuarted;   //是否受到伤害
-		uint8_t TeamFlag;
-    uint8_t Reserved[5]; //保留字节
+		uint16_t chassis_power; //当前功率
+    uint8_t Reserved[10]; //保留字节
     uint8_t EoF;
 } STMToJetson_Struct;
 

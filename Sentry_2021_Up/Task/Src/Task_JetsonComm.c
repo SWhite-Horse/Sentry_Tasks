@@ -106,16 +106,16 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   else if (DataRecFromJetson.ShootMode == CommStatus.team)
   {
 			
-		CommStatus.CommSuccess = 1;
+		CommStatus.CommSuccess = 1;////////// 改
   }
   //请求数据传送
   else if (DataRecFromJetson.ShootMode == RequestTrans)
   {
     DataSendToJetson.Seq++;
     DataSendToJetson.NeedMode = ShootStatus;
-		DataSendToJetson.location = Distance;
-		DataSendToJetson.BulletRemain=200;   //////// gai dong
-		DataSendToJetson.IsHuarted=get_hurted;  
+//		DataSendToJetson.location = Distance;
+//		DataSendToJetson.BulletRemain=200;   //////// gai dong
+//		DataSendToJetson.IsHuarted=get_hurted;  
     HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson, sizeof(STMToJetson_Struct));
   }
   //记录当前角度
