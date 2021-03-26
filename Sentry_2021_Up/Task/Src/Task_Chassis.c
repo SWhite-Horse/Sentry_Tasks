@@ -181,7 +181,7 @@ void Chassis_Speed_Set(void){
 	if(get_hurted==3){		
 		time_cnt++;	
 	}
-	if(time_cnt>600){  //10s
+	if(time_cnt>600){  
 		get_hurted = 0;
 		time_cnt = 0;
 	}

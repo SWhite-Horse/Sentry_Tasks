@@ -160,6 +160,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
     Jetson_AnglePitch = Pitch_Desire;
     //Yaw轴的目标角度
 		
+		// 改 下三个 if
 		if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
 		{
 			Yaw_Desire = JetsonFlag[Jetson_Seq].CurAngle_Yaw + DataRecFromJetson.TargetYawAngle;
@@ -239,15 +240,15 @@ void KF_Init()
   KF_Gimbal_Pitch_init.H_data[2] = 0;
   KF_Gimbal_Pitch_init.H_data[3] = 1;
   //matrix Q init
-  KF_Gimbal_Pitch_init.Q_data[0] = 1;
+  KF_Gimbal_Pitch_init.Q_data[0] = 0.94;
   KF_Gimbal_Pitch_init.Q_data[1] = 0;
   KF_Gimbal_Pitch_init.Q_data[2] = 0;
-  KF_Gimbal_Pitch_init.Q_data[3] = 1;
+  KF_Gimbal_Pitch_init.Q_data[3] = 0.94;
   //matrix R init
-  KF_Gimbal_Pitch_init.R_data[0] = 250;
+  KF_Gimbal_Pitch_init.R_data[0] = 50;
   KF_Gimbal_Pitch_init.R_data[1] = 0;
   KF_Gimbal_Pitch_init.R_data[2] = 0;
-  KF_Gimbal_Pitch_init.R_data[3] = 2000;
+  KF_Gimbal_Pitch_init.R_data[3] = 3;
 	
 	KF_Gimbal_Pitch_init.xhat_data[0] = PITCH_ANGLE;
   KF_Gimbal_Pitch_init.xhat_data[1] = 0;
@@ -269,15 +270,15 @@ void KF_Init()
   KF_Gimbal_Yaw_init.H_data[3] = 1;
 
   //matrix Q init
-  KF_Gimbal_Yaw_init.Q_data[0] = 1;
+  KF_Gimbal_Yaw_init.Q_data[0] = 0.9;
   KF_Gimbal_Yaw_init.Q_data[1] = 0;
   KF_Gimbal_Yaw_init.Q_data[2] = 0;
-  KF_Gimbal_Yaw_init.Q_data[3] = 1;
+  KF_Gimbal_Yaw_init.Q_data[3] = 0.9;
   //matrix R init
-  KF_Gimbal_Yaw_init.R_data[0] = 130;
+  KF_Gimbal_Yaw_init.R_data[0] = 60;
   KF_Gimbal_Yaw_init.R_data[1] = 0;
   KF_Gimbal_Yaw_init.R_data[2] = 0;
-  KF_Gimbal_Yaw_init.R_data[3] = 500;
+  KF_Gimbal_Yaw_init.R_data[3] = 3;
 	
 	KF_Gimbal_Yaw_init.xhat_data[0] = YAW_ANGLE;
   KF_Gimbal_Yaw_init.xhat_data[1] = 0;
@@ -301,7 +302,7 @@ void KF_Cal_Desire()
                               //+ JetsonFlag[Jetson_Seq].Velocity_Pitch*JetsonFlag[Jetson_Seq].Cal_time/1000,
                               Jetson_VelocityPitch, Jetson_AccelerationPitch);
   //计算出滤波之后的目标角变化量
-  Pitch_Desire = result[0] + 0.07f * result[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
+  Pitch_Desire = result[0] + 0.05f * result[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
 
   //得到滤波后的目标角
   result = kalman_filter_calc(&KF_Gimbal_Yaw,
@@ -310,7 +311,7 @@ void KF_Cal_Desire()
                               Jetson_VelocityYaw, Jetson_AccelerationYaw);
 
   //计算出滤波之后的目标角变化量
-  Yaw_Desire = result[0] + 0.08f * result[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
+  Yaw_Desire = result[0] + 0.03f * result[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
 }
 
 void Version_Init()

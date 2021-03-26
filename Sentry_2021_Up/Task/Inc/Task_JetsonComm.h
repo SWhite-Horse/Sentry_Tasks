@@ -85,8 +85,8 @@ typedef struct
     /*  哨兵专用   */
     uint8_t ArmorType;    //被打击装甲板标识
     uint16_t RemainHP;    //剩余血量
-		uint16_t chassis_power; //当前功率
-    uint8_t Reserved[10]; //保留字节
+		float chassis_power; //当前功率
+    uint8_t Reserved[8]; //保留字节
     uint8_t EoF;
 } STMToJetson_Struct;
 

@@ -213,6 +213,7 @@ switch (CmdID)
     case POWER_HEAT_DATA:
     {
         memcpy(&ext_power_heat_data, (Judge_Receive_Buffer + JUDGE_DATA_OFFSET + SOF), POWER_HEAT_DATA_SIZE);
+				chassis_power = ext_power_heat_data.chassis_power;
         break;
     }
     //12.机器人位置数据(0X0203)

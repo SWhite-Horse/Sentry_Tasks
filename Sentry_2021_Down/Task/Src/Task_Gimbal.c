@@ -174,10 +174,10 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					Version_Init();
 				}
 					
-//			if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
-//			{
-//				KF_Cal_Desire();
-//			}		
+//				if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
+//				{
+//					KF_Cal_Desire();
+//				}		
 					
 					
 				 //瞄准之后角度确立

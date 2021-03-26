@@ -1,4 +1,4 @@
-#define __TASK_FRICMOTOR_GLOBALS
+ #define __TASK_FRICMOTOR_GLOBALS
 #include "Task_Shoot.h"
 #include "Task_Communication.h"
 #include "Task_JetsonComm.h"
@@ -130,7 +130,7 @@ int HeatStatus=1;
  * @note: 
  */
 uint8_t HeatFlag = 0; //是否超热量
-int16_t targetspeed = -4200; //拨盘转速
+int16_t targetspeed = -7500; //拨盘转速
 uint8_t ShootCounter=0; 
 void StirMotor_Control(void)
 { 
