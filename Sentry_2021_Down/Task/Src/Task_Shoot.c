@@ -11,32 +11,34 @@ int16_t fric_motor_debug = 0;
 
 void Task_Shoot(void *parameters){
 	
-		StirMotor_Init();
-		Motor_3508_PID_Init();
+	StirMotor_Init();
+	Motor_3508_PID_Init();
 
-		TickType_t xLastWakeUpTime;
-		xLastWakeUpTime = xTaskGetTickCount();
-		while(1){
-			Fric_3508_Motor_Speed_Set();
-			Motor_3508_PID_Calculate(&Fric_3508_Motor[0]);
-			Motor_3508_PID_Calculate(&Fric_3508_Motor[1]);
-
-			Motor_3508_Send(Fric_3508_Motor[0].Output,Fric_3508_Motor[1].Output);
-			
-			if(DataRecFromJetson.SentryGimbalMode == ServoMode && ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 ){
-			if(RxMessage.mains_power_shooter==0){
-				//FricStatus = FricStatus_Stop;
-				//StirMotorStatus = StirStatus_Stop;
-			}
-			else{
+	TickType_t xLastWakeUpTime;
+	xLastWakeUpTime = xTaskGetTickCount();
+	while(1){
+		
+		if(ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 ){
+			//****** 发射口电源不断电
+			if( RxMessage.mains_power_shooter==1 && RxMessage.Is_gaming != Game_prepare){
 				FricStatus = FricStatus_Working_High;
 			}
+			else{
+				FricStatus = FricStatus_Stop;
+				StirMotorStatus = StirStatus_Stop;
+			}
 		}
+		
+		Fric_3508_Motor_Speed_Set();
+		Motor_3508_PID_Calculate(&Fric_3508_Motor[0]);
+		Motor_3508_PID_Calculate(&Fric_3508_Motor[1]);
+		
+		Motor_3508_Send(Fric_3508_Motor[0].Output,Fric_3508_Motor[1].Output);
+		
 		StirMotor_Control();
-			//Stir_CAN_Send(StirMotor.Output);///发送在Gimbal里面
-			vTaskDelayUntil(&xLastWakeUpTime, 5);
-		}
-			
+		//Stir_CAN_Send(StirMotor.Output);///发送在Gimbal里面
+		vTaskDelayUntil(&xLastWakeUpTime, 5);
+	}			
 };
 
 /**
@@ -120,8 +122,7 @@ void StirMotor_Init(void)
   StirMotor.TargetSpeed = 0;
 }
 
-int HeatControl=0;
-int HeatStatus=1;
+
 
 /**
  * @description: 拨盘电机控制
@@ -130,17 +131,35 @@ int HeatStatus=1;
  * @note: 
  */
 uint8_t HeatFlag = 0; //是否超热量
-int16_t targetspeed = -7500; //拨盘转速
+int16_t targetspeed = -5500; //拨盘转速
 uint8_t ShootCounter=0; 
+uint8_t Heat_limit_method=0;
+int HeatControl=0;
+
 void StirMotor_Control(void)
 { 
-	if(RxMessage.Heat>=200)
-	{
-		HeatFlag=0;
+	// 根据上与台读到的裁判系统数据中是否含有下云台枪口射速上限来判断比赛是否开始，从而选择不同的热量限制策略
+	Heat_limit_method = RxMessage.Shoot_Speed_limit==30 ? 1 : 0; 
+	if(Heat_limit_method){
+		if(RxMessage.Heat>=280)
+		{
+			HeatFlag=0;
+		}
+		else if(RxMessage.Heat<=120)
+		{
+			HeatFlag=1;
+		}
 	}
-	else if(RxMessage.Heat<=120)
-	{
-		HeatFlag=1;
+	else{
+		if(HeatControl>800)
+		{	
+			HeatFlag=0;
+		}
+	
+		if(HeatControl<10)
+		{
+			HeatFlag=1;
+		}
 	}
 	//遥控模式
 	if(ControlMode == ControlMode_Telecontrol_DOWN)
@@ -151,7 +170,7 @@ void StirMotor_Control(void)
 			StirMotor.TargetSpeed = 0;
 	}
 	//自瞄并且已经瞄到
-	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode)// && RxMessage.mains_power_shooter==1 && HeatFlag==1)
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode && RxMessage.mains_power_shooter==1 && HeatFlag==1)
 	{
 		if((DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
 		{
@@ -182,25 +201,28 @@ void StirMotor_Control(void)
 	
 	
 	if(StirMotor.TargetSpeed!=0){
-		if(HeatStatus)
+		if(HeatFlag)
 		{
-			HeatControl+=4;	
+			HeatControl+=2;	
 		}
 		else HeatControl-=1;
 	}
 	else if(StirMotor.TargetSpeed==0&&HeatControl>=10)
 		HeatControl-=2;
 	
-	if(HeatControl>320)
-	{	
-		HeatStatus=0;
-	}
-	
-	if(HeatControl<10)
-	{
-		HeatStatus=1;
-	}
-	if(HeatStatus == 0 || RxMessage.get_hurt==3) StirMotor.TargetSpeed=0;
+//	
+//	if(HeatControl>600)
+//	{	
+//		HeatStatus=0;
+//	}
+//	
+//	if(HeatControl<10)
+//	{
+//		HeatStatus=1;
+//	}
+	//if(RxMessage.get_hurt==3) StirMotor.TargetSpeed=0;
+	if (FricStatus == FricStatus_Stop)
+				StirMotor.TargetSpeed = 0;
 
 	Stir_Motor_Speed_Control(&StirMotor);
 	

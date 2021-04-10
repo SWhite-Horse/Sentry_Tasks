@@ -29,21 +29,20 @@ void Task_Communication(void *parameters)
   xLastWakeUpTime = xTaskGetTickCount();
 	while(1)
 	{	
+		
+		if(ext_game_state.game_type != 0){
+			if(ext_game_state.game_progress == 4) TxMessage.Is_gaming = Gaming; 
+			else TxMessage.Is_gaming = Game_prepare;
+		}
+		else TxMessage.Is_gaming = Debug_status;
 		//将裁判系统的值赋给发送结构体
-		TxMessage.Blood = ext_game_robot_state.remain_HP;
 		TxMessage.get_hurt = get_hurted;
     TxMessage.Armour = ext_game_robot_state.robot_id;
 		TxMessage.Heat = ext_power_heat_data.shooter_id2_17mm_cooling_heat;
-		TxMessage.Shoot_Speed = ext_shoot_data.bullet_speed;
-//		TxMessage.Bullet_remaining = ext_bullet_remaining.bullet_remaining_num;
+		TxMessage.Shoot_Speed = ext_game_robot_state.shooter_id2_17mm_speed_limit;
 		TxMessage.mains_power_shooter = ext_game_robot_state.mains_power_shooter_output;
 		
 		//判断左右光电开关检测到达轨道末端
-//		if(LeftSwitch==0||RightSwitch==0)
-//			TxMessage.Toppoint_Judge = 1;
-//		else
-//			TxMessage.Toppoint_Judge = 0;
-
 		send();
 		vTaskDelayUntil(&xLastWakeUpTime, 4);
 	}
@@ -62,32 +61,17 @@ void send(void)
 
 		CANSend.stdid = 0x69;
 
-  	CANSend.Data[0] = (uint8_t)(TxMessage.Blood>>8);
-		CANSend.Data[1] = (uint8_t)(TxMessage.Blood);
+  	CANSend.Data[0] = (uint8_t)(TxMessage.Is_gaming);
+		CANSend.Data[1] = 0;//(uint8_t)(TxMessage.Blood);
   	CANSend.Data[2] = (uint8_t)(TxMessage.Armour);
   	CANSend.Data[3] = (uint8_t)(TxMessage.Heat>>8);
 		CANSend.Data[4] = (uint8_t)(TxMessage.Heat);
-  	CANSend.Data[5] = (uint8_t)(TxMessage.Shoot_Speed );
+  	CANSend.Data[5] = (uint8_t)(TxMessage.Shoot_Speed);
   	CANSend.Data[6] = (uint8_t)(TxMessage.mains_power_shooter);
   	CANSend.Data[7] = (uint8_t)(TxMessage.get_hurt);
 
 		xQueueSend(Queue_CANSend, &CANSend, 3 / portTICK_RATE_MS);
 
-//		CANSend.stdid = 0x67;
-//		CANSend.Data[0] = (uint8_t)(TxMessage.Bullet_remaining>>8);
-//		CANSend.Data[1] = (uint8_t)(TxMessage.Bullet_remaining);
-//  	CANSend.Data[2] = (uint8_t)(TxMessage.mains_power_shooter);
-//		CANSend.Data[3] = 0;
-//		CANSend.Data[4] = 0;
-//  	CANSend.Data[5] = 0;
-//  	CANSend.Data[6] = 0;
-//  	CANSend.Data[7] = 0;
-	
-//  	xQueueSend(Queue_CANSend, &CANSend, 3 / portTICK_RATE_MS);
 }
-
-
-
-
 
 

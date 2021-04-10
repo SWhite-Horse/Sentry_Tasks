@@ -13,6 +13,7 @@
 
 
 //****** 变量定义区 *******//
+
 MotorType_6020 Pitch,Yaw;
 Aimbot_RotatinPatrol_PitchMode  Aimbot_RotatinPatrol_pitchmode ;
 Aimbot_RotatinPatrol_YawMode Aimbot_RotatinPatrol_yawmode;
@@ -28,6 +29,8 @@ int16_t P_KFoutput;
 int16_t Y_KFoutput;
 
 uint16_t target=0;
+
+
 /*********************************
   * @brief  初始化任务
   * @param  unused
@@ -142,21 +145,21 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 			{				
 				StirMotorStatus = StirStatus_Stop;
 				//pitch轴巡逻范围
-				if(PITCH_ANGLE>=37)   Aimbot_RotatinPatrol_pitchmode = upward;
+				if(PITCH_ANGLE>=39)   Aimbot_RotatinPatrol_pitchmode = upward;
 				if(PITCH_ANGLE<=8)	 Aimbot_RotatinPatrol_pitchmode = downward;
 				
 				//巡逻步进设置，注意下云台没有Yaw的左右之分，上云台有	 
 				if(Aimbot_RotatinPatrol_pitchmode==upward)
 				{	
 					yaw->TargetAngle+=0.80f;
-					pitch->TargetAngle-=0.42f;					
+					pitch->TargetAngle-=0.62f;					
 					++j;
 				}
 			
 				if(Aimbot_RotatinPatrol_pitchmode==downward)
 				{		
 					yaw->TargetAngle+=0.80f;
-					pitch->TargetAngle+=0.42f;	
+					pitch->TargetAngle+=0.62f;	
 					++j;
 				}
 				
@@ -173,12 +176,12 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					KF_Versioninit = 1;
 					Version_Init();
 				}
-					
-//				if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
-//				{
-//					KF_Cal_Desire();
-//				}		
-					
+
+				   if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
+				   {
+				   	KF_Cal_Desire();
+				   }		
+				
 					
 				 //瞄准之后角度确立
 				 yaw->TargetAngle = -Yaw_Desire; //要特别注意这里的正负和电机正方向以及算法回调数据（Jeston里面Yaw_Desire的赋值语句）的关系，切记
@@ -307,7 +310,12 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
 		//yaw轴位置环
     yaw->PositionPID.Last_Error = yaw->PositionPID.Cur_Error;
 		yaw->Real_Angle=YAW_ANGLE;
-
+////修正realangle
+//		if(YAW_ANGLE>0)
+//		Correct_Y_Angle=360-YAW_ANGLE;
+//		else Correct_Y_Angle=-YAW_ANGLE;
+//
+		
     yaw->PositionPID.Cur_Error = yaw->TargetAngle + YAW_ANGLE;
 
     yaw->PositionPID.Cur_Error = yaw->PositionPID.Cur_Error > 180 ? yaw->PositionPID.Cur_Error - 360 : yaw->PositionPID.Cur_Error;

@@ -44,6 +44,7 @@ CommStatus_Struct CommStatus = {
 
 void Task_JetsonComm(void *Parameter)
 {
+	CommStatus.CommSuccess = 1;
   while (1)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //pdTRUE让通知值为0，使其进入阻塞;pdFALSE让通知值减一，第二个参数为等待通知的最大时间，单位ms

@@ -30,6 +30,7 @@ int JudgeReceive_Counter;
 uint8_t chassis_power = 0;
 uint8_t get_hurted = 0;
 
+uint8_t is_gaming=0;
 uint8_t Turn_sign = 0;
 uint16_t HP_Remain = 600;
 
@@ -247,8 +248,6 @@ switch (CmdID)
 					if(get_hurted==3 && !Turn_sign) Turn_sign = 1;
 					//time_cnt=0;
 				}
-				
-
 				
 				HP_Remain = ext_game_robot_state.remain_HP;
 

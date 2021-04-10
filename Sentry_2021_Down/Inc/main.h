@@ -58,10 +58,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define Jet_TX_Pin GPIO_PIN_1
-#define Jet_TX_GPIO_Port GPIOE
-#define Jet_RX_Pin GPIO_PIN_0
-#define Jet_RX_GPIO_Port GPIOE
 #define IMU_HEATING_Pin GPIO_PIN_5
 #define IMU_HEATING_GPIO_Port GPIOB
 #define LASER_Pin GPIO_PIN_13

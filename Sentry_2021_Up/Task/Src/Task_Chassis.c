@@ -132,10 +132,10 @@ void Chassis_Speed_Set(void){
 		if(RxMessage.speed == 1500 || DataRecFromJetson.SentryGimbalMode == ServoMode)  // 下云台或者上云台是伺服模式时
 		{
 			if(get_hurted!=3) Target_speed  = 300;
-			else Target_speed  = 2800;
+			else Target_speed  = 4500;
 		}
 		else
-			Target_speed = 3000;
+			Target_speed = 4500;
 	}
 	else // 非自瞄模式就是下云台传输数据
 		Target_speed  = RxMessage.speed;

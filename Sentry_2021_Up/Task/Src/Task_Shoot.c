@@ -20,13 +20,23 @@ void Task_Shoot(void *parameters){
 	xLastWakeUpTime = xTaskGetTickCount();
 	while(1){
 	
+				
+		if(ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 ){
+				//****** 发射口电源不断电且比赛正式开始（4）或调式模式（0）摩擦轮高速
+			if( TxMessage.mains_power_shooter==1 && TxMessage.Is_gaming != Game_prepare){
+					FricStatus = FricStatus_Working_High;
+				}
+				else{
+					FricStatus = FricStatus_Stop;
+					StirMotorStatus = StirStatus_Stop;
+				}
+			}
+		
 		Fric_3508_Motor_Speed_Set();
 		Motor_3508_PID_Calculate(&Fric_3508_Motor[0]);
 		Motor_3508_PID_Calculate(&Fric_3508_Motor[1]);
 		
 		StirMotor_Control();
-		
-		
 		Shoot_CAN_Send(Fric_3508_Motor[0].Output,Fric_3508_Motor[1].Output,StirMotor.Output);
 		vTaskDelayUntil(&xLastWakeUpTime, 5);
 	}
@@ -122,21 +132,29 @@ void StirMotor_Init(void)
  */
 
 int HeatControl=0;
-
-int HeatStatus=1;
-
+uint8_t Heat_limit_method=0;
 uint8_t HeatFlag = 0; //是否超热量
 int16_t targetspeed = 4200; //拨盘转速
 uint8_t ShootCounter=0; 
+
 void StirMotor_Control(void)
 {	
-	if(ext_power_heat_data.shooter_id1_17mm_cooling_heat>=200)
-	{
-		HeatFlag=0;
+	Heat_limit_method = ext_game_robot_state.shooter_id1_17mm_speed_limit==30 ? 1 : 0; 
+	if(Heat_limit_method){
+		if(ext_power_heat_data.shooter_id1_17mm_cooling_heat>=240){
+			HeatFlag=0;
+		}	
+		else if(ext_power_heat_data.shooter_id1_17mm_cooling_heat<120){
+			HeatFlag=1;
+		}
 	}
-	else if(ext_power_heat_data.shooter_id1_17mm_cooling_heat<120)
-	{
-		HeatFlag=1;
+	else{
+		if(HeatControl>600){	
+			HeatFlag=0;
+		}
+		if(HeatControl<10){
+			HeatFlag=1;
+		}
 	}
 	//遥控模式
 	if(ControlMode == ControlMode_Telecontrol_UP)
@@ -147,7 +165,7 @@ void StirMotor_Control(void)
 			StirMotor.TargetSpeed = 0;
 	}
 	//自瞄并且已经瞄到
-	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1)// && RxMessage.mains_power_shooter==1 && HeatFlag==1)
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1 && TxMessage.mains_power_shooter==1 )
 	{
 		if((DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
 		{
@@ -175,28 +193,17 @@ void StirMotor_Control(void)
 	if(HeatFlag ==0)
 		StirMotor.TargetSpeed=0;
 
-	
 	if(StirMotor.TargetSpeed!=0){
-		if(HeatStatus)
-		{
-			HeatControl+=3;	
+		if(HeatFlag){
+			HeatControl+=2;	
 		}
-		else HeatControl-=2;
+		else HeatControl-=1;
 	}
 	else if(StirMotor.TargetSpeed==0&&HeatControl>=10)
 		HeatControl-=2;
 	
-	if(HeatControl>600)
-	{	
-		HeatStatus=0;
-	}
-	
-	if(HeatControl<10)
-	{
-		HeatStatus=1;
-	}
-	if(HeatStatus == 0 || TxMessage.get_hurt==3) StirMotor.TargetSpeed=0;
-	
+	if (FricStatus == FricStatus_Stop)
+		StirMotor.TargetSpeed=0;
 	Stir_Motor_Speed_Control(&StirMotor);
 	
 }

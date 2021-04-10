@@ -6,9 +6,12 @@ SourceFiles=..\Src\main.c;..\Src\gpio.c;..\Src\freertos.c;..\Src\can.c;..\Src\dm
 HeaderPath=..\Drivers\STM32F4xx_HAL_Driver\Inc;..\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy;..\Middlewares\Third_Party\FreeRTOS\Source\include;..\Middlewares\Third_Party\FreeRTOS\Source\CMSIS_RTOS;..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;..\Drivers\CMSIS\Include;..\Inc;
 CDefines=USE_HAL_DRIVER;STM32F427xx;USE_HAL_DRIVER;USE_HAL_DRIVER;
 
+[]
+SourceFiles=;;
+
 [PreviousGenFiles]
-HeaderPath=D:/Sentry_2021/Sentry_Tasks/Sentry_2021_Down/Inc
+HeaderPath=E:/µç¿Ø/sb/Sentry_2021_Down/Inc
 HeaderFiles=gpio.h;FreeRTOSConfig.h;can.h;dma.h;spi.h;tim.h;usart.h;stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;
-SourcePath=D:/Sentry_2021/Sentry_Tasks/Sentry_2021_Down/Src
+SourcePath=E:/µç¿Ø/sb/Sentry_2021_Down/Src
 SourceFiles=gpio.c;freertos.c;can.c;dma.c;spi.c;tim.c;usart.c;stm32f4xx_it.c;stm32f4xx_hal_msp.c;stm32f4xx_hal_timebase_tim.c;main.c;
 

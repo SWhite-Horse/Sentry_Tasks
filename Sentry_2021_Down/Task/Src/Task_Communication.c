@@ -23,7 +23,6 @@ void Task_Communication(void *parameters)
 {
 	TickType_t xLastWakeUpTime;
   xLastWakeUpTime = xTaskGetTickCount();
-	int8_t speedrand = 0;
 	while(1)
 	{ 
 		if(ControlMode==ControlMode_Aimbot)

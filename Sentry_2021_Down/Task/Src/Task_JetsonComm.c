@@ -9,6 +9,10 @@
 
 int cirule_num=0;
 int set_num=0;
+/////////////////////////////////////////////////////////////////////////////////////////////
+int temparmor=1;
+int Kavcounter=0;
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 kalman_filter_t KF_Gimbal_Pitch, KF_Gimbal_Yaw;
 kalman_filter_init_t KF_Gimbal_Pitch_init, KF_Gimbal_Yaw_init;
@@ -43,10 +47,11 @@ CommStatus_Struct CommStatus = {
 
 void Task_JetsonComm(void *Parameter)
 {
+	CommStatus.CommSuccess = 1;
   while (1)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //pdTRUE让通知值为0，使其进入阻塞;pdFALSE让通知值减一，第二个参数为等待通知的最大时间，单位ms
-    JetsonComm_Control(&huart6);
+    JetsonComm_Control(&huart8);
 		cirule_num++;
   }
 }
@@ -240,15 +245,15 @@ void KF_Init()
   KF_Gimbal_Pitch_init.H_data[2] = 0;
   KF_Gimbal_Pitch_init.H_data[3] = 1;
   //matrix Q init
-  KF_Gimbal_Pitch_init.Q_data[0] = 0.94;
+  KF_Gimbal_Pitch_init.Q_data[0] = 1;
   KF_Gimbal_Pitch_init.Q_data[1] = 0;
   KF_Gimbal_Pitch_init.Q_data[2] = 0;
-  KF_Gimbal_Pitch_init.Q_data[3] = 0.94;
+  KF_Gimbal_Pitch_init.Q_data[3] = 1;
   //matrix R init
-  KF_Gimbal_Pitch_init.R_data[0] = 50;
+  KF_Gimbal_Pitch_init.R_data[0] = 300;
   KF_Gimbal_Pitch_init.R_data[1] = 0;
   KF_Gimbal_Pitch_init.R_data[2] = 0;
-  KF_Gimbal_Pitch_init.R_data[3] = 3;
+  KF_Gimbal_Pitch_init.R_data[3] =500;
 	
 	KF_Gimbal_Pitch_init.xhat_data[0] = PITCH_ANGLE;
   KF_Gimbal_Pitch_init.xhat_data[1] = 0;
@@ -275,16 +280,29 @@ void KF_Init()
   KF_Gimbal_Yaw_init.Q_data[2] = 0;
   KF_Gimbal_Yaw_init.Q_data[3] = 0.9;
   //matrix R init
-  KF_Gimbal_Yaw_init.R_data[0] = 60;
+  KF_Gimbal_Yaw_init.R_data[0] = 15;
   KF_Gimbal_Yaw_init.R_data[1] = 0;
   KF_Gimbal_Yaw_init.R_data[2] = 0;
-  KF_Gimbal_Yaw_init.R_data[3] = 3;
+  KF_Gimbal_Yaw_init.R_data[3] = 25;
 	
 	KF_Gimbal_Yaw_init.xhat_data[0] = YAW_ANGLE;
   KF_Gimbal_Yaw_init.xhat_data[1] = 0;
 	
   kalman_filter_init(&KF_Gimbal_Yaw, &KF_Gimbal_Yaw_init);
 }
+
+//wcp
+void KF_TargetChange_Init()
+{
+	KF_Gimbal_Pitch_init.xhat_data[0] = Pitch_Desire;
+  KF_Gimbal_Pitch_init.xhat_data[1] = 0;
+  kalman_filter_init(&KF_Gimbal_Pitch, &KF_Gimbal_Pitch_init);
+
+	KF_Gimbal_Yaw_init.xhat_data[0] = Yaw_Desire;
+  KF_Gimbal_Yaw_init.xhat_data[1] = 0;
+  kalman_filter_init(&KF_Gimbal_Yaw, &KF_Gimbal_Yaw_init);
+}
+//
 
 /**
   * @brief  对视觉识别的数据进行卡尔曼滤波
@@ -294,24 +312,41 @@ void KF_Init()
   */
 void KF_Cal_Desire()
 {
-  float *result;
-
-  //得到滤波后的目标角
-  result = kalman_filter_calc(&KF_Gimbal_Pitch,
+  float *result1;
+	float *result2;
+	///////////////////////////////////////////
+	if(temparmor!=DataRecFromJetson.TargetSpeedOnRail)
+	{
+		temparmor=DataRecFromJetson.TargetSpeedOnRail;
+    KF_TargetChange_Init();
+		Kavcounter=0;
+	}
+	///////////////////////////////////////////////
+//得到滤波后的目标角
+result1 = kalman_filter_calc(&KF_Gimbal_Pitch,
                               Jetson_AnglePitch,
                               //+ JetsonFlag[Jetson_Seq].Velocity_Pitch*JetsonFlag[Jetson_Seq].Cal_time/1000,
-                              Jetson_VelocityPitch, Jetson_AccelerationPitch);
-  //计算出滤波之后的目标角变化量
-  Pitch_Desire = result[0] + 0.05f * result[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
-
-  //得到滤波后的目标角
-  result = kalman_filter_calc(&KF_Gimbal_Yaw,
+                              Jetson_VelocityPitch, Jetson_AccelerationPitch);//卡尔曼滤波迭代 返回一个float型数组【2】，（卡尔曼结构体，目标角，角速度，角加速度）
+	result2 = kalman_filter_calc(&KF_Gimbal_Yaw,
                               Jetson_AngleYaw,
                               //  + JetsonFlag[Jetson_Seq].Velocity_Yaw*JetsonFlag[Jetson_Seq].Cal_time/1000,
                               Jetson_VelocityYaw, Jetson_AccelerationYaw);
-
+	
+  if(Kavcounter>300)
+	{
+ 
   //计算出滤波之后的目标角变化量
-  Yaw_Desire = result[0] + 0.03f * result[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
+	//	if((Pitch_Desire-PITCH_ANGLE)>180?abs(Pitch_Desire-PITCH_ANGLE-360)<10:abs(Pitch_Desire-PITCH_ANGLE)<10)
+	{
+//  Pitch_Desire = result1[0] + 0.08f * result1[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
+	}
+  //计算出滤波之后的目标角变化量
+	//	if((Yaw_Desire-YAW_ANGLE)>180?abs(Yaw_Desire-YAW_ANGLE-360)<10:abs(Yaw_Desire-YAW_ANGLE)<10)
+	{
+		Yaw_Desire = result2[0] + 0.3f * result2[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
+	}
+  }
+	Kavcounter++;
 }
 
 void Version_Init()
@@ -333,6 +368,8 @@ void Version_Init()
   }
   KF_Init();
 }
+
+
 
 void kalman_filter_init(kalman_filter_t *F, kalman_filter_init_t *I)
 {

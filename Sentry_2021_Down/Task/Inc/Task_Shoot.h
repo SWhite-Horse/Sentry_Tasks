@@ -11,7 +11,7 @@
 #include "Task_CAN.h"
 
 
-#define SPEEDMAX 6750
+#define SPEEDMAX 7700
 #define SPEEDMID 5500
 #define SPEEDMIN 4000
 

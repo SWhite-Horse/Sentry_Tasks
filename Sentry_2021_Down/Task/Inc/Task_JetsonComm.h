@@ -60,7 +60,6 @@ typedef struct
     /*  哨兵专用   */
     int16_t TargetSpeedOnRail; //目标轨道速度（哨兵用）
     uint8_t SentryGimbalMode;  //哨兵云台攻击模式
-	//	uint8_t chassis_mode;
     uint8_t EoF;
 } JetsonToSTM_Struct;
 
@@ -171,4 +170,8 @@ float *kalman_filter_calc(kalman_filter_t *F, float signal1, float signal2, floa
 void KF_Init(void);
 void KF_Cal_Desire(void);
 void Version_Init(void);
+//wcp
+void KF_TargetChange_Init(void);
+//
+
 #endif

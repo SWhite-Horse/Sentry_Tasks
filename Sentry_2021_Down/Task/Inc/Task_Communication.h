@@ -12,6 +12,13 @@
 
 extern ControlMode_Enum ControlMode;
 
+typedef enum
+{
+    Debug_status,            
+    Game_prepare,               
+    Gaming,            
+}Game_status_enum;
+
 //云台给底盘发送结构体
 typedef struct
 {
@@ -28,8 +35,9 @@ typedef struct
 {
 	uint16_t Blood; //血量
 	uint8_t Armour; //装甲板
+	Game_status_enum Is_gaming;
 	uint16_t Heat; //热量
-	uint8_t Shoot_Speed; //射速
+	uint8_t Shoot_Speed_limit; //射速
 	uint8_t Toppoint_Judge; //判断是否到达轨道末端
 	uint8_t get_hurt; //是否受到伤害
 	uint16_t Bullet_remaining; //子弹剩余

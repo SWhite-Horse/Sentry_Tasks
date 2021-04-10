@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -107,7 +107,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     PE1     ------> UART8_TX
     PE0     ------> UART8_RX
     */
-    GPIO_InitStruct.Pin = Jet_TX_Pin|Jet_RX_Pin;
+    GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_0;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -141,7 +141,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     hdma_uart8_tx.Init.MemInc = DMA_MINC_ENABLE;
     hdma_uart8_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
     hdma_uart8_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_uart8_tx.Init.Mode = DMA_CIRCULAR;
+    hdma_uart8_tx.Init.Mode = DMA_NORMAL;
     hdma_uart8_tx.Init.Priority = DMA_PRIORITY_LOW;
     hdma_uart8_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_uart8_tx) != HAL_OK)
@@ -285,7 +285,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     PE1     ------> UART8_TX
     PE0     ------> UART8_RX
     */
-    HAL_GPIO_DeInit(GPIOE, Jet_TX_Pin|Jet_RX_Pin);
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_1|GPIO_PIN_0);
 
     /* UART8 DMA DeInit */
     HAL_DMA_DeInit(uartHandle->hdmarx);

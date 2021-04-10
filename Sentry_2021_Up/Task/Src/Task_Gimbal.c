@@ -151,8 +151,8 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				StirMotorStatus = StirStatus_Stop;
 				
 				//pitch轴巡逻范围
-				if(PITCH_ANGLE>=20) Aimbot_RotatinPatrol_pitchmode = upward;
-				if(PITCH_ANGLE<=14)	Aimbot_RotatinPatrol_pitchmode = downward;
+				if(PITCH_ANGLE>=27) Aimbot_RotatinPatrol_pitchmode = upward;
+				if(PITCH_ANGLE<=8)	Aimbot_RotatinPatrol_pitchmode = downward;
 				if(YAW_ANGLE<-65) Aimbot_RotatinPatrol_yawmode=rightward;
 				if(YAW_ANGLE>65) Aimbot_RotatinPatrol_yawmode=leftward;
 		
@@ -170,7 +170,25 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					yaw->TargetAngle+=0.64f;					
 				if(Aimbot_RotatinPatrol_yawmode==leftward)	
 					yaw->TargetAngle-=0.64f;	
-				 
+
+//				// ********************  360 自瞄		******************** //
+//				if(PITCH_ANGLE>=20) Aimbot_RotatinPatrol_pitchmode = upward;
+//				if(PITCH_ANGLE<=8)	Aimbot_RotatinPatrol_pitchmode = downward;
+				
+//				if(Aimbot_RotatinPatrol_pitchmode==upward)
+//				{	
+//					yaw->TargetAngle+=0.50f;
+//					pitch->TargetAngle-=0.32f;					
+//					++j;
+//				}
+//			
+//				if(Aimbot_RotatinPatrol_pitchmode==downward)
+//				{		
+//					yaw->TargetAngle+=0.50f;
+//					pitch->TargetAngle+=0.32f;	
+//					++j;
+//				}
+				
 				while (yaw->TargetAngle >= 180)
 					yaw->TargetAngle -= 360;
 				while (yaw->TargetAngle < -180)
@@ -186,12 +204,10 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					Version_Init();
 				}
 					
-	//				if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
-	//				{
-	//					KF_Cal_Desire();
-	//				}		
-					
-					
+	//			if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255){
+	//				KF_Cal_Desire();
+	//			}		
+									
 			//瞄准之后角度确立
 				yaw->TargetAngle = Yaw_Desire;  //赋值Jeston处理后的数据，在Jeston部分代码里可寻得
 					
@@ -200,9 +216,9 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				while (yaw->TargetAngle < -180)
 					yaw->TargetAngle += 360;
 				// 上云台不完全转动
-				yaw->TargetAngle = yaw->TargetAngle > 65 ? 65 : yaw->TargetAngle;
-				yaw->TargetAngle = yaw->TargetAngle < -65 ? -65 : yaw->TargetAngle;
-
+				
+//				yaw->TargetAngle = yaw->TargetAngle > 65 ? 65 : yaw->TargetAngle;
+//				yaw->TargetAngle = yaw->TargetAngle < -65 ? -65 : yaw->TargetAngle;
 
 				pitch->TargetAngle = Pitch_Desire;
 					

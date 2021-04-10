@@ -310,7 +310,7 @@ void USART6_IRQHandler(void)
   /* USER CODE END USART6_IRQn 0 */
   HAL_UART_IRQHandler(&huart6);
   /* USER CODE BEGIN USART6_IRQn 1 */
-		JetsonCommUart_ReConfig_In_IRQHandler(&huart6);
+	//JetsonCommUart_ReConfig_In_IRQHandler(&huart6);
 
 //	L1_Measure_Callback(&huart6);
   /* USER CODE END USART6_IRQn 1 */
@@ -326,7 +326,7 @@ void UART8_IRQHandler(void)
   /* USER CODE END UART8_IRQn 0 */
   HAL_UART_IRQHandler(&huart8);
   /* USER CODE BEGIN UART8_IRQn 1 */
-	//JetsonCommUart_ReConfig_In_IRQHandler(&huart8);
+	JetsonCommUart_ReConfig_In_IRQHandler(&huart8);
   /* USER CODE END UART8_IRQn 1 */
 }
 

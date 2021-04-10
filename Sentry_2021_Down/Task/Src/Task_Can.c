@@ -56,43 +56,41 @@ void CANTransmit(CAN_HandleTypeDef *hcan, uint32_t std_id, uint8_t aData[])
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-    CAN_RxHeaderTypeDef RxHeader;
-    uint8_t aData[8];
-    HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, aData);
-		 switch(RxHeader.StdId)
-    {
-				case 0x201:					
-					break;
-				case 0x202:	
-					break;
-				case 0x203:	
-					break;	
-				case 0x204:				
-					break;				
-			  //** 0x1ff
-				case 0x205:	//Yaw轴电机返回数据（6020）
-					Yaw.FrameCounter++;
-					Yaw.Mechanical_Angle = aData[0] << 8 | aData[1];
-					Yaw.Torque_Current_Real = aData[2] << 8 | aData[3];
-					Yaw.MotorTemp = aData[6];		
-					break;				
-				case 0x207:	//拨盘点击返回数据
-					StirMotor.FrameCounter++;
-					StirMotor.Mechanical_Angle = aData[0] << 8 | aData[1];
-					StirMotor.RealSpeed = aData[2] << 8 | aData[3];		
-					break;
-				case 0x208:	
-					break;
-				case 0x69:
-					RxMessage.Blood=aData[0] << 8 | aData[1];
-					RxMessage.Armour=aData[2];
-					RxMessage.Heat=aData[3] << 8 | aData[4];
-					RxMessage.Shoot_Speed=aData[5];
-					RxMessage.mains_power_shooter=aData[6];
-					RxMessage.get_hurt=aData[7];
-					break;	
-		};
-	
+   CAN_RxHeaderTypeDef RxHeader;
+   uint8_t aData[8];
+   HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, aData);
+	 switch(RxHeader.StdId){
+			case 0x201:					
+				break;
+			case 0x202:	
+				break;
+			case 0x203:	
+				break;	
+			case 0x204:				
+				break;				
+		  //** 0x1ff
+			case 0x205:	//Yaw轴电机返回数据（6020）
+				Yaw.FrameCounter++;
+				Yaw.Mechanical_Angle = aData[0] << 8 | aData[1];
+				Yaw.Torque_Current_Real = aData[2] << 8 | aData[3];
+				Yaw.MotorTemp = aData[6];		
+				break;				
+			case 0x207:	//拨盘点击返回数据
+				StirMotor.FrameCounter++;
+				StirMotor.Mechanical_Angle = aData[0] << 8 | aData[1];
+				StirMotor.RealSpeed = aData[2] << 8 | aData[3];		
+				break;
+			case 0x208:	
+				break;
+			case 0x69:
+				RxMessage.Is_gaming=aData[0];
+				RxMessage.Armour=aData[2];
+				RxMessage.Heat=aData[3] << 8 | aData[4];
+				RxMessage.Shoot_Speed_limit=aData[5];
+				RxMessage.mains_power_shooter=aData[6];
+				RxMessage.get_hurt=aData[7];
+				break;	
+	};
 }
 
 /**
@@ -104,40 +102,40 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-		CAN_RxHeaderTypeDef RxHeader;
-    uint8_t aData[8];	/*接收数据缓存数组*/
-    HAL_CAN_GetRxMessage(&hcan2, CAN_RX_FIFO1, &RxHeader, aData); /*从邮箱中取回数据*/
-    switch(RxHeader.StdId)	/*根据邮箱地址选择数据*/
-    {
-			case 0x201:
-				Fric_3508_Motor[0].FrameCounter++;
-				Fric_3508_Motor[0].Mechanical_Angle = aData[0] << 8 | aData[1];
-				Fric_3508_Motor[0].RealSpeed = aData[2] << 8 | aData[3];
-				Fric_3508_Motor[0].RealCurrent = aData[4] << 8 | aData[5];
-				break;
-			case 0x202:
-				Fric_3508_Motor[1].FrameCounter++;
-				Fric_3508_Motor[1].Mechanical_Angle = aData[0] << 8 | aData[1];
-				Fric_3508_Motor[1].RealSpeed = aData[2] << 8 | aData[3];
-				Fric_3508_Motor[1].RealCurrent = aData[4] << 8 | aData[5];
-				break;
-		  case 0x203:
-				break;
-			case 0x204:
-				break;
-      //上云台摩擦轮PID
-			case 0x205:
-				break;
-			case 0x206: //Pitch轴电机返回数据（6020）
-				Pitch.FrameCounter++;
-				Pitch.Mechanical_Angle = aData[0] << 8 | aData[1];
-				Pitch.Torque_Current_Real = aData[2] << 8 | aData[3];
-				Pitch.MotorTemp = aData[6];					
-				break;
-			case 0x207:	
-				break;
-			case 0x208:
-				break;	
-    }
+	CAN_RxHeaderTypeDef RxHeader;
+  uint8_t aData[8];	/*接收数据缓存数组*/
+  HAL_CAN_GetRxMessage(&hcan2, CAN_RX_FIFO1, &RxHeader, aData); /*从邮箱中取回数据*/
+  switch(RxHeader.StdId)	/*根据邮箱地址选择数据*/
+  {
+		case 0x201:
+			Fric_3508_Motor[0].FrameCounter++;
+			Fric_3508_Motor[0].Mechanical_Angle = aData[0] << 8 | aData[1];
+			Fric_3508_Motor[0].RealSpeed = aData[2] << 8 | aData[3];
+			Fric_3508_Motor[0].RealCurrent = aData[4] << 8 | aData[5];
+			break;
+		case 0x202:
+			Fric_3508_Motor[1].FrameCounter++;
+			Fric_3508_Motor[1].Mechanical_Angle = aData[0] << 8 | aData[1];
+			Fric_3508_Motor[1].RealSpeed = aData[2] << 8 | aData[3];
+			Fric_3508_Motor[1].RealCurrent = aData[4] << 8 | aData[5];
+			break;
+	  case 0x203:
+			break;
+		case 0x204:
+			break;
+    //上云台摩擦轮PID
+		case 0x205:
+			break;
+		case 0x206: //Pitch轴电机返回数据（6020）
+			Pitch.FrameCounter++;
+			Pitch.Mechanical_Angle = aData[0] << 8 | aData[1];
+			Pitch.Torque_Current_Real = aData[2] << 8 | aData[3];
+			Pitch.MotorTemp = aData[6];					
+			break;
+		case 0x207:	
+			break;
+		case 0x208:
+			break;	
+  }
 }
 
