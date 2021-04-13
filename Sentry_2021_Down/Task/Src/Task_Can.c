@@ -72,7 +72,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			case 0x205:	//Yaw轴电机返回数据（6020）
 				Yaw.FrameCounter++;
 				Yaw.Mechanical_Angle = aData[0] << 8 | aData[1];
-				Yaw.Torque_Current_Real = aData[2] << 8 | aData[3];
+				Yaw.Real_Speed = aData[2] << 8 | aData[3];
 				Yaw.MotorTemp = aData[6];		
 				break;				
 			case 0x207:	//拨盘点击返回数据
@@ -129,7 +129,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		case 0x206: //Pitch轴电机返回数据（6020）
 			Pitch.FrameCounter++;
 			Pitch.Mechanical_Angle = aData[0] << 8 | aData[1];
-			Pitch.Torque_Current_Real = aData[2] << 8 | aData[3];
+			Pitch.Real_Speed = aData[2] << 8 | aData[3];
 			Pitch.MotorTemp = aData[6];					
 			break;
 		case 0x207:	

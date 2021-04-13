@@ -129,9 +129,9 @@ void Chassis_Speed_Set(void){
 	
   //速度赋值(数据为正值，但是要确定方向要根据电机安装方式和PID正负综合确定，如果相反，此处取反一般即可）：
 	if(RxMessage.controlmode == ControlMode_Aimbot){
-		if(RxMessage.speed == 1500 || DataRecFromJetson.SentryGimbalMode == ServoMode)  // 下云台或者上云台是伺服模式时
+		if(RxMessage.speed == 1 || DataRecFromJetson.SentryGimbalMode == ServoMode)  // 下云台或者上云台是伺服模式时
 		{
-			if(get_hurted!=3) Target_speed  = 300;
+			if(get_hurted!=3 && StirMotor.Output != 0) Target_speed  = 300;
 			else Target_speed  = 4500;
 		}
 		else

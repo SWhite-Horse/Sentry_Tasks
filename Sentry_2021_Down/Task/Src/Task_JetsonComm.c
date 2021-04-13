@@ -343,7 +343,7 @@ result1 = kalman_filter_calc(&KF_Gimbal_Pitch,
   //计算出滤波之后的目标角变化量
 	//	if((Yaw_Desire-YAW_ANGLE)>180?abs(Yaw_Desire-YAW_ANGLE-360)<10:abs(Yaw_Desire-YAW_ANGLE)<10)
 	{
-		Yaw_Desire = result2[0] + 0.3f * result2[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
+		Yaw_Desire = result2[0] + 0.5f * result2[1]; // + result[1]*JetsonFlag[Jetson_Seq].Cal_time/1000;
 	}
   }
 	Kavcounter++;

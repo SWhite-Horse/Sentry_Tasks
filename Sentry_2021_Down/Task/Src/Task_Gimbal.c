@@ -69,24 +69,24 @@ void Task_Gimbal(void *parameters)
 void Gimbal_Init(void)
 {
 	
-	Yaw.SpeedPID.Kp =60;//30 ;
-	Yaw.SpeedPID.Ki = 0.3;//0.3;
+	Yaw.SpeedPID.Kp =60;
+	Yaw.SpeedPID.Ki = 0.3;
 	Yaw.SpeedPID.Kd = 8;
 	
-	Yaw.PositionPID.Kp = 20;//20;
+	Yaw.PositionPID.Kp = 20;
 	Yaw.PositionPID.Ki = 0;
-	Yaw.PositionPID.Kd = 4;//2;
+	Yaw.PositionPID.Kd = 4;
 	
-	Pitch.SpeedPID.Kp = 170;//
+	Pitch.SpeedPID.Kp =170;//
 	Pitch.SpeedPID.Ki = 0.5;//
 	Pitch.SpeedPID.Kd = 5;//
 
-	Pitch.PositionPID.Kp = 18;//16;//
-	Pitch.PositionPID.Ki = 0.1;//0.36;/
-	Pitch.PositionPID.Kd = 3.5;//0.6;//
+	Pitch.PositionPID.Kp = 18;//
+	Pitch.PositionPID.Ki = 0.1;//
+	Pitch.PositionPID.Kd =3;//
 	
 	//抬头初始化	
-	Pitch.TargetAngle = 26;
+	Pitch.TargetAngle = 20;
 		
 }
 		
@@ -152,14 +152,14 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				if(Aimbot_RotatinPatrol_pitchmode==upward)
 				{	
 					yaw->TargetAngle+=0.80f;
-					pitch->TargetAngle-=0.62f;					
+					pitch->TargetAngle-=0.72f;					
 					++j;
 				}
 			
 				if(Aimbot_RotatinPatrol_pitchmode==downward)
 				{		
 					yaw->TargetAngle+=0.80f;
-					pitch->TargetAngle+=0.62f;	
+					pitch->TargetAngle+=0.72f;	
 					++j;
 				}
 				
@@ -177,10 +177,10 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					Version_Init();
 				}
 
-				   if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
-				   {
-				   	KF_Cal_Desire();
-				   }		
+//				   if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
+//				   {
+//				   	KF_Cal_Desire();
+//				   }		
 				
 					
 				 //瞄准之后角度确立
@@ -234,10 +234,10 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
   * @param  重力补偿角
   * @retval 
   */
-float Gravity = -450;
+float Gravity = -8000;
 int16_t PitchGravityCompensation(float Angle)
 {
-    return (int16_t)(Gravity * sin((Angle-0) / 180 * Pi));
+    return (int16_t)(Gravity * sin((Angle-0.0f) / 180 * Pi));
 }
 
 /**
@@ -266,6 +266,7 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
     /************** PITCH **************/
 	if (pitch != NULL){
 		//pitch轴位置环
+
 		pitch->PositionPID.Last_Error = pitch->PositionPID.Cur_Error;
 		pitch->Real_Angle=PITCH_ANGLE;
 	  
@@ -274,31 +275,29 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
     pitch->PositionPID.Cur_Error = pitch->PositionPID.Cur_Error > 180 ? pitch->PositionPID.Cur_Error - 360 : pitch->PositionPID.Cur_Error;
     pitch->PositionPID.Cur_Error = pitch->PositionPID.Cur_Error < -180 ? pitch->PositionPID.Cur_Error + 360 : pitch->PositionPID.Cur_Error;
 
-    if ((pitch->PositionPID.Cur_Error) > -4 && (pitch->PositionPID.Cur_Error) < 4)
+    if ((pitch->PositionPID.Cur_Error) > -6 && (pitch->PositionPID.Cur_Error) < 6)
         pitch->PositionPID.Sum_Error += pitch->PositionPID.Cur_Error;
     else
         pitch->PositionPID.Sum_Error = 0;
 
-    pitch->PositionPID.Sum_Error = pitch->PositionPID.Sum_Error > 10000 ? 10000 : pitch->PositionPID.Sum_Error;
-    pitch->PositionPID.Sum_Error = pitch->PositionPID.Sum_Error < -10000 ? -10000 : pitch->PositionPID.Sum_Error;
+    pitch->PositionPID.Sum_Error = pitch->PositionPID.Sum_Error > 5000 ? 5000 : pitch->PositionPID.Sum_Error;
+    pitch->PositionPID.Sum_Error = pitch->PositionPID.Sum_Error < -5000 ? -5000 : pitch->PositionPID.Sum_Error;
 
     pitch->PositionPID.Output = pitch->PositionPID.Kp * pitch->PositionPID.Cur_Error + pitch->PositionPID.Ki * pitch->PositionPID.Sum_Error + pitch->PositionPID.Kd * (pitch->PositionPID.Cur_Error - pitch->PositionPID.Last_Error);
 		
-    pitch->PositionPID.Output = pitch->PositionPID.Output > 150 ? 150 : pitch->PositionPID.Output;
-		pitch->PositionPID.Output = pitch->PositionPID.Output < -150 ? -150 : pitch->PositionPID.Output;
+//    pitch->PositionPID.Output = pitch->PositionPID.Output > 150 ? 150 : pitch->PositionPID.Output;
+//		pitch->PositionPID.Output = pitch->PositionPID.Output < -150 ? -150 : pitch->PositionPID.Output;
     pitch->TargetSpeed =pitch->PositionPID.Output;
 		
 		//pitch轴速度环
     pitch->SpeedPID.Last_Error = pitch->SpeedPID.Cur_Error;
-
-		
-    pitch->SpeedPID.Cur_Error = pitch->TargetSpeed - APITCH;//pitch->Torque_Current_Real;//
+    pitch->SpeedPID.Cur_Error = pitch->TargetSpeed - APITCH;//+ pitch->Real_Speed;//pitch->Torque_Current_Real;//
 		
 
 		pitch->SpeedPID.Sum_Error += pitch->SpeedPID.Cur_Error;
 
-    pitch->SpeedPID.Sum_Error = pitch->SpeedPID.Sum_Error > 3000 ? 3000 : pitch->SpeedPID.Sum_Error;
-    pitch->SpeedPID.Sum_Error = pitch->SpeedPID.Sum_Error < -3000 ? -3000 : pitch->SpeedPID.Sum_Error;
+    pitch->SpeedPID.Sum_Error = pitch->SpeedPID.Sum_Error > 25000 ? 25000 : pitch->SpeedPID.Sum_Error;
+    pitch->SpeedPID.Sum_Error = pitch->SpeedPID.Sum_Error < -25000 ? -25000 : pitch->SpeedPID.Sum_Error;
 
     pitch->SpeedPID.Output = pitch->SpeedPID.Kp * pitch->SpeedPID.Cur_Error + pitch->SpeedPID.Ki * pitch->SpeedPID.Sum_Error + pitch->SpeedPID.Kd * (pitch->SpeedPID.Cur_Error - pitch->SpeedPID.Last_Error) + PitchGravityCompensation(PITCH_ANGLE);
 		//pitch轴输出限制幅度
@@ -334,7 +333,7 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
         
 		//yaw轴速度环
     yaw->SpeedPID.Last_Error = yaw->SpeedPID.Cur_Error;
-    yaw->SpeedPID.Cur_Error = yaw->TargetSpeed - AYAW;
+    yaw->SpeedPID.Cur_Error = yaw->TargetSpeed - yaw->Real_Speed;
     yaw->SpeedPID.Sum_Error += yaw->SpeedPID.Cur_Error;
 
     yaw->SpeedPID.Sum_Error = yaw->SpeedPID.Sum_Error > 2000 ? 2000 : yaw->SpeedPID.Sum_Error;

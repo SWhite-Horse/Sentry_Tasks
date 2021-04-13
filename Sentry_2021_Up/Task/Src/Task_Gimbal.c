@@ -75,13 +75,13 @@ void Gimbal_Init(void)
 	Yaw.PositionPID.Ki = 0;
 	Yaw.PositionPID.Kd = 3;
 	
-	Pitch.SpeedPID.Kp =125;//120;
-	Pitch.SpeedPID.Ki = 0.4;//0.4;
-	Pitch.SpeedPID.Kd = 1;//0.2;
+	Pitch.SpeedPID.Kp =150;
+	Pitch.SpeedPID.Ki = 0.7;
+	Pitch.SpeedPID.Kd = 6;
 
-	Pitch.PositionPID.Kp = 20;//20;
-	Pitch.PositionPID.Ki = 0.15;//0.15;
-	Pitch.PositionPID.Kd = 1;//0;
+	Pitch.PositionPID.Kp = 20;
+	Pitch.PositionPID.Ki = 0.15;//
+	Pitch.PositionPID.Kd = 2;
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 20;
@@ -158,11 +158,11 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 		
 				//pitch轴巡逻方向及步长 
 				if(Aimbot_RotatinPatrol_pitchmode==upward){	
-					pitch->TargetAngle-=0.08f;					
+					pitch->TargetAngle-=0.38f;					
 					++j;
 				}
 				if(Aimbot_RotatinPatrol_pitchmode==downward){		
-					pitch->TargetAngle+=0.08f;							
+					pitch->TargetAngle+=0.38f;							
 					++j;
 				 }
 				//yaw轴巡逻方向及步长 

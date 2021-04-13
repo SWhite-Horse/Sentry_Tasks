@@ -6,7 +6,7 @@
 #include "Task_JetsonComm.h"
 #include "stdlib.h"
 #include "time.h"
-
+#include "Task_Shoot.h"
 
 Down_to_Up_Message TxMessage;
 Up_to_Down_Message RxMessage;
@@ -29,13 +29,13 @@ void Task_Communication(void *parameters)
 		{		
 			if(DataRecFromJetson.SentryGimbalMode==ServoMode){
 				if(RxMessage.get_hurt==3){
-					TxMessage.Chassis_speed = 2400;	
+					TxMessage.Chassis_speed = 2;	
 				}
-				else 
-					TxMessage.Chassis_speed=1500;	
+				else if(StirMotor.Output !=0) 
+					TxMessage.Chassis_speed=1;	
 			}
 			else
-				TxMessage.Chassis_speed = 3000;		
+				TxMessage.Chassis_speed = 2;		
 						
 		}	
 		else if(ControlMode==ControlMode_Telecontrol_UP)

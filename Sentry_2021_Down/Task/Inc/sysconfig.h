@@ -49,7 +49,7 @@ typedef struct
     float    TargetAngle;
     float    TargetSpeed;
 		float    Real_Angle;
-		int16_t Torque_Current_Real;
+		int16_t Real_Speed;
     int16_t Mechanical_Speed;
     int16_t NeedCurrent;
     int16_t Mechanical_Angle;
