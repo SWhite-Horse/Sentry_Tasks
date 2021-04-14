@@ -75,8 +75,8 @@ void Gimbal_Init(void)
 	Yaw.PositionPID.Ki = 0;
 	Yaw.PositionPID.Kd = 3;
 	
-	Pitch.SpeedPID.Kp =150;
-	Pitch.SpeedPID.Ki = 0.7;
+	Pitch.SpeedPID.Kp =140;
+	Pitch.SpeedPID.Ki = 0.6;
 	Pitch.SpeedPID.Kd = 6;
 
 	Pitch.PositionPID.Kp = 20;

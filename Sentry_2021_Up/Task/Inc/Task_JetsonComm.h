@@ -21,7 +21,7 @@
 
 #define JetsonCommReservedFrameLEN 5
 
-#define JETSONFLAG_LEN 20
+#define JETSONFLAG_LEN 10
 
 //帧头帧尾
 #define JetsonCommSOF 0x66
@@ -30,8 +30,8 @@
 #define RecordAngle (uint16_t)0xffff
 #define RequestTrans (uint16_t)0xbbbb
 //比赛红蓝方
-#define BlueTeam (uint16_t)0xDDDD
-#define RedTeam (uint16_t)0xEEEE
+#define BlueTeam (uint8_t)0xDD
+#define RedTeam (uint8_t)0xEE
 //发射方式
 #define NoFire (uint16_t)(0x00 << 8)      //不发射
 #define BurstFire (uint16_t)(0x01 << 8)   //点射
@@ -80,13 +80,13 @@ typedef struct
 {
     uint8_t SoF;
     uint8_t Seq;
-    uint8_t NeedMode;   //所需控制模式
-    uint8_t ShootSpeed; //射速
+    uint8_t TeamFlag;   //所需控制模式
+    //uint8_t ShootSpeed; //射速
     /*  哨兵专用   */
-    uint8_t ArmorType;    //被打击装甲板标识
-    uint16_t RemainHP;    //剩余血量
-		float chassis_power; //当前功率
-    uint8_t Reserved[8]; //保留字节
+    //uint8_t ArmorType;    //被打击装甲板标识
+    //uint16_t RemainHP;    //剩余血量
+		//float chassis_power; //当前功率
+    uint8_t Reserved[6]; //保留字节
     uint8_t EoF;
 } STMToJetson_Struct;
 

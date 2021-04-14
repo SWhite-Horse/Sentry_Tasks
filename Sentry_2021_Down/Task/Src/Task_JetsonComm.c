@@ -97,15 +97,15 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
     {
       CommStatus.team = RedTeam;
       DataSendToJetson.Seq++;
-      DataSendToJetson.NeedMode = (uint8_t)(RedTeam >> 8);
-      DataSendToJetson.ShootSpeed = (uint8_t)(RedTeam);
+      DataSendToJetson.TeamFlag = (uint8_t)(RedTeam);
+      //DataSendToJetson.ShootSpeed = (uint8_t)(RedTeam);
     }
     else if (RxMessage.Armour==107)//WeAreBlueTeam)
     {
       CommStatus.team = BlueTeam;
       DataSendToJetson.Seq++;
-      DataSendToJetson.NeedMode = (uint8_t)(BlueTeam >> 8);
-      DataSendToJetson.ShootSpeed = (uint8_t)(BlueTeam);
+      DataSendToJetson.TeamFlag = (uint8_t)(BlueTeam);
+      //DataSendToJetson.ShootSpeed = (uint8_t)(BlueTeam);
     }
     HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson, sizeof(STMToJetson_Struct));
   }
@@ -119,8 +119,8 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   else if (DataRecFromJetson.ShootMode == RequestTrans)
   {
     DataSendToJetson.Seq++;
-    DataSendToJetson.NeedMode = ShootStatus;
-		DataSendToJetson.location = Distance;
+    DataSendToJetson.TeamFlag = ShootStatus;
+		//DataSendToJetson.location = Distance;
     HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson, sizeof(STMToJetson_Struct));
   }
   //记录当前角度

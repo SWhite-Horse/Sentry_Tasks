@@ -25,12 +25,12 @@ void Task_Shoot(void *parameters){
 				//****** 发射口电源不断电且比赛正式开始（4）或调式模式（0）摩擦轮高速
 			if( TxMessage.mains_power_shooter==1 && TxMessage.Is_gaming != Game_prepare){
 					FricStatus = FricStatus_Working_High;
-				}
-				else{
+			}
+			else{
 					FricStatus = FricStatus_Stop;
 					StirMotorStatus = StirStatus_Stop;
-				}
 			}
+		}
 		
 		Fric_3508_Motor_Speed_Set();
 		Motor_3508_PID_Calculate(&Fric_3508_Motor[0]);
