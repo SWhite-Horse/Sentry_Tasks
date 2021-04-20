@@ -538,12 +538,12 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5D87FED5)
-I (..\Task\Inc\Task_Shoot.h)(0x606AFA29)
+I (..\Task\Inc\Task_Shoot.h)(0x6079758C)
 I (..\Task\Inc\Task_Chassis.h)(0x602FC274)
 I (..\Task\Inc\Task_Gimbal.h)(0x60705742)
 I (..\Task\Inc\Task_Communication.h)(0x606E9A58)
 I (..\Task\Inc\Task_StatusMachine.h)(0x5F7ED60E)
-F (..\Task\Src\Task_Chassis.c)(0x6072FB3E)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_chassis.o --omf_browse sentry_2021_scp\task_chassis.crf --depend sentry_2021_scp\task_chassis.d)
+F (..\Task\Src\Task_Chassis.c)(0x6077F543)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_chassis.o --omf_browse sentry_2021_scp\task_chassis.crf --depend sentry_2021_scp\task_chassis.d)
 I (..\Task\Inc\Task_Chassis.h)(0x602FC274)
 I (..\Task\Inc\Task_Init.h)(0x5FB3C642)
 I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
@@ -608,11 +608,70 @@ I (..\Task\Inc\Task_RC.h)(0x5F6C7A18)
 I (..\Task\Inc\Task_Communication.h)(0x606E9A58)
 I (..\Task\Inc\Task_StatusMachine.h)(0x5F7ED60E)
 I (..\Task\Inc\Task_Measure.h)(0x5FCBA258)
-I (..\Task\Inc\Task_Shoot.h)(0x606AFA29)
+I (..\Task\Inc\Task_Shoot.h)(0x6079758C)
 I (..\Task\Inc\Task_JudgeReceive.h)(0x604B33C6)
 I (..\Task\Inc\Task_JetsonComm.h)(0x60759AE2)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h)(0x5898498A)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h)(0x5898498A)
+F (..\Task\Src\Task_LEDBlink.c)(0x5FEB00CE)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_ledblink.o --omf_browse sentry_2021_scp\task_ledblink.crf --depend sentry_2021_scp\task_ledblink.d)
+I (..\Task\Inc\Task_Init.h)(0x5FB3C642)
+I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
+I (D:\keil\ARM\ARMCC\include\stdlib.h)(0x588B8344)
+I (D:\keil\ARM\ARMCC\include\math.h)(0x588B8344)
+I (D:\keil\ARM\ARMCC\include\string.h)(0x588B8344)
+I (../Inc/main.h)(0x6040B009)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5D87FECC)
+I (../Inc/stm32f4xx_hal_conf.h)(0x6040B009)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h)(0x5D87FECC)
+I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h)(0x5D87FEA7)
+I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f427xx.h)(0x5D87FEA7)
+I (../Drivers/CMSIS/Include/core_cm4.h)(0x5D87FECD)
+I (D:\keil\ARM\ARMCC\include\stdint.h)(0x5DA5A5E5)
+I (../Drivers/CMSIS/Include/cmsis_version.h)(0x5D87FECD)
+I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x5D87FECD)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5D87FECD)
+I (../Drivers/CMSIS/Include/mpu_armv7.h)(0x5D87FECD)
+I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h)(0x5D87FEA7)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x5D87FECC)
+I (D:\keil\ARM\ARMCC\include\stddef.h)(0x588B8344)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x5D87FECC)
+I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x5D87FECC)
+I (../Inc/can.h)(0x6040B007)
+I (../Inc/dma.h)(0x6040B006)
+I (../Inc/tim.h)(0x6040B006)
+I (../Inc/spi.h)(0x6040B006)
+I (../Inc/usart.h)(0x6040B006)
+I (../Inc/gpio.h)(0x6040B004)
+I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x5D87FED5)
+I (../Inc/FreeRTOSConfig.h)(0x6040B007)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h)(0x5D87FED4)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/task.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/list.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5D87FED5)
+I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5D87FED5)
 F (..\Task\Src\Task_Init.c)(0x605EDEB1)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_init.o --omf_browse sentry_2021_scp\task_init.crf --depend sentry_2021_scp\task_init.d)
 I (..\Task\Inc\Task_Init.h)(0x5FB3C642)
 I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
@@ -679,70 +738,11 @@ I (..\Task\Inc\Task_StatusMachine.h)(0x5F7ED60E)
 I (..\Task\Inc\Task_JetsonComm.h)(0x60759AE2)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h)(0x5898498A)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h)(0x5898498A)
-I (..\Task\Inc\Task_Shoot.h)(0x606AFA29)
+I (..\Task\Inc\Task_Shoot.h)(0x6079758C)
 I (..\Task\Inc\Task_Chassis.h)(0x602FC274)
 I (..\Task\Inc\Task_RC.h)(0x5F6C7A18)
 I (..\Task\Inc\Task_Measure.h)(0x5FCBA258)
 I (..\Task\Inc\Task_JudgeReceive.h)(0x604B33C6)
-F (..\Task\Src\Task_LEDBlink.c)(0x5FEB00CE)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_ledblink.o --omf_browse sentry_2021_scp\task_ledblink.crf --depend sentry_2021_scp\task_ledblink.d)
-I (..\Task\Inc\Task_Init.h)(0x5FB3C642)
-I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
-I (D:\keil\ARM\ARMCC\include\stdlib.h)(0x588B8344)
-I (D:\keil\ARM\ARMCC\include\math.h)(0x588B8344)
-I (D:\keil\ARM\ARMCC\include\string.h)(0x588B8344)
-I (../Inc/main.h)(0x6040B009)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x5D87FECC)
-I (../Inc/stm32f4xx_hal_conf.h)(0x6040B009)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h)(0x5D87FECC)
-I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h)(0x5D87FEA7)
-I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f427xx.h)(0x5D87FEA7)
-I (../Drivers/CMSIS/Include/core_cm4.h)(0x5D87FECD)
-I (D:\keil\ARM\ARMCC\include\stdint.h)(0x5DA5A5E5)
-I (../Drivers/CMSIS/Include/cmsis_version.h)(0x5D87FECD)
-I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x5D87FECD)
-I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x5D87FECD)
-I (../Drivers/CMSIS/Include/mpu_armv7.h)(0x5D87FECD)
-I (../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h)(0x5D87FEA7)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x5D87FECC)
-I (D:\keil\ARM\ARMCC\include\stddef.h)(0x588B8344)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x5D87FECC)
-I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x5D87FECC)
-I (../Inc/can.h)(0x6040B007)
-I (../Inc/dma.h)(0x6040B006)
-I (../Inc/tim.h)(0x6040B006)
-I (../Inc/spi.h)(0x6040B006)
-I (../Inc/usart.h)(0x6040B006)
-I (../Inc/gpio.h)(0x6040B004)
-I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x5D87FED5)
-I (../Inc/FreeRTOSConfig.h)(0x6040B007)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h)(0x5D87FED4)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/task.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/list.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5D87FED5)
-I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5D87FED5)
 F (..\Task\Src\Task_RC.c)(0x602D080A)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_rc.o --omf_browse sentry_2021_scp\task_rc.crf --depend sentry_2021_scp\task_rc.d)
 I (..\Task\Inc\Task_RC.h)(0x5F6C7A18)
 I (..\Task\Inc\Task_init.h)(0x5FB3C642)
@@ -803,8 +803,8 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5D87FED5)
-F (..\Task\Src\Task_Shoot.c)(0x60759194)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_shoot.o --omf_browse sentry_2021_scp\task_shoot.crf --depend sentry_2021_scp\task_shoot.d)
-I (..\Task\Inc\Task_Shoot.h)(0x606AFA29)
+F (..\Task\Src\Task_Shoot.c)(0x607A462E)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_shoot.o --omf_browse sentry_2021_scp\task_shoot.crf --depend sentry_2021_scp\task_shoot.d)
+I (..\Task\Inc\Task_Shoot.h)(0x6079758C)
 I (..\Task\Inc\Task_Init.h)(0x5FB3C642)
 I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
 I (D:\keil\ARM\ARMCC\include\stdlib.h)(0x588B8344)
@@ -871,6 +871,7 @@ I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h)(0x5898498A)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h)(0x5898498A)
 I (..\Task\Inc\Task_CAN.h)(0x5F9C14B2)
 I (..\Task\Inc\Task_JudgeReceive.h)(0x604B33C6)
+I (..\Task\Inc\Task_Gimbal.h)(0x60705742)
 F (..\Task\Src\Task_Measure.c)(0x5FCC5604)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_measure.o --omf_browse sentry_2021_scp\task_measure.crf --depend sentry_2021_scp\task_measure.d)
 I (..\Task\Inc\Task_Measure.h)(0x5FCBA258)
 I (..\Task\Inc\Task_Init.h)(0x5FB3C642)
@@ -996,7 +997,7 @@ I (..\Task\Inc\Task_Communication.h)(0x606E9A58)
 I (..\Task\Inc\Task_JetsonComm.h)(0x60759AE2)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h)(0x5898498A)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h)(0x5898498A)
-F (..\Task\Src\Task_Communication.c)(0x606E9ECA)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_communication.o --omf_browse sentry_2021_scp\task_communication.crf --depend sentry_2021_scp\task_communication.d)
+F (..\Task\Src\Task_Communication.c)(0x607918DA)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_communication.o --omf_browse sentry_2021_scp\task_communication.crf --depend sentry_2021_scp\task_communication.d)
 I (..\Task\Inc\Task_Communication.h)(0x606E9A58)
 I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
 I (D:\keil\ARM\ARMCC\include\stdlib.h)(0x588B8344)
@@ -1120,7 +1121,7 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5D87FED5)
 I (..\Func\Inc\Func_Imu_OB.h)(0x5DDD2AEF)
-F (..\Task\Src\Task_JetsonComm.c)(0x6075982C)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_jetsoncomm.o --omf_browse sentry_2021_scp\task_jetsoncomm.crf --depend sentry_2021_scp\task_jetsoncomm.d)
+F (..\Task\Src\Task_JetsonComm.c)(0x60792446)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_jetsoncomm.o --omf_browse sentry_2021_scp\task_jetsoncomm.crf --depend sentry_2021_scp\task_jetsoncomm.d)
 I (..\Task\Inc\Task_JetsonComm.h)(0x60759AE2)
 I (..\Task\Inc\Task_init.h)(0x5FB3C642)
 I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
@@ -1248,7 +1249,7 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h)(0x5D87FED5)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h)(0x5D87FED5)
-F (..\Task\Src\Task_Gimbal.c)(0x6075B632)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_gimbal.o --omf_browse sentry_2021_scp\task_gimbal.crf --depend sentry_2021_scp\task_gimbal.d)
+F (..\Task\Src\Task_Gimbal.c)(0x607B8AD8)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include -I ..\Task\Inc -I ..\Func\Inc -I ..\SSS\Inc-I.\RTE\_Sentry_2021_Scp-ID:\keil\ARM\CMSIS\5.0.1\CMSIS\Include-ID:\keil\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx -DUSE_HAL_DRIVER -DSTM32F427xx-o sentry_2021_scp\task_gimbal.o --omf_browse sentry_2021_scp\task_gimbal.crf --depend sentry_2021_scp\task_gimbal.d)
 I (..\Task\Inc\Task_Gimbal.h)(0x60705742)
 I (..\Task\Inc\Task_Init.h)(0x5FB3C642)
 I (..\Task\Inc\sysconfig.h)(0x5FBF896D)
@@ -1313,7 +1314,7 @@ I (..\Task\Inc\Task_RC.h)(0x5F6C7A18)
 I (..\Task\Inc\Task_CAN.h)(0x5F9C14B2)
 I (..\Task\Inc\Task_IMU.h)(0x5F9A7874)
 I (..\Func\Inc\Func_Imu_OB.h)(0x5DDD2AEF)
-I (..\Task\Inc\Task_Shoot.h)(0x606AFA29)
+I (..\Task\Inc\Task_Shoot.h)(0x6079758C)
 I (..\Task\Inc\Task_Chassis.h)(0x602FC274)
 I (..\Task\Inc\Task_JetsonComm.h)(0x60759AE2)
 I (D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h)(0x5898498A)

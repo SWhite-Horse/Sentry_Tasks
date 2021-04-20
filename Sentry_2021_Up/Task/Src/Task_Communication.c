@@ -31,7 +31,7 @@ void Task_Communication(void *parameters)
 	{	
 		
 		if(ext_game_state.game_type != 0){
-			if(ext_game_state.game_progress == 4) TxMessage.Is_gaming = Gaming; 
+			if(ext_game_state.game_progress == 4 || ext_game_state.game_progress == 0) TxMessage.Is_gaming = Gaming; 
 			else TxMessage.Is_gaming = Game_prepare;
 		}
 		else TxMessage.Is_gaming = Debug_status;

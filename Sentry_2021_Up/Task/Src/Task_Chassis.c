@@ -93,14 +93,15 @@ void Chassis_PID_Ctrl(Motor3508_type *chassis)
 //float left=0.35;
 //uint8_t right_singal = 1; //判断自己是否到达最右边
 //float right=1.7;
-
+uint16_t abnormaldetection=0;
+int16_t LastTarget_speed=0;
 
 void Chassis_Speed_Set(void){
 	
 	static uint8_t left_detected = 0; //判断自己是否到达最左边  0 表示未到达
 	static uint8_t right_detected = 0; //判断自己是否到达最右边
 
-	int Target_speed;
+	int16_t Target_speed;
 	
 	// 以下部分是判断哨兵在轨道上的位置
 	if(LeftSwitch == 0 && RightSwitch==1){
@@ -129,9 +130,9 @@ void Chassis_Speed_Set(void){
 	
   //速度赋值(数据为正值，但是要确定方向要根据电机安装方式和PID正负综合确定，如果相反，此处取反一般即可）：
 	if(RxMessage.controlmode == ControlMode_Aimbot){
-		if(RxMessage.speed == 1 || DataRecFromJetson.SentryGimbalMode == ServoMode)  // 下云台或者上云台是伺服模式时
+		if(RxMessage.speed == 1 || (DataRecFromJetson.SentryGimbalMode == ServoMode && StirMotor.Output > 0))  // 下云台或者上云台是伺服模式时
 		{
-			if(get_hurted!=3 && StirMotor.Output != 0) Target_speed  = 300;
+			if(get_hurted != 3) Target_speed  = 300;
 			else Target_speed  = 4500;
 		}
 		else
@@ -140,21 +141,21 @@ void Chassis_Speed_Set(void){
 	else // 非自瞄模式就是下云台传输数据
 		Target_speed  = RxMessage.speed;
 	
-	//异常检测
-	//作用机理是，定时反向
-	if(right_detected == 1 && left_detected == 1){
-		if(tim_cnt>800){
-			Target_speed = -Target_speed; 
-			tim_cnt=0;
-		}
-		else
-			Target_speed = Target_speed; 
-		
-		if(abs(Target_speed==3000))
-			tim_cnt+=2;
-		else 
-			tim_cnt++;
-	}
+//	//异常检测
+//	//作用机理是，定时反向
+//	if(right_detected == 1 && left_detected == 1){
+//		if(tim_cnt>800){
+//			Target_speed = -Target_speed; 
+//			tim_cnt=0;
+//		}
+//		else
+//			Target_speed = Target_speed; 
+//		
+//		if(abs(Target_speed==3000))
+//			tim_cnt+=2;
+//		else 
+//			tim_cnt++;
+//	}
 		
 		//判断是否受到伤害
 
@@ -185,6 +186,19 @@ void Chassis_Speed_Set(void){
 		get_hurted = 0;
 		time_cnt = 0;
 	}
+	//异常检测代码
+	if(abnormaldetection<12000){
+		if(Target_speed*LastTarget_speed>0){
+			if(StirMotor.Output > 0) abnormaldetection++;
+			else abnormaldetection+=15;
+		}
+		else{
+			LastTarget_speed=Target_speed;
+			abnormaldetection=0;
+		}
+	}
+	else if(ControlMode == ControlMode_Aimbot) Target_speed=0;
+
 	
 	//最后做对电机输出目标的赋值
 	Chassis_Motor[0].TargetSpeed = -Target_speed; 

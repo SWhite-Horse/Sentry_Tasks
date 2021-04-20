@@ -29,10 +29,10 @@ void Task_Communication(void *parameters)
 		{		
 			if(DataRecFromJetson.SentryGimbalMode==ServoMode){
 				if(RxMessage.get_hurt==3){
-					TxMessage.Chassis_speed = 2;	
+					TxMessage.Chassis_speed = 2;	//¸ßËÙ
 				}
-				else if(StirMotor.Output !=0) 
-					TxMessage.Chassis_speed=1;	
+				else if(StirMotor.Output != 0) 
+					TxMessage.Chassis_speed=1;	//µÍËÙ
 			}
 			else
 				TxMessage.Chassis_speed = 2;		

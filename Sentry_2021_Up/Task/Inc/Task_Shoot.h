@@ -25,9 +25,24 @@
 
 #define C610CURRENTMAX                      10000
 
+#define Shoot_Angle_Short 10
+#define Shoot_Angle_Long 12
+
 //¼¤¹â¿ª¹Øºê
 #define LASER_ON() HAL_GPIO_WritePin(LASER_GPIO_Port,LASER_Pin,GPIO_PIN_SET)
 #define LASER_OFF() HAL_GPIO_WritePin(LASER_GPIO_Port,LASER_Pin,GPIO_PIN_RESET)
+
+typedef struct{
+	uint16_t Heat_Limitation_UP;
+	uint16_t Heat_Limitation_DOWN;
+	
+}Heat_Limitation_t;
+
+typedef enum{
+	Three_Mode,
+	Short_Mode,
+	Long_Mode,
+}Shoot_Method_enum;
 
 extern Motor3508_type Fric_3508_Motor[2];
 extern RM2006_Type StirMotor;
@@ -36,6 +51,8 @@ void Shoot_CAN_Send(int16_t fric_1,int16_t fric_2,int16_t stir);
 void Motor_3508_PID_Init(void);
 void Motor_3508_PID_Calculate(Motor3508_type *motor);
 void Fric_3508_Motor_Speed_Set(void);
+
+void Shoot_Status_with_Heat(uint16_t angle);
 
 void StirMotor_Blocked_Detect(RM2006_Type* motor);
 void Stir_Motor_Speed_Control(RM2006_Type* motor);

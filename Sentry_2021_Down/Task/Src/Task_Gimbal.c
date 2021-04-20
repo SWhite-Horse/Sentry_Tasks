@@ -70,20 +70,20 @@ void Gimbal_Init(void)
 {
 	
 	Yaw.SpeedPID.Kp =60;
-	Yaw.SpeedPID.Ki = 0.3;
-	Yaw.SpeedPID.Kd = 8;
+	Yaw.SpeedPID.Ki = 0;
+	Yaw.SpeedPID.Kd = 7;
 	
-	Yaw.PositionPID.Kp = 20;
-	Yaw.PositionPID.Ki = 0;
+	Yaw.PositionPID.Kp = 16;
+	Yaw.PositionPID.Ki = 0.03;
 	Yaw.PositionPID.Kd = 4;
 	
 	Pitch.SpeedPID.Kp =170;//
-	Pitch.SpeedPID.Ki = 0.5;//
-	Pitch.SpeedPID.Kd = 5;//
+	Pitch.SpeedPID.Ki = 0.45;//
+	Pitch.SpeedPID.Kd = 8;//
 
-	Pitch.PositionPID.Kp = 18;//
-	Pitch.PositionPID.Ki = 0.1;//
-	Pitch.PositionPID.Kd =3;//
+	Pitch.PositionPID.Kp = 16;   //
+	Pitch.PositionPID.Ki = 0.09;//
+	Pitch.PositionPID.Kd =12;//
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 20;
@@ -98,6 +98,8 @@ void Gimbal_Init(void)
   */
 
 float temp_p[2] = {0, 0}, temp_y[2] = {0, 0};
+//float Aimbot_temp_p[2] = {0, 0}, Aimbot_temp_y[2] = {0, 0};
+
 //uint16_t RotatinPatrol_Counter=0;
 void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 {
@@ -152,14 +154,14 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				if(Aimbot_RotatinPatrol_pitchmode==upward)
 				{	
 					yaw->TargetAngle+=0.80f;
-					pitch->TargetAngle-=0.72f;					
+					pitch->TargetAngle-=0.78f;					
 					++j;
 				}
 			
 				if(Aimbot_RotatinPatrol_pitchmode==downward)
 				{		
 					yaw->TargetAngle+=0.80f;
-					pitch->TargetAngle+=0.72f;	
+					pitch->TargetAngle+=0.78f;	
 					++j;
 				}
 				
@@ -189,6 +191,7 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					yaw->TargetAngle -= 360;
 				 while(yaw->TargetAngle < 0)
 					yaw->TargetAngle += 360;
+				 
 				 pitch->TargetAngle = Pitch_Desire;//这个也要注意
 				 
 				 pitch->TargetAngle = pitch->TargetAngle > Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) ? Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) : pitch->TargetAngle;
@@ -320,15 +323,18 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
     yaw->PositionPID.Cur_Error = yaw->PositionPID.Cur_Error > 180 ? yaw->PositionPID.Cur_Error - 360 : yaw->PositionPID.Cur_Error;
     yaw->PositionPID.Cur_Error = yaw->PositionPID.Cur_Error < -180 ? yaw->PositionPID.Cur_Error + 360 : yaw->PositionPID.Cur_Error;
 
-    yaw->PositionPID.Sum_Error += yaw->PositionPID.Cur_Error;
+		if(abs(yaw->PositionPID.Cur_Error) < 15)
+			yaw->PositionPID.Sum_Error += yaw->PositionPID.Cur_Error;
+		else
+			yaw->PositionPID.Sum_Error = 0;
 
-    yaw->PositionPID.Sum_Error = yaw->PositionPID.Sum_Error > 10000 ? 10000 : yaw->PositionPID.Sum_Error;
-    yaw->PositionPID.Sum_Error = yaw->PositionPID.Sum_Error < -10000 ? -10000 : yaw->PositionPID.Sum_Error;
+    yaw->PositionPID.Sum_Error = yaw->PositionPID.Sum_Error > 5000 ? 5000 : yaw->PositionPID.Sum_Error;
+    yaw->PositionPID.Sum_Error = yaw->PositionPID.Sum_Error < -5000 ? -5000 : yaw->PositionPID.Sum_Error;
 
     yaw->PositionPID.Output = yaw->PositionPID.Kp * yaw->PositionPID.Cur_Error + yaw->PositionPID.Ki * yaw->PositionPID.Sum_Error + yaw->PositionPID.Kd * (yaw->PositionPID.Cur_Error - yaw->PositionPID.Last_Error);
 
-		yaw->PositionPID.Output = yaw->PositionPID.Output > 300 ? 300 : yaw->PositionPID.Output;
-		yaw->PositionPID.Output = yaw->PositionPID.Output < -300 ? -300 : yaw->PositionPID.Output;
+//		yaw->PositionPID.Output = yaw->PositionPID.Output > 300 ? 300 : yaw->PositionPID.Output;
+//		yaw->PositionPID.Output = yaw->PositionPID.Output < -300 ? -300 : yaw->PositionPID.Output;
     yaw->TargetSpeed = yaw->PositionPID.Output;
         
 		//yaw轴速度环

@@ -5,7 +5,13 @@
 #include "Task_StatusMachine.h"
 #include "Task_CAN.h"
 #include "Task_JudgeReceive.h"
+#include "Task_Gimbal.h"
 
+Shoot_Method_enum Shoot_Method = Long_Mode;
+Heat_Limitation_t Heat_Limitation ={
+	.Heat_Limitation_UP = 280,
+	.Heat_Limitation_DOWN = 80,
+};
 
 Motor3508_type Fric_3508_Motor[2];
 RM2006_Type  StirMotor;
@@ -20,16 +26,14 @@ void Task_Shoot(void *parameters){
 	xLastWakeUpTime = xTaskGetTickCount();
 	while(1){
 	
-				
-		if(ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 ){
-				//****** 发射口电源不断电且比赛正式开始（4）或调式模式（0）摩擦轮高速
-			if( TxMessage.mains_power_shooter==1 && TxMessage.Is_gaming != Game_prepare){
-					FricStatus = FricStatus_Working_High;
-			}
-			else{
-					FricStatus = FricStatus_Stop;
-					StirMotorStatus = StirStatus_Stop;
-			}
+		//****** 发射口电源不断电且比赛正式开始（4）或调式模式（0）摩擦轮高速
+		if( TxMessage.mains_power_shooter==1 && TxMessage.Is_gaming != Game_prepare){
+			if(ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 )
+				FricStatus = FricStatus_Working_High;
+		}
+		else{
+			FricStatus = FricStatus_Stop;
+			StirMotorStatus = StirStatus_Stop;
 		}
 		
 		Fric_3508_Motor_Speed_Set();
@@ -140,22 +144,24 @@ uint8_t ShootCounter=0;
 void StirMotor_Control(void)
 {	
 	Heat_limit_method = ext_game_robot_state.shooter_id1_17mm_speed_limit==30 ? 1 : 0; 
-	if(Heat_limit_method){
-		if(ext_power_heat_data.shooter_id1_17mm_cooling_heat>=240){
-			HeatFlag=0;
-		}	
-		else if(ext_power_heat_data.shooter_id1_17mm_cooling_heat<120){
-			HeatFlag=1;
-		}
-	}
-	else{
-		if(HeatControl>600){	
-			HeatFlag=0;
-		}
-		if(HeatControl<10){
-			HeatFlag=1;
-		}
-	}
+	Shoot_Status_with_Heat(PITCH_ANGLE);
+	
+//	if(Heat_limit_method){
+//		if(ext_power_heat_data.shooter_id1_17mm_cooling_heat>=240){
+//			HeatFlag=0;
+//		}	
+//		else if(ext_power_heat_data.shooter_id1_17mm_cooling_heat<120){
+//			HeatFlag=1;
+//		}
+//	}
+//	else{
+//		if(HeatControl>600){	
+//			HeatFlag=0;
+//		}
+//		if(HeatControl<10){
+//			HeatFlag=1;
+//		}
+//	}
 	//遥控模式
 	if(ControlMode == ControlMode_Telecontrol_UP)
 	{
@@ -207,6 +213,56 @@ void StirMotor_Control(void)
 	Stir_Motor_Speed_Control(&StirMotor);
 	
 }
+
+
+/**
+  * @brief  发射模式及热量控制(注意上下云台的Pitch坐标系相反）
+  * @param  Pitch_Angle(以及头文件有模式角度宏定义）
+  * @retval void 
+  */
+
+void Shoot_Status_with_Heat(uint16_t angle){
+	if(angle <= Shoot_Angle_Short)
+		Shoot_Method = Three_Mode;
+	else if (angle <= Shoot_Angle_Long && angle > Shoot_Angle_Short)
+		Shoot_Method  = Short_Mode;
+	else if (angle > Shoot_Angle_Long && angle <= 27)
+		Shoot_Method = Long_Mode;
+	
+	switch (Shoot_Method){
+		case Three_Mode:
+			Heat_Limitation.Heat_Limitation_UP = 50;
+			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			break;
+		case Short_Mode:
+			Heat_Limitation.Heat_Limitation_UP = 200;
+			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			break;
+		case Long_Mode:
+			Heat_Limitation.Heat_Limitation_UP = 280;
+			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			break;
+		default:
+			break;
+	}
+	if(Heat_limit_method){
+		if(ext_power_heat_data.shooter_id1_17mm_cooling_heat >= Heat_Limitation.Heat_Limitation_UP){
+			HeatFlag=0;
+		}	
+		else if(ext_power_heat_data.shooter_id1_17mm_cooling_heat < Heat_Limitation.Heat_Limitation_DOWN){
+			HeatFlag=1;
+		}
+	}
+	else{
+		if(HeatControl>600){	
+			HeatFlag=0;
+		}
+		if(HeatControl<10){
+			HeatFlag=1;
+		}
+	}
+}
+
 
 /**
   * @brief  拨盘电机速度闭环

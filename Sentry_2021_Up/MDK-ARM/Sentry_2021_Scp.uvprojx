@@ -471,14 +471,14 @@
               <FilePath>..\Task\Src\Task_Chassis.c</FilePath>
             </File>
             <File>
-              <FileName>Task_Init.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Init.c</FilePath>
-            </File>
-            <File>
               <FileName>Task_LEDBlink.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Task\Src\Task_LEDBlink.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_Init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Init.c</FilePath>
             </File>
             <File>
               <FileName>Task_RC.c</FileName>
