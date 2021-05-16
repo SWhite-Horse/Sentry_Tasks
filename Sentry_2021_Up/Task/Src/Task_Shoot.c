@@ -42,6 +42,7 @@ void Task_Shoot(void *parameters){
 		
 		StirMotor_Control();
 		Shoot_CAN_Send(Fric_3508_Motor[0].Output,Fric_3508_Motor[1].Output,StirMotor.Output);
+
 		vTaskDelayUntil(&xLastWakeUpTime, 5);
 	}
 			

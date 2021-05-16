@@ -34,13 +34,13 @@ typedef struct
 #define Mechanical_Angle_RIGHT 7662
 //6369 38.95°
 #define PITCHOFFSET 385
-#define YAWOFFSET   60
+#define YAWOFFSET   4158
 
 #define Mechanical_YAWAngle_To_RealAngle(x) (360 * (x - YAWOFFSET)/ 8191.0f)
 #define Mechanical_PITCHAngle_To_RealAngle(x) (360 * (x - PITCHOFFSET) / 8191.0f)
 
 #define PITCH_ANGLE Mechanical_PITCHAngle_To_RealAngle(Pitch.Mechanical_Angle)
-#define YAW_ANGLE (Yaw.Mechanical_Angle >= 4156 ? Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle-8191) : Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle))
+#define YAW_ANGLE (Yaw.Mechanical_Angle <= 63 ? Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle-8191) : Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle))
 
 //#define YAW_ANGLE imu.yaw    //imu 范围-pi到pi且电机正向转动时角度减小 ///改为机械角，PID也要修改
 #define AYAW 			imu.wz * 57.3f

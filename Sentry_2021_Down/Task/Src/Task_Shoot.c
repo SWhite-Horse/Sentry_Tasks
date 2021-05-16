@@ -136,7 +136,7 @@ void StirMotor_Init(void)
  * @note: 
  */
 uint8_t HeatFlag = 0; //是否超热量  ????????????????  考虑整合 》？？？？？？？？？
-int16_t targetspeed = -5500; //拨盘转速
+int16_t targetspeed = -7000; //拨盘转速
 uint8_t ShootCounter=0; 
 uint8_t Heat_limit_method=0;
 int HeatControl=0;

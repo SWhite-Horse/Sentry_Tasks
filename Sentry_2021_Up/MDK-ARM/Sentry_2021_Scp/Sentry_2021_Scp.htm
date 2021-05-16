@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Sentry_2021_Scp\Sentry_2021_Scp.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Sentry_2021_Scp\Sentry_2021_Scp.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Sun Apr 18 09:26:50 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Sun May 16 14:30:49 2021
 <BR><P>
 <H3>Maximum Stack Usage =        328 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -826,7 +826,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Verify_CRC8_Check_Sum
 </UL>
 
-<P><STRONG><a name="[9b]"></a>GimbalMotor_AngleSet</STRONG> (Thumb, 1212 bytes, Stack size 64 bytes, task_gimbal.o(i.GimbalMotor_AngleSet))
+<P><STRONG><a name="[9b]"></a>GimbalMotor_AngleSet</STRONG> (Thumb, 1224 bytes, Stack size 64 bytes, task_gimbal.o(i.GimbalMotor_AngleSet))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = GimbalMotor_AngleSet &rArr; Version_Init &rArr; KF_Init &rArr; kalman_filter_init &rArr; arm_mat_trans_f32
 </UL>
 <BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
@@ -863,7 +863,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_Gimbal
 </UL>
 
-<P><STRONG><a name="[11e]"></a>Gimbal_Init</STRONG> (Thumb, 116 bytes, Stack size 0 bytes, task_gimbal.o(i.Gimbal_Init))
+<P><STRONG><a name="[11e]"></a>Gimbal_Init</STRONG> (Thumb, 112 bytes, Stack size 0 bytes, task_gimbal.o(i.Gimbal_Init))
 <BR><BR>[Called By]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_Gimbal
 </UL>
 
@@ -1415,8 +1415,8 @@ Global Symbols
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART8_IRQHandler
 </UL>
 
-<P><STRONG><a name="[f1]"></a>JetsonComm_Control</STRONG> (Thumb, 660 bytes, Stack size 40 bytes, task_jetsoncomm.o(i.JetsonComm_Control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 92<LI>Call Chain = JetsonComm_Control &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT &rArr; DMA_SetConfig
+<P><STRONG><a name="[f1]"></a>JetsonComm_Control</STRONG> (Thumb, 664 bytes, Stack size 32 bytes, task_jetsoncomm.o(i.JetsonComm_Control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = JetsonComm_Control &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT &rArr; DMA_SetConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskGetTickCount
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit_DMA
@@ -1629,7 +1629,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_StatusMachine
 </UL>
 
-<P><STRONG><a name="[132]"></a>StatusMachine_Update</STRONG> (Thumb, 66 bytes, Stack size 0 bytes, task_statusmachine.o(i.StatusMachine_Update))
+<P><STRONG><a name="[132]"></a>StatusMachine_Update</STRONG> (Thumb, 62 bytes, Stack size 0 bytes, task_statusmachine.o(i.StatusMachine_Update))
 <BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_StatusMachine
 </UL>
 
@@ -1788,7 +1788,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.constdata)
 </UL>
 <P><STRONG><a name="[70]"></a>Task_JetsonComm</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, task_jetsoncomm.o(i.Task_JetsonComm))
-<BR><BR>[Stack]<UL><LI>Max Depth = 92<LI>Call Chain = Task_JetsonComm &rArr; JetsonComm_Control &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT &rArr; DMA_SetConfig
+<BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Task_JetsonComm &rArr; JetsonComm_Control &rArr; HAL_UART_Transmit_DMA &rArr; HAL_DMA_Start_IT &rArr; DMA_SetConfig
 </UL>
 <BR>[Calls]<UL><LI><a href="#[12b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ulTaskNotifyTake
 <LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;JetsonComm_Control
@@ -1891,7 +1891,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;JudgeReceive
 </UL>
 
-<P><STRONG><a name="[9d]"></a>Version_Init</STRONG> (Thumb, 208 bytes, Stack size 16 bytes, task_jetsoncomm.o(i.Version_Init))
+<P><STRONG><a name="[9d]"></a>Version_Init</STRONG> (Thumb, 202 bytes, Stack size 16 bytes, task_jetsoncomm.o(i.Version_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = Version_Init &rArr; KF_Init &rArr; kalman_filter_init &rArr; arm_mat_trans_f32
 </UL>
 <BR>[Calls]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;KF_Init

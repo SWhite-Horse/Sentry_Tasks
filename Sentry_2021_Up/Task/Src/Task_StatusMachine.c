@@ -61,14 +61,14 @@ void StatusMachine_Update(void)
 			{ 
 				if(DataRecFromJetson.SentryGimbalMode == ServoMode && CommStatus.CommSuccess == 1 ){
 					if(TxMessage.mains_power_shooter==0){
-					//FricStatus = FricStatus_Stop;
-					StirMotorStatus = StirStatus_Stop;
+					  FricStatus = FricStatus_Stop;
+						StirMotorStatus = StirStatus_Stop;
 					}
 				else
 					FricStatus = FricStatus_Working_High;					
 				}
 				
-				 FricStatus = FricStatus_Working_High;
+//				 FricStatus = FricStatus_Working_High;
 				 break;	
 			}
 			
