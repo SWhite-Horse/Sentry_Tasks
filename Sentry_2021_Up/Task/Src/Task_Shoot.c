@@ -57,13 +57,13 @@ void Task_Shoot(void *parameters){
 
 void Motor_3508_PID_Init(void){
 	
-	Fric_3508_Motor[0].PID.Kp = 9.1;//9.1;  //8; //0.5,
-	Fric_3508_Motor[0].PID.Ki = 0.05;//0.05; //0.05,
-	Fric_3508_Motor[0].PID.Kd = 8;//8;	//1,
+	Fric_3508_Motor[0].PID.Kp = 16.5; //9.1;
+	Fric_3508_Motor[0].PID.Ki = 0.1; //0.05;
+	Fric_3508_Motor[0].PID.Kd = 0.2; //;//8;
 
-	Fric_3508_Motor[1].PID.Kp = 9.1;//9.1;  //8; //0.5,
-	Fric_3508_Motor[1].PID.Ki = 0.05;//0.05; //0.05,
-	Fric_3508_Motor[1].PID.Kd = 8;//8;	//1,
+	Fric_3508_Motor[1].PID.Kp = 16.5;
+	Fric_3508_Motor[1].PID.Ki = 0.1; 
+	Fric_3508_Motor[1].PID.Kd = 0.2; 
 
 };
 
@@ -172,7 +172,7 @@ void StirMotor_Control(void)
 			StirMotor.TargetSpeed = 0;
 	}
 	//自瞄并且已经瞄到
-	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1 && TxMessage.mains_power_shooter==1 )
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1 && TxMessage.mains_power_shooter==1 && DataRecFromJetson.Amor_Numb != 2)
 	{
 		if((DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
 		{
@@ -189,6 +189,8 @@ void StirMotor_Control(void)
 	}
 	else
 		  StirMotor.TargetSpeed = 0;
+	
+	
 	//堵转检测
 	StirMotor_Blocked_Detect(&StirMotor);
 	

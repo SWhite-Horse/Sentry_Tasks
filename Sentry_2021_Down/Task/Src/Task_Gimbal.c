@@ -55,7 +55,7 @@ void Task_Gimbal(void *parameters)
 		GimbalMotor_PID(&Yaw,&Pitch);
 		Gimbal_CAN_Send(Yaw.NeedCurrent,StirMotor.Output);
 		Gimbal_CAN_Pitch_Send(Pitch.NeedCurrent);
-    vTaskDelayUntil(&xPreviousWakeTime, 5);		
+    vTaskDelayUntil(&xPreviousWakeTime,2);		
 	}
 }
 
@@ -70,21 +70,21 @@ void Task_Gimbal(void *parameters)
 void Gimbal_Init(void)
 {
 	
-	Yaw.SpeedPID.Kp =120;
-	Yaw.SpeedPID.Ki = 4;
-	Yaw.SpeedPID.Kd = 1.5;
+	Yaw.SpeedPID.Kp =80;//36;
+	Yaw.SpeedPID.Ki = 0;//1;
+	Yaw.SpeedPID.Kd = 4.5;//12;
 	
-	Yaw.PositionPID.Kp = 20;
-	Yaw.PositionPID.Ki = 0;
-	Yaw.PositionPID.Kd = 4;
+	Yaw.PositionPID.Kp = 13;//20;
+	Yaw.PositionPID.Ki = 0;//0;
+	Yaw.PositionPID.Kd = 1;//4;
 	
-	Pitch.SpeedPID.Kp =200;//
-	Pitch.SpeedPID.Ki = 5;//
-	Pitch.SpeedPID.Kd = 1;//
+	Pitch.SpeedPID.Kp =160;//60;//
+	Pitch.SpeedPID.Ki = 2;//1.2;//
+	Pitch.SpeedPID.Kd = 1;//12;//
 
-	Pitch.PositionPID.Kp = 18;   //
-	Pitch.PositionPID.Ki = 0.1;//
-	Pitch.PositionPID.Kd =3.5;//
+	Pitch.PositionPID.Kp =17;// 18;   //
+	Pitch.PositionPID.Ki = 0.1;//0.1;//
+	Pitch.PositionPID.Kd =1;//
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 20;
@@ -149,7 +149,7 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				StirMotorStatus = StirStatus_Stop;
 				//pitch轴巡逻范围
 				if(PITCH_ANGLE>=39)   Aimbot_RotatinPatrol_pitchmode = upward;
-				if(PITCH_ANGLE<=8)	 Aimbot_RotatinPatrol_pitchmode = downward;
+				if(PITCH_ANGLE<=12)	 Aimbot_RotatinPatrol_pitchmode = downward;
 				
 				//巡逻步进设置，注意下云台没有Yaw的左右之分，上云台有	 
 				if(Aimbot_RotatinPatrol_pitchmode==upward)
@@ -172,6 +172,26 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					yaw->TargetAngle += 360;			
 				break;
 			}
+			
+			case SlowDown:{
+				// ********************  360 自瞄		******************** //
+				if(PITCH_ANGLE>=39) Aimbot_RotatinPatrol_pitchmode = upward;
+				if(PITCH_ANGLE<=13)	Aimbot_RotatinPatrol_pitchmode = downward;
+					
+				yaw->TargetAngle+=0.02f;
+
+				if(Aimbot_RotatinPatrol_pitchmode==upward) pitch->TargetAngle-=0.05f;	
+				if(Aimbot_RotatinPatrol_pitchmode==upward) pitch->TargetAngle+=0.05f;					
+				++j;
+				
+				while (yaw->TargetAngle >= 180)
+					yaw->TargetAngle -= 360;
+				while (yaw->TargetAngle < -180)
+					yaw->TargetAngle += 360;
+				
+				break;
+			}
+			
 			//伺服模式
 			case ServoMode:
 			{

@@ -33,9 +33,8 @@
 #define BlueTeam (uint16_t)0xDD
 #define RedTeam (uint16_t)0xEE
 //发射方式
-#define NoFire (uint16_t)(0x00 << 8)      //不发射
-#define BurstFire (uint16_t)(0x01 << 8)   //点射
-#define RunningFire (uint16_t)(0x02 << 8) //连发
+#define NoFire (uint8_t)(0x00)      //不发射
+#define RunningFire (uint8_t)(0x01)  //连发
 //发射速度（高速低速）
 #define HighBulletSpeed (uint16_t)(0x01)
 #define LowBulletSpeed (uint16_t)(0x02)
@@ -46,7 +45,7 @@
 #define AutoShootMode (uint8_t)(0x03) //自动射击
 //哨兵云台工作模式
 #define RotatinPatrol (uint8_t)(0x01) //旋转巡逻
-#define PatrolArmor0 (uint8_t)(0x02)  //巡逻装甲板0
+#define SlowDown (uint8_t)(0x02)  //巡逻装甲板0
 #define PatrolArmor1 (uint8_t)(0x03)  //巡逻装甲板1
 #define ServoMode (uint8_t)(0x04)     //伺服打击
 
@@ -58,8 +57,11 @@ typedef struct
     float TargetPitchAngle; //Pitch目标角度
     float TargetYawAngle;   //Yaw目标角度
     /*  哨兵专用   */
-    int16_t TargetSpeedOnRail; //目标轨道速度（哨兵用）
+	  uint16_t TargetSpeedOnRail;//目标轨道速度（哨兵用）
     uint8_t SentryGimbalMode;  //哨兵云台攻击模式
+	  uint8_t AmorNum; 
+		
+	
     uint8_t EoF;
 } JetsonToSTM_Struct;
 

@@ -181,7 +181,7 @@
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>DataRecFromJetson,0x0A</ItemText>
+          <ItemText>DataRecFromJetson,0x10</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
@@ -217,6 +217,16 @@
           <count>12</count>
           <WinNumber>1</WinNumber>
           <ItemText>FricStatus</ItemText>
+        </Ww>
+        <Ww>
+          <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\Sentry_2021_Down\../Task/Src/Task_JetsonComm.c\DataRecFromJetson.Seq</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Yaw_Output</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

@@ -69,3 +69,4 @@ sentry_2021_scp\task_chassis.o: ..\Task\Inc\Task_JudgeReceive.h
 sentry_2021_scp\task_chassis.o: ..\Task\Inc\Task_JetsonComm.h
 sentry_2021_scp\task_chassis.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h
 sentry_2021_scp\task_chassis.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
+sentry_2021_scp\task_chassis.o: D:\keil\ARM\ARMCC\Bin\..\include\time.h

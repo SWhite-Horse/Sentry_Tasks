@@ -6,6 +6,11 @@
 //C620电调电流最大值
 #define C620CURRENTMAX 16000
    
+#define CHASSIS_HIGH_SPEED 4800 //待定
+#define CHASSIS_NORMAL_SPEED 4500
+#define CHASSIS_SHOOT_SPEED 50
+
+
 extern Motor3508_type Chassis_Motor[2];
 
 void Chassis_Ctrl_Init(void);

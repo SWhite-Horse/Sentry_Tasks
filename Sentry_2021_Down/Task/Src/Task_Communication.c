@@ -50,7 +50,7 @@ void Task_Communication(void *parameters)
 				TxMessage.Yaw_speed = 0;
 		}
 		CAN_Com_Send();
-    vTaskDelayUntil(&xLastWakeUpTime, 5);
+    vTaskDelayUntil(&xLastWakeUpTime, 2);
 	}
 }
 	/**

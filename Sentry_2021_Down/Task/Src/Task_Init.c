@@ -19,7 +19,7 @@ void Task_Init(void *parameters)
 			CAN_Recieve(&hcan2);
 	
 
-			Queue_CANSend = xQueueCreate(30,sizeof(CanSend_Type));   //创建发送队列
+			Queue_CANSend = xQueueCreate(50,sizeof(CanSend_Type));   //创建发送队列
 	
 			LASER_ON();
 			//L1_Measure_Init(&huart6);

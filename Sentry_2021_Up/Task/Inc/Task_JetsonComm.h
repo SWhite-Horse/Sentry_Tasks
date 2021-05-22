@@ -46,7 +46,7 @@
 #define AutoShootMode (uint8_t)(0x03) //自动射击
 //哨兵云台工作模式
 #define RotatinPatrol (uint8_t)(0x01) //旋转巡逻
-#define PatrolArmor0 (uint8_t)(0x02)  //巡逻装甲板0
+#define SlowDown (uint8_t)(0x02)  //巡逻装甲板0
 #define PatrolArmor1 (uint8_t)(0x03)  //巡逻装甲板1
 #define ServoMode (uint8_t)(0x04)     //伺服打击
 
@@ -58,10 +58,9 @@ typedef struct
     float TargetPitchAngle; //Pitch目标角度
     float TargetYawAngle;   //Yaw目标角度
     /*  哨兵专用   */
-    //int16_t TargetSpeedOnRail; //目标轨道速度（哨兵用）
     uint8_t SentryGimbalMode;  //哨兵云台攻击模式
-		//uint8_t chassis_mode;
-    uint8_t EoF;
+		uint8_t Amor_Numb;			//目标装甲板数字
+		uint8_t EoF;
 } JetsonToSTM_Struct;
 
 typedef struct

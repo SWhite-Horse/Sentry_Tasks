@@ -4,7 +4,7 @@
 #include "Task_Init.h"
 
 //角度增加步进值
-#define PhysicalAngleAddStep 1.0f
+#define PhysicalAngleAddStep 0.7f
 #define Pi 3.1415926f
 
 //电机电调最大电流

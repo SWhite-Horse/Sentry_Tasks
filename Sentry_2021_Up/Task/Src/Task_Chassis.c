@@ -6,6 +6,7 @@
 #include "Task_Shoot.h"
 #include "Task_JudgeReceive.h"
 #include "Task_JetsonComm.h"
+#include "time.h"
 
 
 uint16_t tim_cnt;
@@ -13,6 +14,7 @@ extern uint16_t time_cnt; //在测距失效之后运动模式，计时
 extern uint8_t get_hurted; //判断是否受到伤害
 extern int HeatStatus;
 uint8_t get_ =0;
+int n;
 Motor3508_type Chassis_Motor[2];
 
 /**************************************************
@@ -24,14 +26,13 @@ void Task_Chassis(void *parameters)
 {
 	Chassis_Ctrl_Init();   /*底盘参数初始化函数*/     
 	TickType_t xLastWakeUpTime=xTaskGetTickCount();
-
 	while(1)
 	{		
     Chassis_Speed_Set(); /*底盘速度读取设定*/
 		Chassis_PID_Ctrl(&Chassis_Motor[0]);
 		Chassis_PID_Ctrl(&Chassis_Motor[1]);
 	
-		ChassisPowerControl();
+		if(ext_power_heat_data.chassis_power_buffer != 0) ChassisPowerControl();
 		Chassis_CAN_Send(Chassis_Motor[0].Output,Chassis_Motor[1].Output);
 		vTaskDelayUntil(&xLastWakeUpTime, 5);
 	}
@@ -121,6 +122,9 @@ void Chassis_Speed_Set(void){
 		left_detected = 0;
 	}
 	
+	// 随机数更新
+	if(RightSwitch == 0 || LeftSwitch == 0) n = rand();
+	
 	if(RxMessage.controlmode == ControlMode_Aimbot && Turn_sign) {
 		Turn_sign = 0;
 		get_++;
@@ -132,11 +136,17 @@ void Chassis_Speed_Set(void){
 	if(RxMessage.controlmode == ControlMode_Aimbot){
 		if(RxMessage.speed == 1 || (DataRecFromJetson.SentryGimbalMode == ServoMode && StirMotor.Output > 0))  // 下云台或者上云台是伺服模式时
 		{
-			if(get_hurted != 3) Target_speed  = 300;
-			else Target_speed  = 4500;
+			
+			
+			
+			if(get_hurted != 3) Target_speed  = CHASSIS_SHOOT_SPEED;
+			else Target_speed  = CHASSIS_NORMAL_SPEED;
 		}
 		else
-			Target_speed = 4500;
+			Target_speed = CHASSIS_NORMAL_SPEED;
+		
+		
+		
 	}
 	else // 非自瞄模式就是下云台传输数据
 		Target_speed  = RxMessage.speed;
