@@ -82,7 +82,7 @@ typedef struct
     uint8_t SoF;
     uint8_t Seq;
     uint8_t TeamFlag;   //所需控制模式
-    //uint8_t ShootSpeed; //射速
+    //uint8_t Color_Control; //颜色
     /*  哨兵专用   */
     //uint8_t RailNum;      //所处轨道标号
     //uint8_t ArmorType;    //被打击装甲板标识 //去掉

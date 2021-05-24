@@ -43,4 +43,10 @@ void Task_JetsonComm(void *parameters);
 void Task_Measure(void *parameters);
 void Task_StatusMachine(void *parameters);
 void Task_JetsonCome(void *parameters);
+
+//¼ÆÊ±Æ÷
+extern TickType_t HeartbeatCycleALL;
+TickType_t HeartbeatCycleDifference(TickType_t * HeartbeatCycleAbsolute);
+void HeartbeatCycleAdd(TickType_t * HeartbeatCycleCount,TickType_t * HeartbeatCycleAbsolute);
+uint16_t HeartbeatCycleToTime(TickType_t * HeartbeatCycle);
 #endif

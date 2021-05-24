@@ -19,6 +19,7 @@ void Task_Init(void *parameters)
 {
 		   taskENTER_CRITICAL();          //进入临界区
 		//** Init **//
+	    HeartbeatCycleALL = xTaskGetTickCount();
 			CAN_Init(&hcan1);
 			CAN_Init(&hcan2);
 			CAN_Recieve(&hcan1);
@@ -126,5 +127,30 @@ void CAN_Recieve(CAN_HandleTypeDef *hcan)
      return;
   }
   HAL_CAN_ActivateNotification(hcan, ActiveITs);
+}
+
+//计时器
+	TickType_t HeartbeatCycleALL=0;//总心跳周期计数器
+	
+TickType_t HeartbeatCycleDifference(TickType_t * HeartbeatCycleAbsolute)//求此次任务和上次任务的心跳周期差,参数为上次心跳周期的绝对量
+{
+  TickType_t HeartbeatCycleReturn;//返回值
+	HeartbeatCycleALL = xTaskGetTickCount();
+	if(HeartbeatCycleALL>*HeartbeatCycleAbsolute)//正常工作无溢出
+			HeartbeatCycleReturn= HeartbeatCycleALL-*HeartbeatCycleAbsolute;
+	else 
+			HeartbeatCycleReturn= 0xFFFFFFFF-*HeartbeatCycleAbsolute+HeartbeatCycleALL+1;//溢出 0xFFFFFFFF为TickType_t的最大值;
+	* HeartbeatCycleAbsolute=HeartbeatCycleALL;//更新绝对量
+	return HeartbeatCycleReturn;
+}
+	
+void HeartbeatCycleAdd(TickType_t * HeartbeatCycleCount,TickType_t * HeartbeatCycleAbsolute)//心跳周期计数器(心跳周期计数可清零，上次运行的绝对量)
+{
+		*(HeartbeatCycleCount)+=HeartbeatCycleDifference(HeartbeatCycleAbsolute);
+}
+	
+uint16_t HeartbeatCycleToTime(TickType_t * HeartbeatCycle)//心跳周期转换为毫秒
+{
+		return(uint16_t)(*HeartbeatCycle)*portTICK_RATE_MS;
 }
 

@@ -78,11 +78,11 @@ void Gimbal_Init(void)
 	Yaw.PositionPID.Ki = 0;//0;
 	Yaw.PositionPID.Kd = 1;//4;
 	
-	Pitch.SpeedPID.Kp =160;//60;//
-	Pitch.SpeedPID.Ki = 2;//1.2;//
-	Pitch.SpeedPID.Kd = 1;//12;//
+	Pitch.SpeedPID.Kp =120;//60;//
+	Pitch.SpeedPID.Ki = 1.2;//1.2;//
+	Pitch.SpeedPID.Kd = 10;//12;//
 
-	Pitch.PositionPID.Kp =17;// 18;   //
+	Pitch.PositionPID.Kp =16;// 18;   //
 	Pitch.PositionPID.Ki = 0.1;//0.1;//
 	Pitch.PositionPID.Kd =1;//
 	
@@ -148,21 +148,21 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 			{				
 				StirMotorStatus = StirStatus_Stop;
 				//pitch轴巡逻范围
-				if(PITCH_ANGLE>=39)   Aimbot_RotatinPatrol_pitchmode = upward;
-				if(PITCH_ANGLE<=12)	 Aimbot_RotatinPatrol_pitchmode = downward;
+				if(PITCH_ANGLE>=29)   Aimbot_RotatinPatrol_pitchmode = upward;
+				if(PITCH_ANGLE<=14)	 Aimbot_RotatinPatrol_pitchmode = downward;
 				
 				//巡逻步进设置，注意下云台没有Yaw的左右之分，上云台有	 
 				if(Aimbot_RotatinPatrol_pitchmode==upward)
 				{	
-					yaw->TargetAngle+=0.32f;
-					pitch->TargetAngle-=0.32f;					
+					yaw->TargetAngle+=0.26f;
+					pitch->TargetAngle-=0.18f;					
 					++j;
 				}
 			
 				if(Aimbot_RotatinPatrol_pitchmode==downward)
 				{		
-					yaw->TargetAngle+=0.32f;
-					pitch->TargetAngle+=0.32f;	
+					yaw->TargetAngle+=0.26f;
+					pitch->TargetAngle+=0.18f;	
 					++j;
 				}
 				
@@ -195,10 +195,10 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 			//伺服模式
 			case ServoMode:
 			{
-				if(KF_Versioninit == 0){
-					KF_Versioninit = 1;
-					Version_Init();
-				}
+//				if(KF_Versioninit == 0){
+//					KF_Versioninit = 1;
+//					Version_Init();
+//				}
 
 //				   if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
 //				   {

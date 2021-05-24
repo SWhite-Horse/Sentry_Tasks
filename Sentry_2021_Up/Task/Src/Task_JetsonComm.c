@@ -1,13 +1,14 @@
 //与算法通讯代码
 #include "Task_JetsonComm.h"
 #include "Task_StatusMachine.h"
+#include "Task_Communication.h"
 #include "Task_Gimbal.h"
 #include "Task_Imu.h"
 #include "Task_Measure.h"
 #include "arm_math.h"
 #include "Task_JudgeReceive.h"
 
-
+extern Up_to_Down_Message TxMessage;
 kalman_filter_t KF_Gimbal_Pitch, KF_Gimbal_Yaw;
 kalman_filter_init_t KF_Gimbal_Pitch_init, KF_Gimbal_Yaw_init;
 float Pitch_Desire, Yaw_Desire;                 /*Pitch轴与Yaw轴目标角定义*/
@@ -113,7 +114,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   else if (DataRecFromJetson.ShootMode == RequestTrans)
   {
     DataSendToJetson.Seq++;
-    DataSendToJetson.TeamFlag = ShootStatus;
+    DataSendToJetson.TeamFlag = TxMessage.Armour==7? (uint8_t)(RedTeam) : (uint8_t)(BlueTeam);
 //		DataSendToJetson.location = Distance;
 //		DataSendToJetson.BulletRemain=200;   //////// gai dong
 //		DataSendToJetson.IsHuarted=get_hurted;  

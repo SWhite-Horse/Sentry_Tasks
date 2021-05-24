@@ -658,6 +658,64 @@ void imu_ahrs_update(void)
 	* @retval 
     * @usage  call in main() function
 	*/
+#define dYawOffset -0.39//Yaw轴随时间变化的偏移量 毫秒
+TickType_t HeartbeatCycleIMUCount;
+TickType_t HeartbeatCycleIMUAbsolute;
+float YawCompresatation=0;
+//
+float YawOffsetc;
+float YawOffsett=0;
+float YawOffseta=0;
+
+int Number=0;
+int StartFlag=0;
+
+float dYawOffsetCalculate(int *StartFlag)//1进入 0不进入
+{
+	float YawOffset=0;
+	
+  static	float IMUyawLast;
+	static TickType_t HeartbeatCycleIMUCountLast;
+	if(*StartFlag==1)
+	{
+		HeartbeatCycleIMUCountLast=HeartbeatCycleIMUCount;
+	  IMUyawLast=imu.yaw;
+		*StartFlag=2;
+	}
+	
+	if(*StartFlag==2&&HeartbeatCycleIMUCount-HeartbeatCycleIMUCountLast!=0)
+	{
+		YawOffset=(imu.yaw-IMUyawLast)*1000/((HeartbeatCycleIMUCount-HeartbeatCycleIMUCountLast)*portTICK_RATE_MS);
+	}
+	else YawOffset=0;
+	HeartbeatCycleIMUCountLast=HeartbeatCycleIMUCount;
+	IMUyawLast=imu.yaw;
+	return YawOffset;
+}
+
+//
+float IMUYawCompresatation()
+{
+	float IMUYawCompresatation=0;//返回值
+	HeartbeatCycleAdd(&HeartbeatCycleIMUCount,&HeartbeatCycleIMUAbsolute);//更新心跳周期
+	YawOffsetc=dYawOffsetCalculate(&StartFlag);
+	if(YawOffsetc!=0)
+	{
+		YawOffsett+=YawOffsetc;
+		Number++;
+		YawOffseta=YawOffsett/Number;
+	}
+//	IMUYawCompresatation=(float)HeartbeatCycleToTime(&HeartbeatCycleIMUCount)*dYawOffset;//毫秒为单位,求偏移量
+//	while(IMUYawCompresatation>360) 
+//	{
+//		IMUYawCompresatation=IMUYawCompresatation-360;
+//	}
+	
+	
+	
+	return IMUYawCompresatation;
+}
+
 void imu_attitude_update(void)
 {
 	/* yaw    -pi----pi */

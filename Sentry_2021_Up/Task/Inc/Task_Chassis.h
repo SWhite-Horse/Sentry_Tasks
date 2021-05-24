@@ -6,10 +6,36 @@
 //C620电调电流最大值
 #define C620CURRENTMAX 16000
    
-#define CHASSIS_HIGH_SPEED 4800 //待定
-#define CHASSIS_NORMAL_SPEED 4500
-#define CHASSIS_SHOOT_SPEED 50
+#define CHASSIS_HIGH_SPEED 7500 //待定
+#define CHASSIS_NORMAL_SPEED 6000
+#define CHASSIS_SHOOT_SPEED 0
 
+#define FLAG_LEFT 1
+#define FLAG_RIGHT 0
+#define MEASURE_CIRCLE 40
+
+typedef struct{
+	uint8_t Flag;
+	uint8_t Rand_Numb;
+	uint16_t Measure_tick;
+	uint16_t Speedup_tick;
+}Rand_Walk_struct;
+
+
+typedef struct{
+	uint8_t Is_Finished;
+	uint8_t Shoot_Count;
+	uint8_t Location;
+	uint8_t Location_Flag;
+	uint8_t Gimbal_Gryo;
+	uint8_t Shoot_Flag;
+}SHEN_WEI_struct;
+
+
+typedef struct{
+	uint8_t Status; 
+	uint8_t Gimbal_Gryo;
+}YUE_LU_struct;
 
 extern Motor3508_type Chassis_Motor[2];
 

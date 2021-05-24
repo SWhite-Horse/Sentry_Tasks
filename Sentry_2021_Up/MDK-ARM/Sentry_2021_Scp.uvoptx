@@ -161,97 +161,92 @@
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Chassis_Motor,0x0A</ItemText>
+          <ItemText>Mechanical_PITCHAngle_To_RealAngle(Pitch.Mechanical_Angle)</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Yaw,0x0A</ItemText>
+          <ItemText>(Yaw.Mechanical_Angle &lt;= 4096 ? Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle-8191) : Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle))</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Pitch,0x0A</ItemText>
+          <ItemText>temp</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Heat_Limitation,0x0A</ItemText>
+          <ItemText>left_detected</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Shoot_Method</ItemText>
+          <ItemText>ext_game_state,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Mechanical_PITCHAngle_To_RealAngle(Pitch.Mechanical_Angle)</ItemText>
+          <ItemText>ext_game_result</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>TxMessage,0x0A</ItemText>
+          <ItemText>ext_game_robot_HP</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>StirMotor,0x0A</ItemText>
+          <ItemText>ext_event_data</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Fric_3508_Motor,0x0A</ItemText>
+          <ItemText>DataSendToJetson</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>abnormaldetection,0x0A</ItemText>
+          <ItemText>DataRecFromJetson,0x10</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>RxMessage</ItemText>
+          <ItemText>ext_power_heat_data,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>DataRecFromJetson</ItemText>
+          <ItemText>TxMessage,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ext_game_state</ItemText>
+          <ItemText>ext_shoot_data,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Fric_3508_Motor</ItemText>
+          <ItemText>ext_bullet_remaining,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>FricStatus</ItemText>
+          <ItemText>ext_game_robot_state,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>(Yaw.Mechanical_Angle &lt;= 4096 ? Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle-8191) : Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle))</ItemText>
+          <ItemText>\\Sentry_2021_Scp\../Task/Src/Task_JudgeReceive .c\ext_game_robot_state.robot_level</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Judge_Receive_Buffer</ItemText>
+          <ItemText>Rand_Walk,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ext_power_heat_data</ItemText>
-        </Ww>
-        <Ww>
-          <count>19</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>temp</ItemText>
+          <ItemText>Chassis_Motor,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

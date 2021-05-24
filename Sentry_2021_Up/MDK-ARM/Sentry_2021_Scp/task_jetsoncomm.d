@@ -62,6 +62,7 @@ sentry_2021_scp\task_jetsoncomm.o: ../Middlewares/Third_Party/FreeRTOS/Source/in
 sentry_2021_scp\task_jetsoncomm.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\arm_math.h
 sentry_2021_scp\task_jetsoncomm.o: D:\keil\ARM\CMSIS\5.0.1\CMSIS\Include\core_cm4.h
 sentry_2021_scp\task_jetsoncomm.o: ..\Task\Inc\Task_StatusMachine.h
+sentry_2021_scp\task_jetsoncomm.o: ..\Task\Inc\Task_Communication.h
 sentry_2021_scp\task_jetsoncomm.o: ..\Task\Inc\Task_Gimbal.h
 sentry_2021_scp\task_jetsoncomm.o: ..\Task\Inc\Task_Imu.h
 sentry_2021_scp\task_jetsoncomm.o: ..\Func\Inc\Func_Imu_OB.h

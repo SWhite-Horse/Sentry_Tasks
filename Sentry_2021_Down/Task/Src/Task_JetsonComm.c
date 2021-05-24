@@ -98,7 +98,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
       CommStatus.team = RedTeam;
       DataSendToJetson.Seq++;
       DataSendToJetson.TeamFlag = (uint8_t)(RedTeam);
-      //DataSendToJetson.ShootSpeed = (uint8_t)(RedTeam);
+      //DataSendToJetson.Color_Control = (uint8_t)(RedTeam);
     }
     else if (RxMessage.Armour==107)//WeAreBlueTeam)
     {
@@ -119,7 +119,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
   else if (DataRecFromJetson.ShootMode == RequestTrans)
   {
     DataSendToJetson.Seq++;
-    DataSendToJetson.TeamFlag = ShootStatus;
+    DataSendToJetson.TeamFlag = RxMessage.Armour==7? (uint8_t)(RedTeam) : (uint8_t)(BlueTeam);
 		//DataSendToJetson.location = Distance;
     HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson, sizeof(STMToJetson_Struct));
   }
@@ -275,15 +275,15 @@ void KF_Init()
   KF_Gimbal_Yaw_init.H_data[3] = 1;
 
   //matrix Q init
-  KF_Gimbal_Yaw_init.Q_data[0] = 0.9;
+  KF_Gimbal_Yaw_init.Q_data[0] = 1;
   KF_Gimbal_Yaw_init.Q_data[1] = 0;
   KF_Gimbal_Yaw_init.Q_data[2] = 0;
-  KF_Gimbal_Yaw_init.Q_data[3] = 0.9;
+  KF_Gimbal_Yaw_init.Q_data[3] = 1;
   //matrix R init
-  KF_Gimbal_Yaw_init.R_data[0] = 15;
+  KF_Gimbal_Yaw_init.R_data[0] = 30;
   KF_Gimbal_Yaw_init.R_data[1] = 0;
   KF_Gimbal_Yaw_init.R_data[2] = 0;
-  KF_Gimbal_Yaw_init.R_data[3] = 25;
+  KF_Gimbal_Yaw_init.R_data[3] = 50;
 	
 	KF_Gimbal_Yaw_init.xhat_data[0] = YAW_ANGLE;
   KF_Gimbal_Yaw_init.xhat_data[1] = 0;
@@ -332,7 +332,7 @@ result1 = kalman_filter_calc(&KF_Gimbal_Pitch,
                               //  + JetsonFlag[Jetson_Seq].Velocity_Yaw*JetsonFlag[Jetson_Seq].Cal_time/1000,
                               Jetson_VelocityYaw, Jetson_AccelerationYaw);
 	
-  if(Kavcounter>300)
+  if(Kavcounter>1000)
 	{
  
   //计算出滤波之后的目标角变化量

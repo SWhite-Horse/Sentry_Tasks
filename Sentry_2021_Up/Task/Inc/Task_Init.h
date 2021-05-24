@@ -47,4 +47,12 @@ void Task_JudgeReceive(void *parameters);
 void Task_JetsonComm(void *parameters);
 void Task_Detect(void *parameters);
 void Task_Communication(void *parameters);
+
+
+//¼ÆÊ±Æ÷
+extern TickType_t HeartbeatCycleALL;
+TickType_t HeartbeatCycleDifference(TickType_t * HeartbeatCycleAbsolute);
+void HeartbeatCycleAdd(TickType_t * HeartbeatCycleCount,TickType_t * HeartbeatCycleAbsolute);
+uint16_t HeartbeatCycleToTime(TickType_t * HeartbeatCycle);
+
 #endif

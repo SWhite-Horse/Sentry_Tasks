@@ -11,7 +11,7 @@
 #include "Task_Chassis.h"
 
 //拨盘输出 高中低速
-#define SPEEDMAX 7400
+#define SPEEDMAX 7000
 #define SPEEDMID 5500
 #define SPEEDMIN 4000
 

@@ -16,6 +16,24 @@ extern int HeatStatus;
 uint8_t get_ =0;
 int n;
 Motor3508_type Chassis_Motor[2];
+Rand_Walk_struct Rand_Walk = {
+	.Flag = FLAG_LEFT,
+	.Measure_tick = 0,
+	.Rand_Numb = 0,
+	.Speedup_tick = 0
+};
+SHEN_WEI_struct SHEN_WEI = {
+	.Location = 0,   // 0 表示未到达最左侧，1 则到达
+	.Location_Flag = 1, // 1 表示还没有第一次触发最左侧光电
+	.Is_Finished = 1, // 0 表示整个动作未完成， 1 则完成
+	.Shoot_Count = 3, // 射击轮次，根据每次射击弹丸数量确定
+	.Shoot_Flag = 1, // 射击标志，1 表示射击到了热量上限后冷却到下限，表示一次发射完成，共计三次
+	.Gimbal_Gryo = 0   // 云台是否转动到位， 0 为未到位
+};
+
+YUE_LU_struct YUE_LU = {
+	.Status = 0,
+};
 
 /**************************************************
   * @brief  底盘任务
@@ -28,6 +46,11 @@ void Task_Chassis(void *parameters)
 	TickType_t xLastWakeUpTime=xTaskGetTickCount();
 	while(1)
 	{		
+		if(TxMessage.Is_gaming != Debug_status  && (((uint8_t)(ext_event_data.event_type>>10)) & ((uint8_t)1)) ) YUE_LU.Status = 1;
+		else YUE_LU.Status = 0;
+//		if(ext_game_robot_state.remain_HP == 600) YUE_LU.Status = 1;
+//		else YUE_LU.Status = 0;
+		//YUE_LU.Status =1;
     Chassis_Speed_Set(); /*底盘速度读取设定*/
 		Chassis_PID_Ctrl(&Chassis_Motor[0]);
 		Chassis_PID_Ctrl(&Chassis_Motor[1]);
@@ -122,10 +145,14 @@ void Chassis_Speed_Set(void){
 		left_detected = 0;
 	}
 	
-	// 随机数更新
-	if(RightSwitch == 0 || LeftSwitch == 0) n = rand();
+	//第一次到达右侧状态更新
+	if(ext_dart_status.stage_remaining_time < 30 && SHEN_WEI.Location_Flag && right_detected == 1){
+		SHEN_WEI.Location = 1;
+		SHEN_WEI.Location_Flag = 0;
+	} 
 	
-	if(RxMessage.controlmode == ControlMode_Aimbot && Turn_sign) {
+	
+	if(RxMessage.controlmode == ControlMode_Aimbot && Turn_sign && !YUE_LU.Status) {
 		Turn_sign = 0;
 		get_++;
 		right_detected = right_detected ? 0:1 ;
@@ -134,18 +161,16 @@ void Chassis_Speed_Set(void){
 	
   //速度赋值(数据为正值，但是要确定方向要根据电机安装方式和PID正负综合确定，如果相反，此处取反一般即可）：
 	if(RxMessage.controlmode == ControlMode_Aimbot){
-		if(RxMessage.speed == 1 || (DataRecFromJetson.SentryGimbalMode == ServoMode && StirMotor.Output > 0))  // 下云台或者上云台是伺服模式时
-		{
-			
-			
-			
+		if(RxMessage.speed == 1 || (DataRecFromJetson.SentryGimbalMode == ServoMode))  // 下云台或者上云台是伺服模式时
+		{			
 			if(get_hurted != 3) Target_speed  = CHASSIS_SHOOT_SPEED;
 			else Target_speed  = CHASSIS_NORMAL_SPEED;
 		}
 		else
 			Target_speed = CHASSIS_NORMAL_SPEED;
-		
-		
+		// 底盘SHEN_WEI 停放在最右侧
+		if(!SHEN_WEI.Is_Finished && SHEN_WEI.Location) Target_speed = 0;
+		if(YUE_LU.Status && left_detected == 1) Target_speed = 0;
 		
 	}
 	else // 非自瞄模式就是下云台传输数据
@@ -183,12 +208,43 @@ void Chassis_Speed_Set(void){
 	else if(RxMessage.controlmode == ControlMode_Aimbot){ // 自瞄模式
 		if(left_detected == 1 && right_detected == 0){
 			Target_speed = Target_speed;
+			if(Rand_Walk.Flag){
+				Rand_Walk.Rand_Numb = rand()%10+1;
+				Rand_Walk.Measure_tick = 0;
+				Rand_Walk.Flag = FLAG_RIGHT;
+				Rand_Walk.Speedup_tick = 0;
 			}
+			
+		}
 		if(right_detected==1 && left_detected == 0 ){  
 			Target_speed = -Target_speed;
-		}
+			if(!Rand_Walk.Flag){
+				Rand_Walk.Rand_Numb = rand()%10+1;
+				Rand_Walk.Measure_tick = 0;
+				Rand_Walk.Flag = FLAG_LEFT;
+				Rand_Walk.Speedup_tick = 0;
 
+			}
+		}
+		if(SHEN_WEI.Is_Finished && !YUE_LU.Status){
+			Rand_Walk.Measure_tick++;
+			if(0){//((Rand_Walk.Rand_Numb & 1) || Rand_Walk.Rand_Numb == 2) &&Rand_Walk.Speedup_tick < 70){
+				if(Rand_Walk.Measure_tick >= MEASURE_CIRCLE * Rand_Walk.Rand_Numb){
+					Rand_Walk.Speedup_tick++;
+					if(Rand_Walk.Flag) Target_speed = -CHASSIS_HIGH_SPEED;
+					else Target_speed = CHASSIS_HIGH_SPEED;
+				}
+			}
+			else if(Rand_Walk.Rand_Numb != 0){
+				if(Rand_Walk.Measure_tick == MEASURE_CIRCLE * Rand_Walk.Rand_Numb){
+					Rand_Walk.Flag = FLAG_LEFT ? FLAG_RIGHT : FLAG_LEFT;
+					right_detected = right_detected ? 0:1 ;
+					left_detected = left_detected ? 0:1;
+				}
+			}
+		}
 	}
+	// 受打击计数
 	if(get_hurted==3){		
 		time_cnt++;	
 	}
@@ -196,18 +252,18 @@ void Chassis_Speed_Set(void){
 		get_hurted = 0;
 		time_cnt = 0;
 	}
-	//异常检测代码
-	if(abnormaldetection<12000){
-		if(Target_speed*LastTarget_speed>0){
-			if(StirMotor.Output > 0) abnormaldetection++;
-			else abnormaldetection+=15;
-		}
-		else{
-			LastTarget_speed=Target_speed;
-			abnormaldetection=0;
-		}
-	}
-	else if(ControlMode == ControlMode_Aimbot) Target_speed=0;
+//	//异常检测代码
+//	if(abnormaldetection<12000){
+//		if(Target_speed*LastTarget_speed>0){
+//			if(StirMotor.Output > 0) abnormaldetection++;
+//			else abnormaldetection+=15;
+//		}
+//		else{
+//			LastTarget_speed=Target_speed;
+//			abnormaldetection=0;
+//		}
+//	}
+//	else if(ControlMode == ControlMode_Aimbot) Target_speed=0;
 
 	
 	//最后做对电机输出目标的赋值
@@ -236,6 +292,16 @@ void ChassisPowerControl(void)
 		Chassis_Motor[1].Output = 1.0f * temp * Chassis_Motor[1].Output;		
 	}
 }
+
+/**
+  * @brief  底盘运动到最左侧停止打前哨战
+  * @param  底盘电机
+  * @retval void
+  * @note   Output1和Output2是底盘轮子
+  */
+
+
+
 
 /**
   * @brief  底盘电机数据发送  --CAN1

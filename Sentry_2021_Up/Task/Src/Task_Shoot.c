@@ -15,6 +15,7 @@ Heat_Limitation_t Heat_Limitation ={
 
 Motor3508_type Fric_3508_Motor[2];
 RM2006_Type  StirMotor;
+extern SHEN_WEI_struct SHEN_WEI;
 int16_t fric_motor_debug = 0;
 
 void Task_Shoot(void *parameters){
@@ -145,6 +146,8 @@ uint8_t ShootCounter=0;
 void StirMotor_Control(void)
 {	
 	Heat_limit_method = ext_game_robot_state.shooter_id1_17mm_speed_limit==30 ? 1 : 0; 
+	
+	if(TxMessage.Is_gaming == Gaming && ext_bullet_remaining.bullet_remaining_num_17mm < 420) SHEN_WEI.Is_Finished = 1;
 	Shoot_Status_with_Heat(PITCH_ANGLE);
 	
 //	if(Heat_limit_method){
@@ -172,20 +175,21 @@ void StirMotor_Control(void)
 			StirMotor.TargetSpeed = 0;
 	}
 	//自瞄并且已经瞄到
-	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1 && TxMessage.mains_power_shooter==1 && DataRecFromJetson.Amor_Numb != 2)
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1 && TxMessage.mains_power_shooter==1 && (DataRecFromJetson.Amor_Numb>>8) != 2)
 	{
-		if((DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
+		if((DataRecFromJetson.Amor_Numb>>8) != 0 )
 		{
 			StirMotor.TargetSpeed = targetspeed;
 			ShootCounter=0;
 		}
-		else if((DataRecFromJetson.ShootMode >> 8) != (RunningFire >> 8) && ShootCounter <= 10 )
+		else if((DataRecFromJetson.Amor_Numb>>8)==0 && ShootCounter <= 10)
 		{
 			StirMotor.TargetSpeed = targetspeed;
 			ShootCounter++;
 		} 
 		else 
 		  StirMotor.TargetSpeed = 0;
+		
 	}
 	else
 		  StirMotor.TargetSpeed = 0;
@@ -232,6 +236,10 @@ void Shoot_Status_with_Heat(uint16_t angle){
 	else if (angle > Shoot_Angle_Long && angle <= 27)
 		Shoot_Method = Long_Mode;
 	
+	// SHEN_WEI 射击为长连点，三次
+	if(!SHEN_WEI.Is_Finished) Shoot_Method = Long_Mode;
+
+	
 	switch (Shoot_Method){
 		case Three_Mode:
 			Heat_Limitation.Heat_Limitation_UP = 50;
@@ -250,17 +258,28 @@ void Shoot_Status_with_Heat(uint16_t angle){
 	}
 	if(Heat_limit_method){
 		if(ext_power_heat_data.shooter_id1_17mm_cooling_heat >= Heat_Limitation.Heat_Limitation_UP){
+			if(SHEN_WEI.Shoot_Flag && SHEN_WEI.Shoot_Count){
+				SHEN_WEI.Shoot_Count --;
+				SHEN_WEI.Shoot_Flag = 0;
+			}
 			HeatFlag=0;
 		}	
 		else if(ext_power_heat_data.shooter_id1_17mm_cooling_heat < Heat_Limitation.Heat_Limitation_DOWN){
 			HeatFlag=1;
+			SHEN_WEI.Shoot_Flag = 1;
 		}
+		if(SHEN_WEI.Shoot_Count <= 0) SHEN_WEI.Is_Finished = 1;
 	}
 	else{
-		if(HeatControl>600){	
+		if(HeatControl>600){
+				if(SHEN_WEI.Shoot_Flag && SHEN_WEI.Shoot_Count){
+				SHEN_WEI.Shoot_Count --;
+				SHEN_WEI.Shoot_Flag = 0;
+			}			
 			HeatFlag=0;
 		}
 		if(HeatControl<10){
+			SHEN_WEI.Shoot_Flag = 1;
 			HeatFlag=1;
 		}
 	}

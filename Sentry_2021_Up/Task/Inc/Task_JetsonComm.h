@@ -59,7 +59,7 @@ typedef struct
     float TargetYawAngle;   //Yaw目标角度
     /*  哨兵专用   */
     uint8_t SentryGimbalMode;  //哨兵云台攻击模式
-		uint8_t Amor_Numb;			//目标装甲板数字
+		uint16_t Amor_Numb;			//目标装甲板数字
 		uint8_t EoF;
 } JetsonToSTM_Struct;
 
