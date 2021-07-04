@@ -21,7 +21,7 @@
 
 #define JetsonCommReservedFrameLEN 5
 
-#define JETSONFLAG_LEN 10
+#define JETSONFLAG_LEN 16
 
 //帧头帧尾
 #define JetsonCommSOF 0x66
@@ -34,20 +34,10 @@
 #define RedTeam (uint8_t)0xEE
 //发射方式
 #define NoFire (uint16_t)(0x00 << 8)      //不发射
-#define BurstFire (uint16_t)(0x01 << 8)   //点射
 #define RunningFire (uint16_t)(0x02 << 8) //连发
-//发射速度（高速低速）
-#define HighBulletSpeed (uint16_t)(0x01)
-#define LowBulletSpeed (uint16_t)(0x02)
-//所需控制模式
-#define ManualMode (uint8_t)(0x00)    //手动控制
-#define SmallBuffMode (uint8_t)(0x01) //小符模式
-#define BigBuffMode (uint8_t)(0x02)   //大符模式
-#define AutoShootMode (uint8_t)(0x03) //自动射击
+
 //哨兵云台工作模式
 #define RotatinPatrol (uint8_t)(0x01) //旋转巡逻
-#define SlowDown (uint8_t)(0x02)  //巡逻装甲板0
-#define PatrolArmor1 (uint8_t)(0x03)  //巡逻装甲板1
 #define ServoMode (uint8_t)(0x04)     //伺服打击
 
 typedef struct
@@ -59,7 +49,7 @@ typedef struct
     float TargetYawAngle;   //Yaw目标角度
     /*  哨兵专用   */
     uint8_t SentryGimbalMode;  //哨兵云台攻击模式
-		uint16_t Amor_Numb;			//目标装甲板数字
+		uint8_t reserve[2];			//目标装甲板数字
 		uint8_t EoF;
 } JetsonToSTM_Struct;
 
@@ -77,40 +67,21 @@ typedef struct
 
 typedef struct
 {
-    uint8_t SoF;
-    uint8_t Seq;
-    uint8_t TeamFlag;   //所需控制模式
-    //uint8_t ShootSpeed; //射速
-    /*  哨兵专用   */
-    //uint8_t ArmorType;    //被打击装甲板标识
-    //uint16_t RemainHP;    //剩余血量
-		//float chassis_power; //当前功率
-    uint8_t Reserved[6]; //保留字节
-    uint8_t EoF;
-} STMToJetson_Struct;
-
-typedef struct
-{
     //uint8_t SoF;
     //uint8_t Seq;
     float Gimbal_Pitch;
     float Gimbal_Yaw;
+		float TeamFlag;
     //uint8_t EoF;
 } STMToJetson_Struct_Gyro;
 
-typedef struct
-{
-    uint16_t team;
-    uint8_t CommSuccess;
-} CommStatus_Struct;
+
 
 extern JetsonFlag_Struct JetsonFlag[JETSONFLAG_LEN];
 extern uint8_t Jetson_Seq;
 
 extern JetsonToSTM_Struct DataRecFromJetson;
-extern STMToJetson_Struct DataSendToJetson;
 extern STMToJetson_Struct_Gyro DataSendToJetson_gyro;
-extern CommStatus_Struct CommStatus;
 extern float Pitch_Desire, Yaw_Desire;
 
 void JetsonCommUart_Config(UART_HandleTypeDef *huart);

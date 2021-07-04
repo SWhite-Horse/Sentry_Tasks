@@ -59,7 +59,7 @@ void StatusMachine_Update(void)
 		{			
 			case ControlMode_Aimbot:  //×ÔÃéÄ£Ê½
 			{ 
-				if(DataRecFromJetson.SentryGimbalMode == ServoMode && CommStatus.CommSuccess == 1 ){
+				if(DataRecFromJetson.SentryGimbalMode == ServoMode){
 					if(TxMessage.mains_power_shooter==0){
 					  FricStatus = FricStatus_Stop;
 						StirMotorStatus = StirStatus_Stop;

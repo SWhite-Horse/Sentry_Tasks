@@ -28,12 +28,16 @@ SHEN_WEI_struct SHEN_WEI = {
 	.Is_Finished = 1, // 0 表示整个动作未完成， 1 则完成
 	.Shoot_Count = 3, // 射击轮次，根据每次射击弹丸数量确定
 	.Shoot_Flag = 1, // 射击标志，1 表示射击到了热量上限后冷却到下限，表示一次发射完成，共计三次
-	.Gimbal_Gryo = 0   // 云台是否转动到位， 0 为未到位
+	.Gimbal_Gryo = 0,   // 云台是否转动到位， 0 为未到位
+	.Start_Time = 420,     //此模式启动时间
+	.End_Time = 390,
+	.Bullet_RM = 500
 };
 
 YUE_LU_struct YUE_LU = {
 	.Status = 0,
 };
+uint8_t SHEN_WEI_Bullet = 1;
 
 /**************************************************
   * @brief  底盘任务
@@ -45,12 +49,25 @@ void Task_Chassis(void *parameters)
 	Chassis_Ctrl_Init();   /*底盘参数初始化函数*/     
 	TickType_t xLastWakeUpTime=xTaskGetTickCount();
 	while(1)
-	{		
-		if(TxMessage.Is_gaming != Debug_status  && (((uint8_t)(ext_event_data.event_type>>10)) & ((uint8_t)1)) ) YUE_LU.Status = 1;
-		else YUE_LU.Status = 0;
-//		if(ext_game_robot_state.remain_HP == 600) YUE_LU.Status = 1;
-//		else YUE_LU.Status = 0;
-		//YUE_LU.Status =1;
+	{	
+		// 两种功能		
+		if(TxMessage.Is_gaming != Debug_status  && (((uint8_t)(ext_event_data.event_type>>10)) & 0x01)){
+			YUE_LU.Status = 1;
+			SHEN_WEI.Is_Finished = 1;
+//			if(ext_game_state.game_progress == 0x04 && ext_game_state.stage_remain_time > SHEN_WEI.End_Time && ext_bullet_remaining.bullet_remaining_num_17mm > 412){ 
+//				SHEN_WEI.Is_Finished = 0;
+//				YUE_LU.Status = 0;
+//			}
+//			else{
+//				YUE_LU.Status = 1;
+//				SHEN_WEI.Is_Finished = 1;
+//			}
+		}
+		else {
+			YUE_LU.Status = 0;
+			SHEN_WEI.Is_Finished = 1;
+		}
+		SHEN_WEI.Is_Finished = 1;
     Chassis_Speed_Set(); /*底盘速度读取设定*/
 		Chassis_PID_Ctrl(&Chassis_Motor[0]);
 		Chassis_PID_Ctrl(&Chassis_Motor[1]);
@@ -146,7 +163,7 @@ void Chassis_Speed_Set(void){
 	}
 	
 	//第一次到达右侧状态更新
-	if(ext_dart_status.stage_remaining_time < 30 && SHEN_WEI.Location_Flag && right_detected == 1){
+	if(!SHEN_WEI.Is_Finished && SHEN_WEI.Location_Flag && right_detected == 1){
 		SHEN_WEI.Location = 1;
 		SHEN_WEI.Location_Flag = 0;
 	} 
@@ -163,7 +180,7 @@ void Chassis_Speed_Set(void){
 	if(RxMessage.controlmode == ControlMode_Aimbot){
 		if(RxMessage.speed == 1 || (DataRecFromJetson.SentryGimbalMode == ServoMode))  // 下云台或者上云台是伺服模式时
 		{			
-			if(get_hurted != 3) Target_speed  = CHASSIS_SHOOT_SPEED;
+			if(get_hurted != 3) Target_speed  = CHASSIS_NORMAL_SPEED;
 			else Target_speed  = CHASSIS_NORMAL_SPEED;
 		}
 		else
@@ -228,7 +245,7 @@ void Chassis_Speed_Set(void){
 		}
 		if(SHEN_WEI.Is_Finished && !YUE_LU.Status){
 			Rand_Walk.Measure_tick++;
-			if(0){//((Rand_Walk.Rand_Numb & 1) || Rand_Walk.Rand_Numb == 2) &&Rand_Walk.Speedup_tick < 70){
+			if(((Rand_Walk.Rand_Numb & 1) || Rand_Walk.Rand_Numb == 2) && Rand_Walk.Speedup_tick < 70){   // 
 				if(Rand_Walk.Measure_tick >= MEASURE_CIRCLE * Rand_Walk.Rand_Numb){
 					Rand_Walk.Speedup_tick++;
 					if(Rand_Walk.Flag) Target_speed = -CHASSIS_HIGH_SPEED;
@@ -242,7 +259,7 @@ void Chassis_Speed_Set(void){
 					left_detected = left_detected ? 0:1;
 				}
 			}
-		}
+		} 
 	}
 	// 受打击计数
 	if(get_hurted==3){		

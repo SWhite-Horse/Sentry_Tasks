@@ -7,12 +7,12 @@
 #define C620CURRENTMAX 16000
    
 #define CHASSIS_HIGH_SPEED 7500 //´ý¶¨
-#define CHASSIS_NORMAL_SPEED 6000
+#define CHASSIS_NORMAL_SPEED 5800
 #define CHASSIS_SHOOT_SPEED 0
 
 #define FLAG_LEFT 1
 #define FLAG_RIGHT 0
-#define MEASURE_CIRCLE 40
+#define MEASURE_CIRCLE 45
 
 typedef struct{
 	uint8_t Flag;
@@ -29,6 +29,9 @@ typedef struct{
 	uint8_t Location_Flag;
 	uint8_t Gimbal_Gryo;
 	uint8_t Shoot_Flag;
+	uint16_t Start_Time;
+	uint16_t End_Time;
+	uint16_t Bullet_RM;
 }SHEN_WEI_struct;
 
 

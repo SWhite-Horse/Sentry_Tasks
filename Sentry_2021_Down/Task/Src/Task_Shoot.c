@@ -5,7 +5,6 @@
 #include "Task_StatusMachine.h"
 #include "Task_CAN.h"
 #include "Task_Gimbal.h"
-
 Shoot_Method_enum Shoot_Method = Long_Mode;
 Heat_Limitation_t Heat_Limitation ={
 	.Heat_Limitation_UP = 280,
@@ -23,10 +22,9 @@ void Task_Shoot(void *parameters){
 	TickType_t xLastWakeUpTime;
 	xLastWakeUpTime = xTaskGetTickCount();
 	while(1){
-		
 			//****** 发射口电源不断电
 		if(RxMessage.mains_power_shooter==1 && RxMessage.Is_gaming != Game_prepare){
-			if(ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 )
+			if(ControlMode==ControlMode_Aimbot)
 				FricStatus = FricStatus_Working_High;
 		}
 		else{
@@ -73,8 +71,20 @@ void Motor_3508_PID_Init(void){
   * @note   
   */
 
+int SPEEDMAX = 7300;
+
 void Fric_3508_Motor_Speed_Set(void)
 {
+	if(RxMessage.Shoot_Speed)
+	{
+		SPEEDMAX=7000;
+	}
+	
+	else SPEEDMAX=7300;
+
+	
+	
+	
 	int speed=0;
 		if (FricStatus == FricStatus_Stop){
 			speed = 0;
@@ -177,14 +187,14 @@ void StirMotor_Control(void)
 			StirMotor.TargetSpeed = 0;
 	}
 	//自瞄并且已经瞄到
-	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode && RxMessage.mains_power_shooter==1 && DataRecFromJetson.AmorNum !=2 && HeatFlag==1)
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode && RxMessage.mains_power_shooter==1 && HeatFlag==1)
 	{
-		if(DataRecFromJetson.AmorNum != 0)//(DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
+		if((DataRecFromJetson.ShootMode & (uint16_t)(0x2000)))//(DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
 		{
 			StirMotor.TargetSpeed = targetspeed;
 			ShootCounter=0;
 		}
-		else if(DataRecFromJetson.AmorNum == 0 && ShootCounter <= 10 )
+		else if((DataRecFromJetson.ShootMode & (uint16_t)(0x2000)) && ShootCounter <= 10 )
 		{
 			StirMotor.TargetSpeed = targetspeed;
 			ShootCounter++;
@@ -252,15 +262,15 @@ void Shoot_Status_with_Heat(uint16_t angle){
 	switch (Shoot_Method){
 		case Three_Mode:
 			Heat_Limitation.Heat_Limitation_UP = 50;
-			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			Heat_Limitation.Heat_Limitation_DOWN = 10;
 			break;
 		case Short_Mode:
-			Heat_Limitation.Heat_Limitation_UP = 180;
-			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			Heat_Limitation.Heat_Limitation_UP = 200;
+			Heat_Limitation.Heat_Limitation_DOWN = 80;
 			break;
 		case Long_Mode:
-			Heat_Limitation.Heat_Limitation_UP = 280;
-			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			Heat_Limitation.Heat_Limitation_UP = 290;
+			Heat_Limitation.Heat_Limitation_DOWN = 160;
 			break;
 		default:
 			break;

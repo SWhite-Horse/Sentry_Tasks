@@ -1,7 +1,7 @@
 #include "Func_Imu_OB.h"
 #include "ist8310_reg.h"
 #include "mpu6500_reg.h"
-#include "Func_StatusMachine.h"
+//#include "Func_StatusMachine.h"
 #include "Task_Tasks.h"
 
 #define BOARD_DOWN (0)

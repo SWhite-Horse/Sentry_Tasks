@@ -21,7 +21,7 @@ void Task_Init(void *parameters)
 			CAN_Recieve(&hcan2);
 	
 
-			Queue_CANSend = xQueueCreate(50,sizeof(CanSend_Type));   //创建发送队列
+			Queue_CANSend = xQueueCreate(30,sizeof(CanSend_Type));   //创建发送队列
 	
 			LASER_ON();
 			//L1_Measure_Init(&huart6);
@@ -37,15 +37,16 @@ void Task_Init(void *parameters)
 		//** 创建任务 **//
 			xTaskCreate(Task_LEDBlink, "Task_LEDBlink", 100, NULL, 3, &TaskHandle_LEDBlink);
 			xTaskCreate(Task_CAN, "Task_CAN", 128, NULL, 6, &TaskHandle_CAN);
-		  xTaskCreate(Task_RC, "Task_RC", 256, NULL, 5, &TaskHandle_RC);
-			xTaskCreate(Task_StatusMachine, "Task_StatusMachine", 128, NULL, 5, &TaskHandle_StatusMachine);
+		  xTaskCreate(Task_RC, "Task_RC", 256, NULL, 4, &TaskHandle_RC);
 		  xTaskCreate(Task_Shoot, "Task_Shoot", 256, NULL, 4, &TaskHandle_Shoot);
 
 //	    xTaskCreate(Task_Measure, "Task_Measure", 200, NULL, 4, &TaskHandle_Measure);
 		  xTaskCreate(Task_IMU,"Task_IMU",256,NULL,5,&TaskHandle_IMU);
 			xTaskCreate(Task_Gimbal,"Task_Gimbal",512,NULL,4,&TaskHandle_Gimbal);
+			xTaskCreate(Task_StatusMachine, "Task_StatusMachine", 128, NULL, 5, &TaskHandle_StatusMachine);
+
 		  xTaskCreate(Task_Communication,"Task_Communication",200,NULL,4,&TaskHandle_Communication);//
-			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",512,NULL,5,&TaskHandle_JetsonComm);
+			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",512,NULL,4,&TaskHandle_JetsonComm);
 	
 		vTaskDelay(1000);             //延时五秒让任务完成
     vTaskDelete(NULL);            //删除初始化的任务

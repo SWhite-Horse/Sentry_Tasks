@@ -31,7 +31,7 @@ typedef struct
 
 //云台电机机械角上下限位
 #define Mechanical_Angle_UP 2780
-#define Mechanical_Angle_DOWN 3670
+#define Mechanical_Angle_DOWN 3770
 //6369 38.95°
 #define PITCHOFFSET 2660
 #define YAWOFFSET   2100

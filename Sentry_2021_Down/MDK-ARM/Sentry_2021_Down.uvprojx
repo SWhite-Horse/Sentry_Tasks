@@ -621,6 +621,11 @@
               <FilePath>..\Task\Src\Task_Communication.c</FilePath>
             </File>
             <File>
+              <FileName>Task_Shoot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Shoot.c</FilePath>
+            </File>
+            <File>
               <FileName>Task_Init.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Task\Src\Task_Init.c</FilePath>
@@ -639,11 +644,6 @@
               <FileName>Task_RC.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Task\Src\Task_RC.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_Shoot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Shoot.c</FilePath>
             </File>
             <File>
               <FileName>Task_StatusMachine.c</FileName>

@@ -19,7 +19,7 @@ void Task_Init(void *parameters)
 {
 		   taskENTER_CRITICAL();          //进入临界区
 		//** Init **//
-	    HeartbeatCycleALL = xTaskGetTickCount();
+//	    HeartbeatCycleALL = xTaskGetTickCount();
 			CAN_Init(&hcan1);
 			CAN_Init(&hcan2);
 			CAN_Recieve(&hcan1);
@@ -40,17 +40,16 @@ void Task_Init(void *parameters)
 		  __HAL_TIM_SET_COMPARE(&htim3,IMU_HEATING_Pin,HEAT_MID);
 	
 		//** 创建任务 **//
-			xTaskCreate(Task_Chassis, "Task_Chassis", 256, NULL, 4, &TaskHandle_Chassis);
-		  xTaskCreate(Task_Shoot, "Task_Shoot", 300, NULL, 5, &TaskHandle_Shoot);
+			xTaskCreate(Task_Chassis, "Task_Chassis", 256, NULL, 3, &TaskHandle_Chassis);
+		  xTaskCreate(Task_Shoot, "Task_Shoot", 300, NULL, 2, &TaskHandle_Shoot);
 	    //xTaskCreate(Task_RC, "Task_RC", 20, NULL, 5, &TaskHandle_RC);
 	    xTaskCreate(Task_CAN, "Task_CAN", 200, NULL, 6, &TaskHandle_CAN);
-	    xTaskCreate(Task_LEDBlink, "Task_LEDBlink", 64, NULL, 3, &TaskHandle_LEDBlink);
-	    //xTaskCreate(Task_Measure, "Task_Measure", 200, NULL, 4, &TaskHandle_Measure);
-			xTaskCreate(Task_Detect, "Task_Detect", 200, NULL, 4, &TaskHandle_Detect);
-			xTaskCreate(Task_StatusMachine, "Task_StatusMachine", 128, NULL, 4, &TaskHandle_StatusMachine);
+	    xTaskCreate(Task_LEDBlink, "Task_LEDBlink", 64, NULL, 1, &TaskHandle_LEDBlink);
+			xTaskCreate(Task_Detect, "Task_Detect", 200, NULL, 3, &TaskHandle_Detect);
+			xTaskCreate(Task_StatusMachine, "Task_StatusMachine", 128, NULL, 3, &TaskHandle_StatusMachine);
 			xTaskCreate(Task_JetsonComm,"Task_JetsonComm",512,NULL,5,&TaskHandle_JetsonComm);
 		  xTaskCreate(Task_IMU,"Task_IMU",256,NULL,5,&TaskHandle_IMU);
-			xTaskCreate(Task_Gimbal,"Task_Gimbal",512,NULL,5,&TaskHandle_Gimbal);
+			xTaskCreate(Task_Gimbal,"Task_Gimbal",512,NULL,3,&TaskHandle_Gimbal);
 			xTaskCreate(Task_JudgeReceive, "Task_JudgeReceive", 128, NULL, 5, &TaskHandle_JudgeReceive);
       xTaskCreate(Task_Communication, "Task_Communication", 200, NULL, 4, &TaskHandle_Communication);
 

@@ -39,8 +39,12 @@ void Task_Communication(void *parameters)
 		TxMessage.get_hurt = get_hurted;
     TxMessage.Armour = ext_game_robot_state.robot_id;
 		TxMessage.Heat = ext_power_heat_data.shooter_id2_17mm_cooling_heat;
-		TxMessage.Shoot_Speed = ext_game_robot_state.shooter_id2_17mm_speed_limit;
+		TxMessage.Shoot_Speed_Limit = ext_game_robot_state.shooter_id2_17mm_speed_limit;
 		TxMessage.mains_power_shooter = ext_game_robot_state.mains_power_shooter_output;
+		if(ext_shoot_data.shooter_id == 2 && ext_shoot_data.bullet_speed > 28.9f)
+			TxMessage.Shoot_Speed = 1;
+		if(ext_shoot_data.shooter_id == 2 && ext_shoot_data.bullet_speed < 26.5f)
+			TxMessage.Shoot_Speed = 0;
 		
 		//判断左右光电开关检测到达轨道末端
 		send();
@@ -62,11 +66,11 @@ void send(void)
 		CANSend.stdid = 0x69;
 
   	CANSend.Data[0] = (uint8_t)(TxMessage.Is_gaming);
-		CANSend.Data[1] = 0;//(uint8_t)(TxMessage.Blood);
+		CANSend.Data[1] = (uint8_t)(TxMessage.Shoot_Speed);
   	CANSend.Data[2] = (uint8_t)(TxMessage.Armour);
   	CANSend.Data[3] = (uint8_t)(TxMessage.Heat>>8);
 		CANSend.Data[4] = (uint8_t)(TxMessage.Heat);
-  	CANSend.Data[5] = (uint8_t)(TxMessage.Shoot_Speed);
+  	CANSend.Data[5] = (uint8_t)(TxMessage.Shoot_Speed_Limit);
   	CANSend.Data[6] = (uint8_t)(TxMessage.mains_power_shooter);
   	CANSend.Data[7] = (uint8_t)(TxMessage.get_hurt);
 

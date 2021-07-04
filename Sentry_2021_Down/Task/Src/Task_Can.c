@@ -84,6 +84,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 				break;
 			case 0x69:
 				RxMessage.Is_gaming=aData[0];
+				RxMessage.Shoot_Speed = aData[1];
 				RxMessage.Armour=aData[2];
 				RxMessage.Heat=aData[3] << 8 | aData[4];
 				RxMessage.Shoot_Speed_limit=aData[5];

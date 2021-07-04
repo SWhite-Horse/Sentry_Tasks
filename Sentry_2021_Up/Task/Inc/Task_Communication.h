@@ -37,8 +37,8 @@ typedef struct
 	//uint16_t Blood; //血量
 	uint8_t Armour; //装甲板
 	uint16_t Heat; //热量
-	uint8_t Shoot_Speed; //射速
-	//uint8_t Toppoint_Judge; //判断是否到达轨道末端
+	uint8_t Shoot_Speed_Limit; //射速
+	uint8_t Shoot_Speed; //判断是否到达轨道末端
 	uint8_t get_hurt; //是否受到伤害
 	Game_status_enum Is_gaming;
 	//uint16_t Bullet_remaining; //子弹剩余

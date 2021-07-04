@@ -209,7 +209,7 @@
             <Ra2Chk>0</Ra2Chk>
             <Ra3Chk>0</Ra3Chk>
             <Im1Chk>1</Im1Chk>
-            <Im2Chk>0</Im2Chk>
+            <Im2Chk>1</Im2Chk>
             <OnChipMemories>
               <Ocm1>
                 <Type>0</Type>
@@ -311,7 +311,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -334,9 +334,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER,STM32F427xx,USE_HAL_DRIVER,STM32F427xx</Define>
+              <Define>USE_HAL_DRIVER,STM32F427xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;        ../Drivers/STM32F4xx_HAL_Driver/Inc;        ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;        ../Middlewares/Third_Party/FreeRTOS/Source/include;        ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;        ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;        ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;        ../Drivers/CMSIS/Include;        ..\Task\Inc;        ..\Func\Inc;        ..\SSS\Inc</IncludePath>
+              <IncludePath>../Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Task\Inc;..\Func\Inc;..\Mathlib</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -354,7 +354,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\\Inc;..\Inc</IncludePath>
+              <IncludePath>..\Inc</IncludePath>
             </VariousControls>
           </Aads>
           <LDads>
@@ -384,6 +384,101 @@
               <FileName>startup_stm32f427xx.s</FileName>
               <FileType>2</FileType>
               <FilePath>startup_stm32f427xx.s</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Tasks</GroupName>
+          <Files>
+            <File>
+              <FileName>Task_Communication.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Communication.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_Gimbal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Gimbal.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_IMU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_IMU.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_JetsonComm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_JetsonComm.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_JudgeReceive .c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_JudgeReceive .c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_LEDBlink.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_LEDBlink.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_Measure.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Measure.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_RC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_RC.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_Shoot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Shoot.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_StatusMachine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_StatusMachine.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_Init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Init.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_Can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Can.c</FilePath>
+            </File>
+            <File>
+              <FileName>Task_Chassis.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Task\Src\Task_Chassis.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Func</GroupName>
+          <Files>
+            <File>
+              <FileName>Func_Imu_OB.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Func\Src\Func_Imu_OB.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Mathlib</GroupName>
+          <Files>
+            <File>
+              <FileName>arm_cortexM4l_math.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\Mathlib\arm_cortexM4l_math.lib</FilePath>
+            </File>
+            <File>
+              <FileName>arm_cortexM4lf_math.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\Mathlib\arm_cortexM4lf_math.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -444,86 +539,6 @@
               <FileName>stm32f4xx_hal_timebase_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/stm32f4xx_hal_timebase_tim.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Drivers/CMSIS</GroupName>
-          <Files>
-            <File>
-              <FileName>system_stm32f4xx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/system_stm32f4xx.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Task</GroupName>
-          <Files>
-            <File>
-              <FileName>Task_Can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Can.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_Chassis.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Chassis.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_LEDBlink.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_LEDBlink.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_Init.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Init.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_RC.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_RC.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_Shoot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Shoot.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_Measure.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Measure.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_StatusMachine.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_StatusMachine.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_Communication.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Communication.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_IMU.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_IMU.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_JetsonComm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_JetsonComm.c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_JudgeReceive .c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_JudgeReceive .c</FilePath>
-            </File>
-            <File>
-              <FileName>Task_Gimbal.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Task\Src\Task_Gimbal.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -623,6 +638,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Drivers/CMSIS</GroupName>
+          <Files>
+            <File>
+              <FileName>system_stm32f4xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Src/system_stm32f4xx.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Middlewares/FreeRTOS</GroupName>
           <Files>
             <File>
@@ -674,31 +699,6 @@
               <FileName>port.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Mathlib</GroupName>
-          <Files>
-            <File>
-              <FileName>arm_cortexM4l_math.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\Mathlib\arm_cortexM4l_math.lib</FilePath>
-            </File>
-            <File>
-              <FileName>arm_cortexM4lf_math.lib</FileName>
-              <FileType>4</FileType>
-              <FilePath>..\Mathlib\arm_cortexM4lf_math.lib</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Func</GroupName>
-          <Files>
-            <File>
-              <FileName>Func_Imu_OB.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Func\Src\Func_Imu_OB.c</FilePath>
             </File>
           </Files>
         </Group>

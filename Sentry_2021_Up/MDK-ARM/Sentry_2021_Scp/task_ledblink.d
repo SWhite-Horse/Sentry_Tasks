@@ -58,3 +58,4 @@ sentry_2021_scp\task_ledblink.o: ../Middlewares/Third_Party/FreeRTOS/Source/incl
 sentry_2021_scp\task_ledblink.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 sentry_2021_scp\task_ledblink.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 sentry_2021_scp\task_ledblink.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
+sentry_2021_scp\task_ledblink.o: ..\Task\Inc\Task_Gimbal.h

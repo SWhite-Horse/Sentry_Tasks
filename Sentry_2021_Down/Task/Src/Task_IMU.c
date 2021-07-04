@@ -6,6 +6,8 @@
  * @return:void
  * @note: 进行陀螺仪数据更新
  */
+TickType_t CU, LAS;
+
 void Task_IMU(void *parameters)
 {
 	TickType_t xPreviousWakeTime;

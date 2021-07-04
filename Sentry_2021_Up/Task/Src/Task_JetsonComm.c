@@ -8,6 +8,7 @@
 #include "arm_math.h"
 #include "Task_JudgeReceive.h"
 
+
 extern Up_to_Down_Message TxMessage;
 kalman_filter_t KF_Gimbal_Pitch, KF_Gimbal_Yaw;
 kalman_filter_init_t KF_Gimbal_Pitch_init, KF_Gimbal_Yaw_init;
@@ -30,22 +31,13 @@ uint8_t Jetson_Seq;
 float Pitch_Desire, Yaw_Desire;
 JetsonToSTM_Struct DataRecFromJetson_Temp, DataRecFromJetson; //两个变量克服某些可能覆盖的错误
 
-STMToJetson_Struct DataSendToJetson = {  //seq是记录的第几个变量 eof是尾帧 soq是头帧
-    .Seq = 0,
-    .SoF = JetsonCommSOF,
-    .EoF = JetsonCommEOF
-};
+
 //发送给Jetson的陀螺仪数据
 STMToJetson_Struct_Gyro DataSendToJetson_gyro; //seq是记录的第几个变量 eof尾帧 soq头帧
 
-//通讯是否成功，红蓝方
-CommStatus_Struct CommStatus = {
-    .CommSuccess = 0,
-    .team = 0};
 
 void Task_JetsonComm(void *Parameter)
 {
-	CommStatus.CommSuccess = 1;
   while (1)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY); //pdTRUE让通知值为0，使其进入阻塞;pdFALSE让通知值减一，第二个参数为等待通知的最大时间，单位ms
@@ -74,56 +66,21 @@ void JetsonCommUart_Config(UART_HandleTypeDef *huart) //这个函数在init的�
  * @param  huart：外设结构体地址
  * @note
  */
+TickType_t Cur_time, delta_time;		//记录本次时间，△t
 void JetsonComm_Control(UART_HandleTypeDef *huart)
 {
 
   static float Pre_Pitch_Desire, Pre_Yaw_Desire;	//记录前一次Pitch、Yaw目标角度
-  TickType_t Cur_time, delta_time;		//记录本次时间，△t
+  //TickType_t Cur_time, delta_time;		//记录本次时间，△t
   static TickType_t Pre_time;	//记录上一次时间
   uint8_t Seq;
   //下面函数的第二个参数是在串口6的接收中断函数赋值的
   memcpy(&DataRecFromJetson, &DataRecFromJetson_Temp, sizeof(JetsonToSTM_Struct)); //从参数二复制n个字符到参数一
   Seq = DataRecFromJetson.Seq % JETSONFLAG_LEN;	/*帧循环指向接收数据*/
   //通信建立操作
-  if (DataRecFromJetson.ShootMode == CommSetUp)
-  {
-    //发送当前红蓝方
-    if (ext_game_robot_state.robot_id==7)//WeAreRedTeam)
-    {
-      CommStatus.team = RedTeam;
-      DataSendToJetson.Seq++;
-      DataSendToJetson.TeamFlag = (uint8_t)(RedTeam);
-      //DataSendToJetson.ShootSpeed = (uint8_t)(RedTeam);
-    }
-    else if (ext_game_robot_state.robot_id==107)//WeAreBlueTeam)
-    {
-      CommStatus.team = BlueTeam;
-      DataSendToJetson.Seq++;
-      DataSendToJetson.TeamFlag = (uint8_t)(BlueTeam);
-      //DataSendToJetson.ShootSpeed = (uint8_t)(BlueTeam);
-    }
-    HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson, sizeof(STMToJetson_Struct));
-  }
-  //通信成功确认帧
-  else if (DataRecFromJetson.ShootMode == CommStatus.team)
-  {
-			
-		CommStatus.CommSuccess = 1;////////// 改
-  }
-  //请求数据传送
-  else if (DataRecFromJetson.ShootMode == RequestTrans)
-  {
-    DataSendToJetson.Seq++;
-    DataSendToJetson.TeamFlag = TxMessage.Armour==7? (uint8_t)(RedTeam) : (uint8_t)(BlueTeam);
-//		DataSendToJetson.location = Distance;
-//		DataSendToJetson.BulletRemain=200;   //////// gai dong
-//		DataSendToJetson.IsHuarted=get_hurted;  
-    HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson, sizeof(STMToJetson_Struct));
-  }
-  //记录当前角度
-  else if (DataRecFromJetson.ShootMode == RecordAngle)
-  {
-    //记录此时读取图片对应的姿态
+  if((DataRecFromJetson.ShootMode & (uint16_t)(0x8000))){
+		DataSendToJetson_gyro.TeamFlag = TxMessage.Armour==7? 1.0f : 0.0f;
+		//记录此时读取图片对应的姿态
     float a = PITCH_ANGLE, b = YAW_ANGLE;
     while (a > 180)
     {
@@ -141,40 +98,48 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
     //记录姿态的标志位——已记录
     JetsonFlag[Seq].ChangeAngle_flag = 1;
 
-    // Motor6623_Pitch._RecordAngle = PersonalGYRO.PitchAngle;
-    // Motor6623_Yaw._RecordAngle = PersonalGYRO.YawAngle;
-  }
-  else if (JetsonFlag[Seq].ChangeAngle_flag)
-  {
-    //记录当前时间
+	
+	}
+	// Runfire
+	if((DataRecFromJetson.ShootMode & (uint16_t)(0x2000)) && JetsonFlag[Seq].ChangeAngle_flag){
+		//记录当前时间
     Cur_time = xTaskGetTickCount();
-    //
+    //计算此次控制与上次的时间差
     delta_time = Cur_time - Pre_time;
     //
     Pre_time = Cur_time;
     //读取此命令对应的读图序号
-    Jetson_Seq = Seq;
+    Jetson_Seq = ((uint8_t)(DataRecFromJetson.ShootMode))%16;
+		
     //清除记录姿态的标志位
     JetsonFlag[Jetson_Seq].ChangeAngle_flag = 0;
     //——————————————————————————————————————————————————————————————————————
     //Pitch轴的目标角度
-    Pitch_Desire = JetsonFlag[Jetson_Seq].CurAngle_Pitch + DataRecFromJetson.TargetPitchAngle; //坐标系相反
+		if(DataRecFromJetson.TargetPitchAngle < 45 &&DataRecFromJetson.TargetPitchAngle > -45)
+			Pitch_Desire = JetsonFlag[Jetson_Seq].CurAngle_Pitch + DataRecFromJetson.TargetPitchAngle; //坐标系相反
     Jetson_AnglePitch = Pitch_Desire;
     //Yaw轴的目标角度
 		
-		if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
+		// 改 下三个 if
+//		if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255)
+//		{
+//			Yaw_Desire = JetsonFlag[Jetson_Seq].CurAngle_Yaw + DataRecFromJetson.TargetYawAngle;
+//			Last_YAW_Desire=Yaw_Desire;
+//		}
+//		else if(DataRecFromJetson.TargetYawAngle ==255)
+//		{
+//			Yaw_Desire=Last_YAW_Desire;
+//		}
+//		else
+//		{
+		if(DataRecFromJetson.TargetYawAngle < 130 &&DataRecFromJetson.TargetYawAngle > -130)
 		{
 			Yaw_Desire = JetsonFlag[Jetson_Seq].CurAngle_Yaw - DataRecFromJetson.TargetYawAngle;
 			Last_YAW_Desire=Yaw_Desire;
 		}
-		else if(DataRecFromJetson.TargetYawAngle ==255)
-		{
-			Yaw_Desire=Last_YAW_Desire;
-		}
-		else
-		{
-			Yaw_Desire=YAW_ANGLE > 180 ? YAW_ANGLE - 360: YAW_ANGLE ;		
-   	}
+		
+		Yaw_Desire=Yaw_Desire > 180 ? Yaw_Desire - 360: Yaw_Desire ;		
+//   	}
 
     Jetson_AngleYaw = Yaw_Desire;
     //Pitch轴的角速度（角度差分与时间差的比值）
@@ -204,18 +169,8 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
     Jetson_AccelerationPitch = 0; //(JetsonFlag[Jetson_Seq].Velocity_Yaw - Jetson_VelocityYaw) * 1000 / delta_time;
 
     Jetson_VelocityPitch = JetsonFlag[Jetson_Seq].Velocity_Pitch;
-    Jetson_VelocityYaw = JetsonFlag[Jetson_Seq].Velocity_Yaw;
-    //——————————————————————————————————————————————————————————————————————
-
-    //		if((DataRecFromJetson.ShootMode>>8) == (NoFire >> 8))
-    //		{
-    //			LASER_ON;
-    //		}
-    //		if((DataRecFromJetson.ShootMode>>8) == (RunningFire >> 8))
-    //		{
-    //			LASER_OFF;
-    //		}
-  }
+    Jetson_VelocityYaw = JetsonFlag[Jetson_Seq].Velocity_Yaw;	
+	}
 }
 
 //——————————————————————————————————————————————————————————————————————————————————————————————————————————

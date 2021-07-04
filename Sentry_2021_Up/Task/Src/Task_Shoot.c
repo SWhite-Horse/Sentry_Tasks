@@ -7,6 +7,8 @@
 #include "Task_JudgeReceive.h"
 #include "Task_Gimbal.h"
 
+
+
 Shoot_Method_enum Shoot_Method = Long_Mode;
 Heat_Limitation_t Heat_Limitation ={
 	.Heat_Limitation_UP = 280,
@@ -29,7 +31,7 @@ void Task_Shoot(void *parameters){
 	
 		//****** 发射口电源不断电且比赛正式开始（4）或调式模式（0）摩擦轮高速
 		if( TxMessage.mains_power_shooter==1 && TxMessage.Is_gaming != Game_prepare){
-			if(ControlMode==ControlMode_Aimbot && CommStatus.CommSuccess == 1 )
+			if(ControlMode==ControlMode_Aimbot)
 				FricStatus = FricStatus_Working_High;
 		}
 		else{
@@ -76,9 +78,22 @@ void Motor_3508_PID_Init(void){
   * @note   
   */
 
+int SPEEDMAX= 7300;
+
 void Fric_3508_Motor_Speed_Set(void){
 	
 	int speed=0;
+	 
+	if(ext_shoot_data.shooter_id == 1 &&ext_shoot_data.bullet_speed>28.5f)
+	{
+		SPEEDMAX=7000;
+	}
+	
+	if(ext_shoot_data.shooter_id == 1 &&ext_shoot_data.bullet_speed<26.5f)
+	{
+		SPEEDMAX=7300;
+	}
+	
 	if(FricStatus == FricStatus_Stop){
 		speed = 0;
 	}
@@ -147,7 +162,7 @@ void StirMotor_Control(void)
 {	
 	Heat_limit_method = ext_game_robot_state.shooter_id1_17mm_speed_limit==30 ? 1 : 0; 
 	
-	if(TxMessage.Is_gaming == Gaming && ext_bullet_remaining.bullet_remaining_num_17mm < 420) SHEN_WEI.Is_Finished = 1;
+//	if(TxMessage.Is_gaming == Gaming && ext_bullet_remaining.bullet_remaining_num_17mm < 420) SHEN_WEI.Is_Finished = 1;
 	Shoot_Status_with_Heat(PITCH_ANGLE);
 	
 //	if(Heat_limit_method){
@@ -175,25 +190,23 @@ void StirMotor_Control(void)
 			StirMotor.TargetSpeed = 0;
 	}
 	//自瞄并且已经瞄到
-	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1 && TxMessage.mains_power_shooter==1 && (DataRecFromJetson.Amor_Numb>>8) != 2)
+	else if(ControlMode == ControlMode_Aimbot && DataRecFromJetson.SentryGimbalMode == ServoMode&& HeatFlag==1 && TxMessage.mains_power_shooter==1)
 	{
-		if((DataRecFromJetson.Amor_Numb>>8) != 0 )
+		if((DataRecFromJetson.ShootMode & (uint16_t)(0x2000)))//(DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8) )
 		{
 			StirMotor.TargetSpeed = targetspeed;
 			ShootCounter=0;
 		}
-		else if((DataRecFromJetson.Amor_Numb>>8)==0 && ShootCounter <= 10)
+		else if((DataRecFromJetson.ShootMode & (uint16_t)(0x2000)) && ShootCounter <= 10 )
 		{
 			StirMotor.TargetSpeed = targetspeed;
 			ShootCounter++;
 		} 
 		else 
 		  StirMotor.TargetSpeed = 0;
-		
 	}
 	else
 		  StirMotor.TargetSpeed = 0;
-	
 	
 	//堵转检测
 	StirMotor_Blocked_Detect(&StirMotor);
@@ -243,15 +256,15 @@ void Shoot_Status_with_Heat(uint16_t angle){
 	switch (Shoot_Method){
 		case Three_Mode:
 			Heat_Limitation.Heat_Limitation_UP = 50;
-			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			Heat_Limitation.Heat_Limitation_DOWN = 10;
 			break;
 		case Short_Mode:
 			Heat_Limitation.Heat_Limitation_UP = 200;
-			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			Heat_Limitation.Heat_Limitation_DOWN = 80;
 			break;
 		case Long_Mode:
-			Heat_Limitation.Heat_Limitation_UP = 280;
-			Heat_Limitation.Heat_Limitation_DOWN = 20;
+			Heat_Limitation.Heat_Limitation_UP = 290;
+			Heat_Limitation.Heat_Limitation_DOWN = 160;
 			break;
 		default:
 			break;
