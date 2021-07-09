@@ -27,6 +27,15 @@ typedef struct
 	uint16_t Now_Pitch_Me_Angle;
 }Diff;
 
+typedef struct
+{
+	float r,h;	//bigger r is faster; h = task time interval
+	float lastDeriv0,curDeriv0,lastDeriv1,curDeriv1;
+}TDfilter_type;	//tracking differentiator
+
+void TDfilter_Init(TDfilter_type* TD, float r, float h, float cur);
+void TDfilter_Cal(TDfilter_type* TD, float cur);
+
 //云台电机机械角上下限位  //改动
 #define Mechanical_Angle_UP 200
 #define Mechanical_Angle_DOWN 1180  //6560

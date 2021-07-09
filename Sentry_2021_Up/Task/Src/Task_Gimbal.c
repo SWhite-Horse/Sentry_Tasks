@@ -10,6 +10,7 @@
 #include "Task_JetsonComm.h"
 #include "Task_Communication.h"
 #include "Math.h"
+#include "arm_math.h"
 
 
 //****** 变量定义区 *******//
@@ -18,6 +19,10 @@ Aimbot_RotatinPatrol_PitchMode  Aimbot_RotatinPatrol_pitchmode ;
 Aimbot_RotatinPatrol_YawMode Aimbot_RotatinPatrol_yawmode;
 extern SHEN_WEI_struct SHEN_WEI;
 int KF_Versioninit = 0;
+uint8_t TD_InitFlag = 1;
+
+TDfilter_type CHw, KFy, KFp;
+
 
 //卡尔曼DEBUG输出参数
 int16_t P_Angle;
@@ -51,7 +56,7 @@ void Task_Gimbal(void *parameters)
 		Gimbal_CAN_Yaw_Send(Yaw.NeedCurrent);
 		Gimbal_CAN_Pitch_Send(Pitch.NeedCurrent);
 		
-    vTaskDelayUntil(&xPreviousWakeTime, 2);		
+    vTaskDelayUntil(&xPreviousWakeTime, 3);		
 	}
 }
 
@@ -67,21 +72,21 @@ void Gimbal_Init(void)
 	Aimbot_RotatinPatrol_pitchmode=downward;
 	Aimbot_RotatinPatrol_yawmode=rightward;
 	
-	Yaw.SpeedPID.Kp =560;//600;
-	Yaw.SpeedPID.Ki =3.5;//5.5;
-	Yaw.SpeedPID.Kd =5;//2;//7
+	Yaw.SpeedPID.Kp =560;//140;//
+	Yaw.SpeedPID.Ki =3.5;//0.4;//
+	Yaw.SpeedPID.Kd =5;//7;//
 	
-	Yaw.PositionPID.Kp = 12;
-	Yaw.PositionPID.Ki = 0;
-	Yaw.PositionPID.Kd = 1;//3;
+	Yaw.PositionPID.Kp = 12;//14;//
+	Yaw.PositionPID.Ki =0;//0;// 
+	Yaw.PositionPID.Kd = 1;//3;//
 	
-	Pitch.SpeedPID.Kp =300;//150;
-	Pitch.SpeedPID.Ki = 0;
-	Pitch.SpeedPID.Kd = 4;
+	Pitch.SpeedPID.Kp =300;//125;//
+	Pitch.SpeedPID.Ki = 0;//0.4;//
+	Pitch.SpeedPID.Kd = 4;//1;//
 
-	Pitch.PositionPID.Kp = 18;//20;
-	Pitch.PositionPID.Ki = 0.2;//
-	Pitch.PositionPID.Kd = 1;
+	Pitch.PositionPID.Kp = 18;//20;//
+	Pitch.PositionPID.Ki = 0.2;//0.15;//
+	Pitch.PositionPID.Kd = 1;//1;//
 	
 	//抬头初始化	
 	Pitch.TargetAngle = 20;
@@ -96,6 +101,7 @@ void Gimbal_Init(void)
   */
 
 float temp_p[2] = {0, 0}, temp_y[2] = {0, 0};
+float lastaimbotyaw=0;
 uint16_t RotatinPatrol_Counter=0;
 void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 {
@@ -103,14 +109,15 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 	static uint8_t j = 0;
     
 	//记录初始化完毕后Yaw角度
-  if(i){
-		yaw->TargetAngle = Mechanical_YAWAngle_To_RealAngle(Yaw.Mechanical_Angle);
+  if (i){
+		yaw->TargetAngle = YAW_ANGLE;
     --i;
   }
 
 	//遥控模式
 	if (ControlMode == ControlMode_Telecontrol_UP)
 		{
+			TD_InitFlag = 1; // l滤波置位
 		/************** YAW **************/
 			// 遥控数据平滑处理
 			temp_y[0] = temp_y[1];
@@ -146,6 +153,8 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 	else if(RxMessage.controlmode == ControlMode_Aimbot){
 		switch(DataRecFromJetson.SentryGimbalMode){ 
 			case RotatinPatrol:{
+				TD_InitFlag = 1; // l滤波置位
+
 				// 拨盘电机状态
 				StirMotorStatus = StirStatus_Stop;
 				
@@ -172,22 +181,22 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 
 				// ********************  360 自瞄		******************** //
 				if(PITCH_ANGLE>=25) Aimbot_RotatinPatrol_pitchmode = upward;
-				if(PITCH_ANGLE<=11)	Aimbot_RotatinPatrol_pitchmode = downward;
+				if(PITCH_ANGLE<=6)	Aimbot_RotatinPatrol_pitchmode = downward;
 				
 
 				if((YAW_ANGLE>80&&YAW_ANGLE<110)||(YAW_ANGLE>-100&&YAW_ANGLE<-80))
-					yaw->TargetAngle+=0.44f;
+					yaw->TargetAngle+=0.64f;
 				else
 					yaw->TargetAngle+=0.14f;
 				if(Aimbot_RotatinPatrol_pitchmode==upward)
 				{	
-					pitch->TargetAngle-=0.05f;					
+					pitch->TargetAngle-=0.20f;					
 					++j;
 				}
 			
 				if(Aimbot_RotatinPatrol_pitchmode==downward)
 				{		
-					pitch->TargetAngle+=0.05f;	
+					pitch->TargetAngle+=0.20f;	
 					++j;
 				}
 				
@@ -217,7 +226,20 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 	//			if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255){
 	//				KF_Cal_Desire();
 	//			}		
-									
+//				if(TD_InitFlag){					
+//					TDfilter_Init(&KFy, 150, 0.002, -YAW_ANGLE);
+//					TDfilter_Init(&KFp, 75, 0.002, -PITCH_ANGLE);
+//					TD_InitFlag = 0;
+//				}
+				
+//				TDfilter_Cal(&KFy, Yaw_Desire);
+//				TDfilter_Cal(&KFp, Pitch_Desire);
+//				Yaw_Desire = KFy.curDeriv0;
+//				Pitch_Desire = KFp.curDeriv0;
+								
+				
+				
+				
 			//瞄准之后角度确立
 				yaw->TargetAngle = Yaw_Desire;  //赋值Jeston处理后的数据，在Jeston部分代码里可寻得
 					
@@ -234,7 +256,8 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 					
 				pitch->TargetAngle = pitch->TargetAngle > Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) ? Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_DOWN) : pitch->TargetAngle;
 				pitch->TargetAngle = pitch->TargetAngle < Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_UP) ? Mechanical_PITCHAngle_To_RealAngle(Mechanical_Angle_UP) : pitch->TargetAngle;	
-					
+			
+				
 			//卡尔曼DEBUG输出  ??????
 				P_KFoutput = (int16_t)(Pitch_Desire * 10);
 				Y_KFoutput = (int16_t)((Yaw_Desire) * 10);
@@ -349,9 +372,9 @@ void GimbalMotor_PID(MotorType_6020 *yaw, MotorType_6020 *pitch)
   if (yaw != NULL){
 		// ************  yaw轴位置环  ************ //
     yaw->PositionPID.Last_Error = yaw->PositionPID.Cur_Error;
-		yaw->Real_Angle=YAW_ANGLE;  // 此变量，上云台读取的是机械角，而下云台是IMU返回数据
+		yaw->Real_Angle=-YAW_ANGLE;  // 此变量，上云台读取的是机械角，而下云台是IMU返回数据
 
-    yaw->PositionPID.Cur_Error = yaw->TargetAngle - yaw->Real_Angle;
+    yaw->PositionPID.Cur_Error = yaw->TargetAngle + yaw->Real_Angle;
 
     yaw->PositionPID.Cur_Error = yaw->PositionPID.Cur_Error > 180 ? yaw->PositionPID.Cur_Error - 360 : yaw->PositionPID.Cur_Error;
     yaw->PositionPID.Cur_Error = yaw->PositionPID.Cur_Error < -180 ? yaw->PositionPID.Cur_Error + 360 : yaw->PositionPID.Cur_Error;
@@ -429,3 +452,31 @@ void Gimbal_CAN_Pitch_Send(int16_t Pitch_Output)
 	Gimbalsend.Data[7] = (uint8_t)0;
 	xQueueSend(Queue_CANSend, &Gimbalsend, 3 / portTICK_RATE_MS);
 }
+
+
+/**
+  * @brief  标准线性跟踪微分器初始化
+  * @param  跟踪微分器结构体 r h 当前值
+  * @retval None
+  */
+void TDfilter_Init(TDfilter_type* TD, float r, float h, float cur)
+{
+	TD->r = r;
+	TD->h = h;
+	TD->lastDeriv0 = TD->curDeriv0 = cur;
+	TD->lastDeriv1 = TD->curDeriv1 = 0;
+}
+
+/**
+  * @brief  标准线性跟踪微分器计算
+  * @param  跟踪微分器结构体 当前值
+  * @retval None
+  */
+void TDfilter_Cal(TDfilter_type* TD, float cur)
+{
+	TD->lastDeriv0 = TD->curDeriv0;
+	TD->lastDeriv1 = TD->curDeriv1;
+	TD->curDeriv0 = TD->lastDeriv0 + TD->h * TD->lastDeriv1;
+	TD->curDeriv1 = TD->lastDeriv1 - TD->h * (powf(TD->r, 2) * (TD->lastDeriv0 - cur) + 2 * TD->r * TD->lastDeriv1);
+}
+

@@ -73,11 +73,32 @@ void JetsonCommUart_Config(UART_HandleTypeDef *huart) //这个函数在init的�
  * @param  huart：外设结构体地址
  * @note
  */
+
+float temp_nuc_p[2] = {0, 0}, temp_nuc_y[2] = {0, 0};
+
 void JetsonComm_Control(UART_HandleTypeDef *huart)
 {
 
-	
+//	
+//	temp_nuc_p[0] = temp_nuc_p[1];
+//	temp_nuc_y[0] = temp_nuc_y[1];
 
+//	
+//	if(abs(DataRecFromJetson.TargetPitchAngle) <= 4.0f) temp_nuc_p[1] = DataRecFromJetson.TargetPitchAngle;
+//	temp_nuc_p[1] = SmoothFilter(temp_nuc_p[0], temp_nuc_p[1]);
+//	
+//	if(abs(DataRecFromJetson.TargetYawAngle) <= 2.0f) temp_nuc_y[1] = DataRecFromJetson.TargetYawAngle;
+//	temp_nuc_y[1] = SmoothFilter(temp_nuc_y[0], temp_nuc_y[1]);
+//	
+//	if(DataRecFromJetson.TargetPitchAngle < 45 &&DataRecFromJetson.TargetPitchAngle > -45)
+//			Pitch_Desire = JetsonFlag[Jetson_Seq].CurAngle_Pitch + DataRecFromJetson.TargetPitchAngle; //坐标系相反
+//  if(DataRecFromJetson.TargetYawAngle < 130 &&DataRecFromJetson.TargetYawAngle > -130)
+//	{
+//		Yaw_Desire = JetsonFlag[Jetson_Seq].CurAngle_Yaw + DataRecFromJetson.TargetYawAngle;
+//		Last_YAW_Desire=Yaw_Desire;
+//	}
+//	Yaw_Desire=Yaw_Desire > 180 ? Yaw_Desire - 360: Yaw_Desire ;
+//	
   static float Pre_Pitch_Desire, Pre_Yaw_Desire;	//记录前一次Pitch、Yaw目标角度
   TickType_t Cur_time, delta_time;		//记录本次时间，△t
   static TickType_t Pre_time;	//记录上一次时间

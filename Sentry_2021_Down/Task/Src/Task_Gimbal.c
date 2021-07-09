@@ -55,7 +55,7 @@ void Task_Gimbal(void *parameters)
 		GimbalMotor_PID(&Yaw,&Pitch);
 		Gimbal_CAN_Send(Yaw.NeedCurrent,StirMotor.Output);
 		Gimbal_CAN_Pitch_Send(Pitch.NeedCurrent);
-    vTaskDelayUntil(&xPreviousWakeTime,3);		
+    vTaskDelayUntil(&xPreviousWakeTime, 2);		
 	}
 }
 
@@ -70,21 +70,21 @@ void Task_Gimbal(void *parameters)
 void Gimbal_Init(void)
 {
 	
-	Yaw.SpeedPID.Kp =65;//80;//36;
-	Yaw.SpeedPID.Ki = 0;//1;
-	Yaw.SpeedPID.Kd = 12;//4.5;//12;
+	Yaw.SpeedPID.Kp =85;//60;//
+	Yaw.SpeedPID.Ki = 0;//0.3;//
+	Yaw.SpeedPID.Kd = 8;//12;//
 	
-	Yaw.PositionPID.Kp =12;// 13;//20;
-	Yaw.PositionPID.Ki =0;// 0;//0;
-	Yaw.PositionPID.Kd =3;// 1;//4;
+	Yaw.PositionPID.Kp =12;//20;//
+	Yaw.PositionPID.Ki =0;//0;//
+	Yaw.PositionPID.Kd =3;//4;//
 	
-	Pitch.SpeedPID.Kp =160;// 120;//60;//
-	Pitch.SpeedPID.Ki =0.1;// 1.2;//1.2;//
-	Pitch.SpeedPID.Kd =0;// 10;//12;//
+	Pitch.SpeedPID.Kp =100;//170;//
+	Pitch.SpeedPID.Ki =0.1;//0.5;//
+	Pitch.SpeedPID.Kd =0;//5;//
 
-	Pitch.PositionPID.Kp =15;//16;// 18;   //
-	Pitch.PositionPID.Ki =0.1;// 0.1;//0.1;//
-	Pitch.PositionPID.Kd =0;//1;//
+	Pitch.PositionPID.Kp =12;//18;//
+	Pitch.PositionPID.Ki =0.1;//0.1;//
+	Pitch.PositionPID.Kd =0;//3.5;//
 	
 	//抬头初始化	
 	Pitch.TargetAngle =31;///20;
