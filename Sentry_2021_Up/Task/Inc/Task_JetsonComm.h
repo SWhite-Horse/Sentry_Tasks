@@ -44,7 +44,7 @@ typedef struct
 {
     uint8_t SoF;
     uint8_t Seq;
-    uint16_t ShootMode;     //高八位发射方式 低八位发射速度等级  (0xFFFF-记录当前角度  0xEEEE-红方  0xDDDD-蓝方  0xCCCC-通信建立  0xBBBB-请求数据发送)
+    uint16_t ShootMode;     //高八位发射方式 低八位发射速度等级，高八位依次是 Record，无用，Runfire
     float TargetPitchAngle; //Pitch目标角度
     float TargetYawAngle;   //Yaw目标角度
     /*  哨兵专用   */

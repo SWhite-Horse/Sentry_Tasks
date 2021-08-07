@@ -70,7 +70,8 @@ TickType_t Cur_time, delta_time;		//记录本次时间，△t
 float temp_nuc_p[2] = {0, 0}, temp_nuc_y[2] = {0, 0};
 void JetsonComm_Control(UART_HandleTypeDef *huart)
 {
-	
+//——————————————————————————————————————————————————————————————————————	
+/*   以下是加了平滑的算法返回数据，但是要将下方140行左右的的Pitch_Desire和Yaw_Desire的赋值给去掉 */
 //	temp_nuc_p[0] = temp_nuc_p[1];
 //	temp_nuc_y[0] = temp_nuc_y[1];
 
@@ -88,6 +89,7 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
 //		Last_YAW_Desire=Yaw_Desire;
 //	}
 //	Yaw_Desire=Yaw_Desire > 180 ? Yaw_Desire - 360: Yaw_Desire ;	
+//——————————————————————————————————————————————————————————————————————	
 	
   static float Pre_Pitch_Desire, Pre_Yaw_Desire;	//记录前一次Pitch、Yaw目标角度
   //TickType_t Cur_time, delta_time;		//记录本次时间，△t
@@ -116,7 +118,6 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
     HAL_UART_Transmit_DMA(huart, (uint8_t *)&DataSendToJetson_gyro, sizeof(STMToJetson_Struct_Gyro));
     //记录姿态的标志位——已记录
     JetsonFlag[Seq].ChangeAngle_flag = 1;
-
 	
 	}
 	// Runfire
@@ -132,28 +133,18 @@ void JetsonComm_Control(UART_HandleTypeDef *huart)
 		
     //清除记录姿态的标志位
     JetsonFlag[Jetson_Seq].ChangeAngle_flag = 0;
-    //——————————————————————————————————————————————————————————————————————
-    
 		
-		
-		
-		
-		
-		
-		
+    //——————————————————————————————————————————————————————————————————————	
 		//Pitch轴的目标角度
 		if(DataRecFromJetson.TargetPitchAngle < 45 &&DataRecFromJetson.TargetPitchAngle > -45)
 			Pitch_Desire = JetsonFlag[Jetson_Seq].CurAngle_Pitch + DataRecFromJetson.TargetPitchAngle; //坐标系相反
     Jetson_AnglePitch = Pitch_Desire;
     //Yaw轴的目标角度
-		
-		// 改 下三个 if
 		if(DataRecFromJetson.TargetYawAngle < 130 &&DataRecFromJetson.TargetYawAngle > -130)
 		{
 			Yaw_Desire = JetsonFlag[Jetson_Seq].CurAngle_Yaw - DataRecFromJetson.TargetYawAngle;
 			Last_YAW_Desire=Yaw_Desire;
 		}
-		
 		Yaw_Desire=Yaw_Desire > 180 ? Yaw_Desire - 360: Yaw_Desire ;		
 
     Jetson_AngleYaw = Yaw_Desire;

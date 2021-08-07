@@ -72,6 +72,8 @@ void Error_Handler(void);
 #define RC_RX_GPIO_Port GPIOB
 #define Jet_Rx_Pin GPIO_PIN_9
 #define Jet_Rx_GPIO_Port GPIOG
+#define IRON_Pin GPIO_PIN_0
+#define IRON_GPIO_Port GPIOF
 #define Power_1_Pin GPIO_PIN_2
 #define Power_1_GPIO_Port GPIOH
 #define Power_2_Pin GPIO_PIN_3

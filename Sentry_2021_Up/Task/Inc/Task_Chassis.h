@@ -15,6 +15,14 @@
 #define MEASURE_CIRCLE 45
 
 typedef struct{
+	uint16_t Chassis_speed;
+	uint8_t Fucking_pattrn;
+	uint16_t Chassis_Power;
+	
+	
+}Chassis_ZouWei_struct;
+
+typedef struct{
 	uint8_t Flag;
 	uint8_t Rand_Numb;
 	uint16_t Measure_tick;

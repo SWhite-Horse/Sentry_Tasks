@@ -19,10 +19,6 @@ Aimbot_RotatinPatrol_PitchMode  Aimbot_RotatinPatrol_pitchmode ;
 Aimbot_RotatinPatrol_YawMode Aimbot_RotatinPatrol_yawmode;
 extern SHEN_WEI_struct SHEN_WEI;
 int KF_Versioninit = 0;
-uint8_t TD_InitFlag = 1;
-
-TDfilter_type CHw, KFy, KFp;
-
 
 //卡尔曼DEBUG输出参数
 int16_t P_Angle;
@@ -103,11 +99,13 @@ void Gimbal_Init(void)
 float temp_p[2] = {0, 0}, temp_y[2] = {0, 0};
 float lastaimbotyaw=0;
 uint16_t RotatinPatrol_Counter=0;
+TickType_t Yaw_last_time;
+
 void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 {
 	static uint8_t i = 1;
-	static uint8_t j = 0;
-    
+	static uint8_t j = 1;
+  
 	//记录初始化完毕后Yaw角度
   if (i){
 		yaw->TargetAngle = YAW_ANGLE;
@@ -117,7 +115,6 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 	//遥控模式
 	if (ControlMode == ControlMode_Telecontrol_UP)
 		{
-			TD_InitFlag = 1; // l滤波置位
 		/************** YAW **************/
 			// 遥控数据平滑处理
 			temp_y[0] = temp_y[1];
@@ -153,11 +150,42 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 	else if(RxMessage.controlmode == ControlMode_Aimbot){
 		switch(DataRecFromJetson.SentryGimbalMode){ 
 			case RotatinPatrol:{
-				TD_InitFlag = 1; // l滤波置位
-
 				// 拨盘电机状态
 				StirMotorStatus = StirStatus_Stop;
+				if(j) {
+					Yaw_last_time = xTaskGetTickCount();
+					j--;
+				} // 第一次更新当前时间
+				// ********************  定步长 自瞄		******************** //
+				if(PITCH_ANGLE>=25) Aimbot_RotatinPatrol_pitchmode = upward;
+				if(PITCH_ANGLE<=6)	Aimbot_RotatinPatrol_pitchmode = downward;
+				if(xTaskGetTickCount()-Yaw_last_time>100){
+					if((YAW_ANGLE>80&&YAW_ANGLE<110)||(YAW_ANGLE>-100&&YAW_ANGLE<-80))
+					{
+						yaw->TargetAngle+=30.0f;					
+					}
+					else{
+						yaw->TargetAngle+=10.0f;				
+					}
 				
+				}
+				Yaw_last_time = xTaskGetTickCount();
+				if(Aimbot_RotatinPatrol_pitchmode==upward)
+				{	
+					pitch->TargetAngle-=0.20f;					
+				}
+			
+				if(Aimbot_RotatinPatrol_pitchmode==downward)
+				{		
+					pitch->TargetAngle+=0.20f;	
+				}
+					
+				while (yaw->TargetAngle >= 180)
+					yaw->TargetAngle -= 360;
+				while (yaw->TargetAngle < -180)
+					yaw->TargetAngle += 360;				
+				// ********************  130 自瞄		******************** //
+
 //				//pitch轴巡逻范围
 //				if(PITCH_ANGLE>=27) Aimbot_RotatinPatrol_pitchmode = upward;
 //				if(PITCH_ANGLE<=8)	Aimbot_RotatinPatrol_pitchmode = downward;
@@ -167,11 +195,9 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 //				//pitch轴巡逻方向及步长 
 //				if(Aimbot_RotatinPatrol_pitchmode==upward){	
 //					pitch->TargetAngle-=0.28f;					
-//					++j;
 //				}
 //				if(Aimbot_RotatinPatrol_pitchmode==downward){		
 //					pitch->TargetAngle+=0.28f;							
-//					++j;
 //				 }
 //				//yaw轴巡逻方向及步长 
 //				if(Aimbot_RotatinPatrol_yawmode==rightward)
@@ -183,7 +209,6 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				if(PITCH_ANGLE>=25) Aimbot_RotatinPatrol_pitchmode = upward;
 				if(PITCH_ANGLE<=6)	Aimbot_RotatinPatrol_pitchmode = downward;
 				
-
 				if((YAW_ANGLE>80&&YAW_ANGLE<110)||(YAW_ANGLE>-100&&YAW_ANGLE<-80))
 					yaw->TargetAngle+=0.64f;
 				else
@@ -191,16 +216,13 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 				if(Aimbot_RotatinPatrol_pitchmode==upward)
 				{	
 					pitch->TargetAngle-=0.20f;					
-					++j;
 				}
 			
 				if(Aimbot_RotatinPatrol_pitchmode==downward)
 				{		
 					pitch->TargetAngle+=0.20f;	
-					++j;
 				}
-				
-				
+					
 				while (yaw->TargetAngle >= 180)
 					yaw->TargetAngle -= 360;
 				while (yaw->TargetAngle < -180)
@@ -222,24 +244,8 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 //					KF_Versioninit = 1;
 //					Version_Init();
 //				}
-					
-	//			if(DataRecFromJetson.TargetYawAngle != 255 && DataRecFromJetson.TargetYawAngle != -255){
-	//				KF_Cal_Desire();
-	//			}		
-//				if(TD_InitFlag){					
-//					TDfilter_Init(&KFy, 150, 0.002, -YAW_ANGLE);
-//					TDfilter_Init(&KFp, 75, 0.002, -PITCH_ANGLE);
-//					TD_InitFlag = 0;
-//				}
-				
-//				TDfilter_Cal(&KFy, Yaw_Desire);
-//				TDfilter_Cal(&KFp, Pitch_Desire);
-//				Yaw_Desire = KFy.curDeriv0;
-//				Pitch_Desire = KFp.curDeriv0;
-								
-				
-				
-				
+//				KF_Cal_Desire();
+		
 			//瞄准之后角度确立
 				yaw->TargetAngle = Yaw_Desire;  //赋值Jeston处理后的数据，在Jeston部分代码里可寻得
 					
@@ -274,19 +280,7 @@ void GimbalMotor_AngleSet(MotorType_6020 *yaw, MotorType_6020 *pitch)
 
 				P_DeltaAngle = (int16_t)(Jetson_AnglePitch * 10);
 				Y_DeltaAngle = (int16_t)(Jetson_AngleYaw * 10);
-				/*
-				
-				if((DataRecFromJetson.ShootMode >> 8) == (RunningFire >> 8))
-				{
-					StirMotorStatus = StirStatus_SpeedControl;
-					ShootStatus = on;
-				}
-				else
-				{
-					StirMotorStatus = StirStatus_Stop;
-					ShootStatus = off;
-				}
-				*/
+
 				break;
 			}	
 		}
@@ -451,32 +445,5 @@ void Gimbal_CAN_Pitch_Send(int16_t Pitch_Output)
 	Gimbalsend.Data[6] = (uint8_t)0;
 	Gimbalsend.Data[7] = (uint8_t)0;
 	xQueueSend(Queue_CANSend, &Gimbalsend, 3 / portTICK_RATE_MS);
-}
-
-
-/**
-  * @brief  标准线性跟踪微分器初始化
-  * @param  跟踪微分器结构体 r h 当前值
-  * @retval None
-  */
-void TDfilter_Init(TDfilter_type* TD, float r, float h, float cur)
-{
-	TD->r = r;
-	TD->h = h;
-	TD->lastDeriv0 = TD->curDeriv0 = cur;
-	TD->lastDeriv1 = TD->curDeriv1 = 0;
-}
-
-/**
-  * @brief  标准线性跟踪微分器计算
-  * @param  跟踪微分器结构体 当前值
-  * @retval None
-  */
-void TDfilter_Cal(TDfilter_type* TD, float cur)
-{
-	TD->lastDeriv0 = TD->curDeriv0;
-	TD->lastDeriv1 = TD->curDeriv1;
-	TD->curDeriv0 = TD->lastDeriv0 + TD->h * TD->lastDeriv1;
-	TD->curDeriv1 = TD->lastDeriv1 - TD->h * (powf(TD->r, 2) * (TD->lastDeriv0 - cur) + 2 * TD->r * TD->lastDeriv1);
 }
 

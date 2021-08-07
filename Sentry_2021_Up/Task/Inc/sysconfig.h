@@ -33,6 +33,13 @@
 #define MEMORY1 1
 #define MEMORYRESET 2
 
+//********** 事件结构体 *********//
+typedef struct{
+	uint8_t Sentry_Is_hurted;
+	uint8_t Fucking_Infantry_Is_
+	
+}Focking_Event_struct;
+	
 //********** PID结构体 *********//
 typedef struct                               
 {

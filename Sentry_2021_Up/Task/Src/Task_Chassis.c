@@ -33,7 +33,7 @@ SHEN_WEI_struct SHEN_WEI = {
 	.End_Time = 390,
 	.Bullet_RM = 500
 };
-
+int iron = 500;
 YUE_LU_struct YUE_LU = {
 	.Status = 0,
 };
@@ -72,6 +72,11 @@ void Task_Chassis(void *parameters)
 		Chassis_PID_Ctrl(&Chassis_Motor[0]);
 		Chassis_PID_Ctrl(&Chassis_Motor[1]);
 	
+		if(iron == 0) {
+			iron = 500;
+			HAL_GPIO_TogglePin(GPIOF,GPIO_PIN_0);
+		}
+		else iron --;
 		if(ext_power_heat_data.chassis_power_buffer != 0) ChassisPowerControl();
 		Chassis_CAN_Send(Chassis_Motor[0].Output,Chassis_Motor[1].Output);
 		vTaskDelayUntil(&xLastWakeUpTime, 5);
@@ -188,7 +193,6 @@ void Chassis_Speed_Set(void){
 		// 底盘SHEN_WEI 停放在最右侧
 		if(!SHEN_WEI.Is_Finished && SHEN_WEI.Location) Target_speed = 0;
 		if(YUE_LU.Status && left_detected == 1) Target_speed = 0;
-		
 	}
 	else // 非自瞄模式就是下云台传输数据
 		Target_speed  = RxMessage.speed;
@@ -209,9 +213,8 @@ void Chassis_Speed_Set(void){
 //			tim_cnt++;
 //	}
 		
-		//判断是否受到伤害
+	//判断是否受到伤害
 
-		
   // 以下部分对不同位置，根据控制模式不同做速度方向确定
 	if(RxMessage.controlmode == ControlMode_Telecontrol_UP||RxMessage.controlmode == ControlMode_Telecontrol_DOWN){ //遥控模式
 		//遥控模式检测仅用于在两边停下来，反向则是遥控输入正负来控制

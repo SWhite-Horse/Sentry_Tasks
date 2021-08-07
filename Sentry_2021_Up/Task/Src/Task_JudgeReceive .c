@@ -24,7 +24,6 @@ ext_dart_client_cmd_t ext_dart_client_cmd;
 ext_video_transmitter_t ext_video_transmitter;
 
 
-int currentSpeed=0,lastSpeed=0;
 uint16_t time_cnt;
 int JudgeReceive_Counter;
 uint8_t chassis_power = 0;
